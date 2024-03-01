@@ -37,32 +37,24 @@ public class Profiles {
 		return serno;
 	}
 
-	public List<Mprofileacct> getMprofileacctsLists() {
-		return mprofileacctsLists;
-	}
-
-	public List<Cstmtsettings> getCstmtsettingsList() {
-		return cstmtsettingsList;
-	}
-
 	public String getDescription() {
 		return description;
+	}
+
+	public Long getLogversion() {
+		return logversion;
 	}
 
 	public void setSerno(Long serno) {
 		this.serno = serno;
 	}
 
-	public void setMprofileacctsLists(List<Mprofileacct> mprofileacctsLists) {
-		this.mprofileacctsLists = mprofileacctsLists;
-	}
-
-	public void setCstmtsettingsList(List<Cstmtsettings> cstmtsettingsList) {
-		this.cstmtsettingsList = cstmtsettingsList;
-	}
-
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public void setLogversion(Long logversion) {
+		this.logversion = logversion;
 	}
 
 }

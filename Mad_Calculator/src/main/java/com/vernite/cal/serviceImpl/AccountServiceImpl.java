@@ -2,24 +2,28 @@ package com.vernite.cal.serviceImpl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-import com.vernite.cal.dto.AccountDto;
 import com.vernite.cal.dto.CardDetailsResponse;
+import com.vernite.cal.dto.StatementResponse;
 import com.vernite.cal.model.Caccounts;
 import com.vernite.cal.model.Cardx;
 import com.vernite.cal.model.Cstatements;
+import com.vernite.cal.model.Cstmtsettings;
+import com.vernite.cal.model.Mprofileacct;
 import com.vernite.cal.model.Products;
 import com.vernite.cal.model.Profiles;
 import com.vernite.cal.repository.AccountRepository;
 import com.vernite.cal.repository.CardxRepository;
 import com.vernite.cal.repository.CstatementSettingsRepository;
 import com.vernite.cal.repository.CstatementsRepositoty;
+import com.vernite.cal.repository.MprofileAcctRepository;
 import com.vernite.cal.repository.ProductsRepository;
 import com.vernite.cal.repository.ProfilesRepository;
 import com.vernite.cal.service.AccountService;
@@ -45,63 +49,95 @@ public class AccountServiceImpl implements AccountService {
 	@Autowired
 	private CstatementSettingsRepository cstatementSettingsRepository;
 
-	@Override
-	public List<Cstatements> getStatement(String date) throws ParseException {
+	@Autowired
+	private MprofileAcctRepository mprofileAcctRepository;
 
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		java.util.Date parse = simpleDateFormat.parse(date);
+	public StatementResponse getStatement(String date) throws ParseException {
 
-		List<Cstatements> findByCycledate = cstatementsRepositoty.findByCycledate(parse);
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy");
 
-		return findByCycledate;
+		Date parse = simpleDateFormat.parse(date);
+
+		Cstatements statementsData = cstatementsRepositoty.findByCycledate(parse);
+
+//		statementsData.get().getOverdueamount();
+//		
+//		statementsData.get().getTotaldebits();
+
+		StatementResponse st = new StatementResponse();
+
+		return st;
 	}
 
-	public CardDetailsResponse fetchCardDetails(String numberx) {
+	public StatementResponse getStatementDetails(Long numberx) {
 
-		CardDetailsResponse cardResponse = new CardDetailsResponse();
+		Optional<Cstatements> byId = cstatementsRepositoty.findById(numberx);
+		byId.get().getTotaldebits();
+		byId.get().getTotalcredits();
+		byId.get().getOverdueamount();
+		byId.get().getPrintduedate();
+		byId.get().getMindueamount();
+		byId.get().getClosingbalance();
+		byId.get().getDuedate();
 
-		List<Caccounts> findAllaccount = accountRepository.findAll();
-		List<Products> productList = productsRepository.findAll();
-		cardResponse.setProductsList(productList);
-		cardResponse.setCaccountsList(findAllaccount);
+		StatementResponse st = new StatementResponse();
+		st.setTotalcredits(byId.get().getTotalcredits());
+		st.setTotaldebits(byId.get().getTotaldebits());
+		st.setOverdueamount(byId.get().getOverdueamount());
+		st.setPrintduedate(byId.get().getPrintduedate());
+		st.setMindueamount(byId.get().getMindueamount());
+		st.setClosingbalance(byId.get().getClosingbalance());
+		st.setDuedate(byId.get().getDuedate());
 
-		return cardResponse;
+		return st;
 	}
 
-	public AccountDto convertAccountToAccountDto(Caccounts caccounts) {
-		AccountDto accountDto = new AccountDto();
-		accountDto.setNumberx(caccounts.getNumberx());
-		accountDto.setStgeneral(caccounts.getStgeneral());
-		accountDto.setTransactorhistory(caccounts.getTransactorhistory());
-		return accountDto;
+	public CardDetailsResponse getNumberx(String numberx) {
+
+		Cardx byCard = cardxRepository.findByNumberx(numberx);
+		Caccounts caccounts = byCard.getCaccounts();
+
+		caccounts.setStgeneral(byCard.getCaccounts().getStgeneral());
+		caccounts.setTransactorhistory(byCard.getCaccounts().getTransactorhistory());
+		caccounts.setNumberx(byCard.getCaccounts().getNumberx());
+
+		Long product = caccounts.getProduct();
+		Optional<Products> productData = productsRepository.findById(product);
+		String productName = productData.get().getName();
+		
+		//--------------------
+
+		
+		
+//		Optional<Mprofileacct> mprofilesData = mprofileAcctRepository.findById(product);
+//		Products products = mprofilesData.get().getProducts();
+//
+//		Long productSerno = products.getSerno();
+//
+//		Optional<Profiles> profilesData = profilesRepository.findById(productSerno);
+//		String description = profilesData.get().getDescription();
+//
+//		Optional<Cstmtsettings> cstmtSettingsData = cstatementSettingsRepository.findById(product);
+//		Long minpaypercentage = cstmtSettingsData.get().getMinpaypercentage();
+
+		// -----------------------
+
+		CardDetailsResponse c = new CardDetailsResponse();
+
+		c.setNumberx(caccounts.getNumberx());
+		c.setStgeneral(caccounts.getStgeneral());
+		c.setTransactorhistory(caccounts.getTransactorhistory());
+
+		c.setName(productName);
+//		c.setDescription(description);
+//		c.setMinpaypercentage(minpaypercentage);
+
+		return c;
 	}
 
-	public List<Caccounts> getAccount(long serno) {
-		List<Caccounts> all = accountRepository.findAll();
-		return all;
-	}
-
-	public CardDetailsResponse getCards(String numberx) {
-
-		Caccounts caccounts = new Caccounts();
-		Cardx cardx = new Cardx();
-		Products products = new Products();
-
-		caccounts = accountRepository.findByNumberx(numberx);
-		cardx = cardxRepository.findByNumberx(numberx);
-		products = productsRepository.findByName(numberx);
-
-		CardDetailsResponse detailsResponse = new CardDetailsResponse();
-
-		detailsResponse.setSerno(caccounts.getSerno());
-
-		detailsResponse.setStgeneral(caccounts.getStgeneral());
-		detailsResponse.setTransactorhistory(caccounts.getTransactorhistory());
-		detailsResponse.setName(caccounts.getNumberx());
-
-		detailsResponse.setName(products.getName());
-
-		return detailsResponse;
+	public String getDiscription(Long serno) {
+		Optional<Profiles> findById = profilesRepository.findById(serno);
+		return findById.get().getDescription();
 	}
 
 }

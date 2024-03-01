@@ -22,12 +22,24 @@ public class Mprofileacct {
 
 	@ManyToOne
 	@JoinColumn(name = "product", nullable = false)
-	private Cardx cardx;
+	private Products products;
 
 	// private Long product;
 //	private Integer stmtprofserno;
 
 	private Long institution_id;
+	
+	
+	
+
+	public Products getProducts() {
+		return products;
+	}
+
+	public void setProducts(Products products) {
+		this.products = products;
+	}
+
 	// serno NUMBER(10) not null,
 	private Long leveldepth;
 	private String levellabel;
@@ -736,9 +748,9 @@ public class Mprofileacct {
 		this.makeauthgroups = makeauthgroups;
 	}
 
-	public Cardx getCardx() {
-		return cardx;
-	}
+//	public Cardx getCardx() {
+//		return cardx;
+//	}
 
 	public Long getCurrency() {
 		return currency;
@@ -748,9 +760,9 @@ public class Mprofileacct {
 		return authcurrency;
 	}
 
-	public void setCardx(Cardx cardx) {
-		this.cardx = cardx;
-	}
+//	public void setCardx(Cardx cardx) {
+//		this.cardx = cardx;
+//	}
 
 	public void setCurrency(Long currency) {
 		this.currency = currency;

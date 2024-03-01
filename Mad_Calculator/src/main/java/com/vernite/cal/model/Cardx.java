@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,13 +30,16 @@ public class Cardx {
 	private Caccounts caccounts;
 
 	@ManyToOne
-	@JoinColumn(name = "product", nullable = false)
+	@JoinColumn(name = "product", unique = true, nullable = false)
 	@JsonIgnore
 	private Products products;
 
-	@OneToMany(mappedBy = "cardx")
-	@JsonIgnore
-	private List<Mprofileacct> mprofileacctsList;
+	
+	// cardx -> mprofileacct
+//	@Id
+//	@OneToMany(mappedBy = "cardx", cascade = CascadeType.ALL)
+//	@JsonIgnore
+//	private List<Mprofileacct> mprofileacctsList;
 
 	private String numberx;
 	private long institution_id;
@@ -102,9 +107,9 @@ public class Cardx {
 		return products;
 	}
 
-	public List<Mprofileacct> getMprofileacctsList() {
-		return mprofileacctsList;
-	}
+//	public List<Mprofileacct> getMprofileacctsList() {
+//		return mprofileacctsList;
+//	}
 
 	public String getNumberx() {
 		return numberx;
@@ -122,9 +127,9 @@ public class Cardx {
 		this.products = products;
 	}
 
-	public void setMprofileacctsList(List<Mprofileacct> mprofileacctsList) {
-		this.mprofileacctsList = mprofileacctsList;
-	}
+//	public void setMprofileacctsList(List<Mprofileacct> mprofileacctsList) {
+//		this.mprofileacctsList = mprofileacctsList;
+//	}
 
 	public void setNumberx(String numberx) {
 		this.numberx = numberx;

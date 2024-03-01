@@ -9,5 +9,5 @@ import com.vernite.cal.model.Cstatements;
 
 public interface CstatementsRepositoty extends JpaRepository<Cstatements, Long> {
 
-	public List<Cstatements> findByCycledate(Date cycledate);
+	public Cstatements findByCycledate(Date cycledate);
 }

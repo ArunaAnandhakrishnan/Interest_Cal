@@ -9,17 +9,12 @@ import com.vernite.cal.model.Profiles;
 
 public class CardDetailsResponse {
 
-	private Long serno;
 	private String numberx;
 	private String stgeneral;
 	private String transactorhistory;
 	private String name;
 	private String description;
 	private Long minpaypercentage;
-
-	public Long getSerno() {
-		return serno;
-	}
 
 	public String getNumberx() {
 		return numberx;
@@ -45,10 +40,6 @@ public class CardDetailsResponse {
 		return minpaypercentage;
 	}
 
-	public void setSerno(Long serno) {
-		this.serno = serno;
-	}
-
 	public void setNumberx(String numberx) {
 		this.numberx = numberx;
 	}
@@ -71,43 +62,6 @@ public class CardDetailsResponse {
 
 	public void setMinpaypercentage(Long minpaypercentage) {
 		this.minpaypercentage = minpaypercentage;
-	}
-
-	List<Caccounts> caccountsList;
-	List<Products> productsList;
-	List<Cstmtsettings> cstmtsettingsList;
-	List<Profiles> profilesList;
-
-	public List<Caccounts> getCaccountsList() {
-		return caccountsList;
-	}
-
-	public List<Products> getProductsList() {
-		return productsList;
-	}
-
-	public List<Cstmtsettings> getCstmtsettingsList() {
-		return cstmtsettingsList;
-	}
-
-	public List<Profiles> getProfilesList() {
-		return profilesList;
-	}
-
-	public void setCaccountsList(List<Caccounts> caccountsList) {
-		this.caccountsList = caccountsList;
-	}
-
-	public void setProductsList(List<Products> productsList) {
-		this.productsList = productsList;
-	}
-
-	public void setCstmtsettingsList(List<Cstmtsettings> cstmtsettingsList) {
-		this.cstmtsettingsList = cstmtsettingsList;
-	}
-
-	public void setProfilesList(List<Profiles> profilesList) {
-		this.profilesList = profilesList;
 	}
 
 }

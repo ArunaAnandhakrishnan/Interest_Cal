@@ -19,6 +19,8 @@ public class Products {
 
 	@OneToMany(mappedBy = "products")
 	private List<Cardx> cardxsLists;
+	
+	
 
 	// private Long institution_id;
 	// private Long serno;
