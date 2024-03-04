@@ -39,9 +39,9 @@ public class Cstatements {
 	private Long partitionkey;
 //	private Long caccserno;
 	private Long batchserno;
-	private Date cycledate;
-	private Date prevbillingdate;
-	private Date billingdate;
+	private java.sql.Date cycledate;
+	private java.sql.Date prevbillingdate;
+	private java.sql.Date billingdate;
 	private String generatedatetime;
 	private Timestamp lastprintdate;
 	private Long printcount;
@@ -76,11 +76,11 @@ public class Cstatements {
 	private Long overdueage;
 	private Long paymentindicator;
 	private Long currency;
-	private Date duedate;
-	private Date printduedate;
-	private Date overduedate;
-	private Date currentoverduedate;
-	private Date cureoverduedate;
+	private java.sql.Date duedate;
+	private java.sql.Date printduedate;
+	private java.sql.Date overduedate;
+	private java.sql.Date currentoverduedate;
+	private java.sql.Date cureoverduedate;
 	private String stgeneral;
 	private Long collectorcase;
 	private Long coltypeserno;
@@ -508,15 +508,15 @@ public class Cstatements {
 		this.batchserno = batchserno;
 	}
 
-	public void setCycledate(Date cycledate) {
+	public void setCycledate(java.sql.Date cycledate) {
 		this.cycledate = cycledate;
 	}
 
-	public void setPrevbillingdate(Date prevbillingdate) {
+	public void setPrevbillingdate(java.sql.Date prevbillingdate) {
 		this.prevbillingdate = prevbillingdate;
 	}
 
-	public void setBillingdate(Date billingdate) {
+	public void setBillingdate(java.sql.Date billingdate) {
 		this.billingdate = billingdate;
 	}
 
@@ -656,23 +656,23 @@ public class Cstatements {
 		this.currency = currency;
 	}
 
-	public void setDuedate(Date duedate) {
+	public void setDuedate(java.sql.Date duedate) {
 		this.duedate = duedate;
 	}
 
-	public void setPrintduedate(Date printduedate) {
+	public void setPrintduedate(java.sql.Date printduedate) {
 		this.printduedate = printduedate;
 	}
 
-	public void setOverduedate(Date overduedate) {
+	public void setOverduedate(java.sql.Date overduedate) {
 		this.overduedate = overduedate;
 	}
 
-	public void setCurrentoverduedate(Date currentoverduedate) {
+	public void setCurrentoverduedate(java.sql.Date currentoverduedate) {
 		this.currentoverduedate = currentoverduedate;
 	}
 
-	public void setCureoverduedate(Date cureoverduedate) {
+	public void setCureoverduedate(java.sql.Date cureoverduedate) {
 		this.cureoverduedate = cureoverduedate;
 	}
 

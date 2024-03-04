@@ -57,4 +57,84 @@ public class Profiles {
 		this.logversion = logversion;
 	}
 
+	public List<Mprofileacct> getMprofileacctsLists() {
+		return mprofileacctsLists;
+	}
+
+	public List<Cstmtsettings> getCstmtsettingsList() {
+		return cstmtsettingsList;
+	}
+
+	public Long getInstitution_id() {
+		return institution_id;
+	}
+
+	public String getUsedfor() {
+		return usedfor;
+	}
+
+	public String getShortcode() {
+		return shortcode;
+	}
+
+	public Long getCorpindicator() {
+		return corpindicator;
+	}
+
+	public Long getRowserno() {
+		return rowserno;
+	}
+
+	public Long getTabindicator() {
+		return tabindicator;
+	}
+
+	public Long getUsedforcampaigns() {
+		return usedforcampaigns;
+	}
+
+	public long getAppliestorp() {
+		return appliestorp;
+	}
+
+	public void setMprofileacctsLists(List<Mprofileacct> mprofileacctsLists) {
+		this.mprofileacctsLists = mprofileacctsLists;
+	}
+
+	public void setCstmtsettingsList(List<Cstmtsettings> cstmtsettingsList) {
+		this.cstmtsettingsList = cstmtsettingsList;
+	}
+
+	public void setInstitution_id(Long institution_id) {
+		this.institution_id = institution_id;
+	}
+
+	public void setUsedfor(String usedfor) {
+		this.usedfor = usedfor;
+	}
+
+	public void setShortcode(String shortcode) {
+		this.shortcode = shortcode;
+	}
+
+	public void setCorpindicator(Long corpindicator) {
+		this.corpindicator = corpindicator;
+	}
+
+	public void setRowserno(Long rowserno) {
+		this.rowserno = rowserno;
+	}
+
+	public void setTabindicator(Long tabindicator) {
+		this.tabindicator = tabindicator;
+	}
+
+	public void setUsedforcampaigns(Long usedforcampaigns) {
+		this.usedforcampaigns = usedforcampaigns;
+	}
+
+	public void setAppliestorp(long appliestorp) {
+		this.appliestorp = appliestorp;
+	}
+
 }

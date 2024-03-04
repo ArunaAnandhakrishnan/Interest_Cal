@@ -1,5 +1,6 @@
 package com.vernite.cal.dto;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class TransactionsDto {
@@ -30,7 +31,7 @@ public class TransactionsDto {
 	private String i003_proc_code;
 	private Long i004_amt_trxn;
 	private Long i005_amt_settle;
-	private Long i006_amt_bill;
+	private BigDecimal i006_amt_bill;
 	private Date i007_load_date;
 	private Long i008_billing_fee;
 	private String i013_trxn_date;
@@ -185,10 +186,6 @@ public class TransactionsDto {
 
 	public Long getI005_amt_settle() {
 		return i005_amt_settle;
-	}
-
-	public Long getI006_amt_bill() {
-		return i006_amt_bill;
 	}
 
 	public Date getI007_load_date() {
@@ -535,7 +532,11 @@ public class TransactionsDto {
 		this.i005_amt_settle = i005_amt_settle;
 	}
 
-	public void setI006_amt_bill(Long i006_amt_bill) {
+	public BigDecimal getI006_amt_bill() {
+		return i006_amt_bill;
+	}
+
+	public void setI006_amt_bill(BigDecimal i006_amt_bill) {
 		this.i006_amt_bill = i006_amt_bill;
 	}
 

@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -68,9 +69,10 @@ public class Ctransactions {
 	private String i000_msg_type;
 	private String i002_number;
 	private String i003_proc_code;
-	private Long i004_amt_trxn;
+	@Column(name = "I004_AMT_TRXN")
+	private BigDecimal i004_amt_trxn;
 	private Long i005_amt_settle;
-	private Long i006_amt_bill;
+	private BigDecimal i006_amt_bill;
 	private Date i007_load_date;
 	private Long i008_billing_fee;
 	private Date i013_trxn_date;
@@ -219,16 +221,8 @@ public class Ctransactions {
 		return i003_proc_code;
 	}
 
-	public Long getI004_amt_trxn() {
-		return i004_amt_trxn;
-	}
-
 	public Long getI005_amt_settle() {
 		return i005_amt_settle;
-	}
-
-	public Long getI006_amt_bill() {
-		return i006_amt_bill;
 	}
 
 	public Date getI007_load_date() {
@@ -283,7 +277,11 @@ public class Ctransactions {
 		return instalmentamrtprincipalamount;
 	}
 
-	public void setI004_amt_trxn(Long i004_amt_trxn) {
+	public BigDecimal getI004_amt_trxn() {
+		return i004_amt_trxn;
+	}
+
+	public void setI004_amt_trxn(BigDecimal i004_amt_trxn) {
 		this.i004_amt_trxn = i004_amt_trxn;
 	}
 
@@ -291,7 +289,11 @@ public class Ctransactions {
 		this.i005_amt_settle = i005_amt_settle;
 	}
 
-	public void setI006_amt_bill(Long i006_amt_bill) {
+	public BigDecimal getI006_amt_bill() {
+		return i006_amt_bill;
+	}
+
+	public void setI006_amt_bill(BigDecimal i006_amt_bill) {
 		this.i006_amt_bill = i006_amt_bill;
 	}
 
