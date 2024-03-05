@@ -1,20 +1,15 @@
 package com.vernite.cal.model;
 
-import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import oracle.sql.TIMESTAMP;
 
 @Entity
@@ -34,7 +29,6 @@ public class Cardx {
 	@JsonIgnore
 	private Products products;
 
-	
 	// cardx -> mprofileacct
 //	@Id
 //	@OneToMany(mappedBy = "cardx", cascade = CascadeType.ALL)
@@ -133,6 +127,30 @@ public class Cardx {
 
 	public void setNumberx(String numberx) {
 		this.numberx = numberx;
+	}
+
+	public Long getPrimarycard() {
+		return primarycard;
+	}
+
+	public String getExpirydatestatus() {
+		return expirydatestatus;
+	}
+
+	public String getStgeneral() {
+		return stgeneral;
+	}
+
+	public void setPrimarycard(Long primarycard) {
+		this.primarycard = primarycard;
+	}
+
+	public void setExpirydatestatus(String expirydatestatus) {
+		this.expirydatestatus = expirydatestatus;
+	}
+
+	public void setStgeneral(String stgeneral) {
+		this.stgeneral = stgeneral;
 	}
 
 }

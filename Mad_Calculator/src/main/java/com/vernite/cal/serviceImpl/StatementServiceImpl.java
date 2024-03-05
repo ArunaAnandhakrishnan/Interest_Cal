@@ -1,26 +1,26 @@
 package com.vernite.cal.serviceImpl;
 
 import java.text.ParseException;
-import java.time.LocalDate;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.vernite.cal.dto.StatementResponse;
 import com.vernite.cal.model.Cstatements;
 import com.vernite.cal.repository.CstatementsRepositoty;
 
+@Service
 public class StatementServiceImpl {
 
 	@Autowired
 	private CstatementsRepositoty cstatementsRepositoty;
 
-	public StatementResponse getStatementDetails(String date) throws ParseException {
+	public StatementResponse getStatementDetails(Date cycleDate) throws ParseException {
 
-		LocalDate parsedDate = LocalDate.parse(date);
-		// 17-05-55
-
-		Optional<Cstatements> byCycledate = cstatementsRepositoty.findByCycledate(parsedDate);
+		Optional<Cstatements> byCycledate = cstatementsRepositoty.findByCycledate(cycleDate);
 
 		byCycledate.get().getTotalcredits();
 		byCycledate.get().getTotaldebits();
@@ -30,8 +30,10 @@ public class StatementServiceImpl {
 		byCycledate.get().getMindueamount();
 		byCycledate.get().getClosingbalance();
 		byCycledate.get().getDuedate();
+		byCycledate.get().getOpeningbalance();
 
 		StatementResponse st = new StatementResponse();
+		
 		st.setTotalcredits(byCycledate.get().getTotalcredits());
 		st.setTotaldebits(byCycledate.get().getTotaldebits());
 		st.setOverdueamount(byCycledate.get().getOverdueamount());
@@ -39,41 +41,35 @@ public class StatementServiceImpl {
 		st.setMindueamount(byCycledate.get().getMindueamount());
 		st.setClosingbalance(byCycledate.get().getClosingbalance());
 		st.setDuedate(byCycledate.get().getDuedate());
+		st.setOpeningbalance(byCycledate.get().getOpeningbalance());
 
 		return st;
 	}
 
-//	public StatementResponse getStatement(String date) throws ParseException {
-//
-//		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm-dd-yyyy");
-//		// 17-05-55
-//
-//		Date parse = simpleDateFormat.parse(date);
-//
-//		Cstatements statementsData = cstatementsRepositoty.findByCycledate(parse);
-////		if (statementsData == null) {
-////
-////			throw new com.vernite.cal.exception.BadRequestException("statement data not found");
-////		}
-//
-//		statementsData.getTotaldebits();
-//
-//		statementsData.getTotalcredits();
-//		statementsData.getOverdueamount();
-//		statementsData.getPrintduedate();
-//		statementsData.getMindueamount();
-//		statementsData.getClosingbalance();
-//		statementsData.getDuedate();
-//
-//		StatementResponse st = new StatementResponse();
-//
-//		st.setTotalcredits(statementsData.getTotalcredits());
-//		st.setTotaldebits(statementsData.getTotaldebits());
-//		st.setClosingbalance(statementsData.getClosingbalance());
-//		st.setMindueamount(statementsData.getMindueamount());
-//		st.setPrintduedate(statementsData.getPrintduedate());
-//		st.setDuedate(statementsData.getDuedate());
-//
-//		return st;
-//	}
+	public Cstatements getStatementByNumberx(Long numberx) {
+
+		Optional<Cstatements> findById = cstatementsRepositoty.findById(numberx);
+
+		if (findById.isPresent()) {
+			Cstatements statement = findById.get();
+			Long serno = statement.getSerno();
+
+			Date date = statement.getCycledate();
+
+			if (findById.equals(date)) {
+
+				Optional<Cstatements> statements = cstatementsRepositoty.findById(serno);
+
+				return statement;
+			} else {
+
+				return null;
+			}
+		} else {
+
+			return null;
+		}
+
+	}
+
 }

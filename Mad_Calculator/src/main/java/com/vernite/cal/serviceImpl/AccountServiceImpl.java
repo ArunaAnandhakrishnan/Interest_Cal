@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 import com.vernite.cal.dto.CardDetailsResponse;
 import com.vernite.cal.model.Caccounts;
 import com.vernite.cal.model.Cardx;
+import com.vernite.cal.model.Cstmtsettings;
+import com.vernite.cal.model.Mprofileacct;
 import com.vernite.cal.model.Products;
+import com.vernite.cal.model.Profiles;
 import com.vernite.cal.repository.AccountRepository;
 import com.vernite.cal.repository.CardxRepository;
 import com.vernite.cal.repository.CstatementSettingsRepository;
@@ -37,6 +40,12 @@ public class AccountServiceImpl implements AccountService {
 	@Autowired
 	private MprofileAcctRepository mprofileAcctRepository;
 
+	@Autowired
+	private CstatementsRepositoty cstatementsRepositoty;
+
+	@Autowired
+	private CstatementSettingsRepository cstatementSettingsRepository;
+
 	public CardDetailsResponse getCardDeatils(String numberx) {
 
 		Cardx byCard = cardxRepository.findByNumberx(numberx);
@@ -46,24 +55,25 @@ public class AccountServiceImpl implements AccountService {
 		caccounts.setTransactorhistory(byCard.getCaccounts().getTransactorhistory());
 		caccounts.setNumberx(byCard.getCaccounts().getNumberx());
 
+		String stgeneralCardx = byCard.getStgeneral();
+		String expirydatestatus = byCard.getExpirydatestatus();
+		Long primarycard = byCard.getPrimarycard();
+
 		Long product = caccounts.getProduct();
 		Optional<Products> productData = productsRepository.findById(product);
 		String productName = productData.get().getName();
 
-		// --------------------
+		Products productsClass = byCard.getProducts();
+		Long sernoProduct = productsClass.getSerno();
 
-		// profilesRepository.findByDescription()
-//		Long serno = byCard.getSerno();
-//		Optional<Mprofileacct> mprofileData = mprofileAcctRepository.findById(serno);
+		Optional<Products> productDatas = productsRepository.findById(sernoProduct);
+		String description = productDatas.get().getDescription();
 
-		// Profiles profiles = mprofileData.get().getProfiles();
-		// String description = profiles.getDescription();
+		Optional<Mprofileacct> mprofilesAcctData = mprofileAcctRepository.findByProducts(productDatas);
 
-		// failed
-//		Optional<Profiles> profileData = profilesRepository.findById(product);
-//		String description = profileData.get().getDescription();
-
-		// -----------------------
+		Profiles profiles = mprofilesAcctData.get().getProfiles();
+		Optional<Cstmtsettings> cstmtSettingsData = cstatementSettingsRepository.findByProfiles(profiles);
+		Long minpaypercentage = cstmtSettingsData.get().getMinpaypercentage();
 
 		CardDetailsResponse c = new CardDetailsResponse();
 
@@ -72,8 +82,12 @@ public class AccountServiceImpl implements AccountService {
 		c.setTransactorhistory(caccounts.getTransactorhistory());
 
 		c.setName(productName);
-		// c.setDescription(description);
-//		c.setMinpaypercentage(minpaypercentage);
+		c.setDescription(description);
+		c.setMinpaypercentage(minpaypercentage);
+
+		c.setPrimarycard(primarycard);
+		c.setStgeneralCard(stgeneralCardx);
+		c.setExpirydatestatus(expirydatestatus);
 
 		return c;
 	}

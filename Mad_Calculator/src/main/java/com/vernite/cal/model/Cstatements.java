@@ -39,9 +39,9 @@ public class Cstatements {
 	private Long partitionkey;
 //	private Long caccserno;
 	private Long batchserno;
-	private java.sql.Date cycledate;
-	private java.sql.Date prevbillingdate;
-	private java.sql.Date billingdate;
+	private Date cycledate;
+	private Date prevbillingdate;
+	private Date billingdate;
 	private String generatedatetime;
 	private Timestamp lastprintdate;
 	private Long printcount;
@@ -76,11 +76,11 @@ public class Cstatements {
 	private Long overdueage;
 	private Long paymentindicator;
 	private Long currency;
-	private java.sql.Date duedate;
-	private java.sql.Date printduedate;
-	private java.sql.Date overduedate;
-	private java.sql.Date currentoverduedate;
-	private java.sql.Date cureoverduedate;
+	private Date duedate;
+	private Date printduedate;
+	private Date overduedate;
+	private Date currentoverduedate;
+	private Date cureoverduedate;
 	private String stgeneral;
 	private Long collectorcase;
 	private Long coltypeserno;
@@ -843,5 +843,7 @@ public class Cstatements {
 	public void setConverted(Long converted) {
 		this.converted = converted;
 	}
+	
+	
 
 }

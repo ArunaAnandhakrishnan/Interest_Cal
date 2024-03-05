@@ -16,6 +16,10 @@ public class CardDetailsResponse {
 	private String description;
 	private Long minpaypercentage;
 
+	private String stgeneralCard;
+	private Long primarycard;
+	private String expirydatestatus;
+
 	public String getNumberx() {
 		return numberx;
 	}
@@ -62,6 +66,30 @@ public class CardDetailsResponse {
 
 	public void setMinpaypercentage(Long minpaypercentage) {
 		this.minpaypercentage = minpaypercentage;
+	}
+
+	public String getStgeneralCard() {
+		return stgeneralCard;
+	}
+
+	public Long getPrimarycard() {
+		return primarycard;
+	}
+
+	public void setStgeneralCard(String stgeneralCard) {
+		this.stgeneralCard = stgeneralCard;
+	}
+
+	public void setPrimarycard(Long primarycard) {
+		this.primarycard = primarycard;
+	}
+
+	public String getExpirydatestatus() {
+		return expirydatestatus;
+	}
+
+	public void setExpirydatestatus(String expirydatestatus) {
+		this.expirydatestatus = expirydatestatus;
 	}
 
 }

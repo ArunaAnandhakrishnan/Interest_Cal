@@ -9,7 +9,7 @@ public class TransactionDetailsDto {
 	private String i048_text_data;
 	private BigDecimal i004_amt_trxn;
 	private BigDecimal i006_amt_bill;
-
+	
 	private BigDecimal outstandingamount;
 	private Long minpaypercentage;
 

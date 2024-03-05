@@ -2,8 +2,10 @@ package com.vernite.cal.controller;
 
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -40,7 +42,7 @@ public class AccountController {
 	}
 
 	@GetMapping("/statement")
-	public StatementResponse getState(@RequestParam("cycleDate") String cycleDate) throws ParseException {
+	public StatementResponse getState(@RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate) throws ParseException {
 		StatementResponse details = statementServiceImpl.getStatementDetails(cycleDate);
 		return details;
 	}

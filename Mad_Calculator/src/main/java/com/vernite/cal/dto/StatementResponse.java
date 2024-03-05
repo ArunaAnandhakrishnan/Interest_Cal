@@ -12,6 +12,7 @@ public class StatementResponse {
 	private Date duedate;
 	private Long mindueamount;
 	private Long closingbalance;
+	private Long openingbalance;
 
 	public BigDecimal getTotaldebits() {
 		return totaldebits;
@@ -67,6 +68,14 @@ public class StatementResponse {
 
 	public void setClosingbalance(Long closingbalance) {
 		this.closingbalance = closingbalance;
+	}
+
+	public Long getOpeningbalance() {
+		return openingbalance;
+	}
+
+	public void setOpeningbalance(Long openingbalance) {
+		this.openingbalance = openingbalance;
 	}
 
 }
