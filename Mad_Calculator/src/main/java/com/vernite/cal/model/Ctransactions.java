@@ -100,19 +100,19 @@ public class Ctransactions {
 	@Column( length = 6)
 	private String i003ProcCode;
 
-	@Column
+	@Column(precision = 16, scale = 3)
 	private BigDecimal i004AmtTrxn;
 
-	@Column
+	@Column(precision = 16, scale = 3)
 	private BigDecimal i005AmtSettle;
 
-	@Column
+	@Column(precision = 16, scale = 3)
 	private BigDecimal i006AmtBill;
 
 	@Column
 	private Date i007LoadDate;
 
-	@Column
+	@Column(precision = 16, scale = 3)
 	private BigDecimal i008BillingFee;
 
 	@Column
@@ -139,22 +139,22 @@ public class Ctransactions {
 	@Column(precision = 16, scale = 3)
 	private BigDecimal centeramount;
 
-	@Column
+	@Column(length = 3)
 	private Long instalmenttype;
 
-	@Column
+	@Column(length = 5)
 	private Long instalmentindepflag;
 
-	@Column
+	@Column(length = 3)
 	private Long instalmentsnumber;
 
-	@Column
+	@Column(length = 5)
 	private Long instalmentseq;
 
-	@Column
+	@Column(length = 5)
 	private Long instalmentrepaymenttype;
 
-	@Column
+	@Column(length = 5)
 	private Long instalmentoffset;
 
 	@Column(precision = 16, scale = 3)
@@ -163,7 +163,7 @@ public class Ctransactions {
 	@Column(precision = 16, scale = 3)
 	private BigDecimal instalmenttotalamount;
 
-	@Column
+	@Column(length = 5)
 	private Long instalmentplanserno;
 
 	@Column
@@ -172,7 +172,7 @@ public class Ctransactions {
 	@Column
 	private Long instalmentserno;
 
-	@Column
+	@Column(length = 10)
 	private Long instalmentpartitionkey;
 
 	@Column(precision = 16, scale = 3)
@@ -184,16 +184,16 @@ public class Ctransactions {
 	@Column(length = 5)
 	private String instalmentpostindicator;
 
-	@Column
+	@Column(precision = 16, scale = 3)
 	private Long mbhagreementserno;
 
 	@Column(length = 25)
 	private String consolidationkey;
 
-	@Column
+	@Column(length = 10)
 	private Long ofstmtorinvoiceserno;
 
-	@Column
+	@Column(length = 10)
 	private Long ofstmtorinvoicepartitionkey;
 
 	@Column
@@ -211,16 +211,16 @@ public class Ctransactions {
 	@Column(length = 1)
 	private String ofrectype;
 
-	@Column
+	@Column(length = 10)
 	private Long oftrxntype;
 
-	@Column
+	@Column(length = 10)
 	private Long rewardsflag;
 
 	@Column(length = 20)
 	private String rewardbalancereasoncode;
 
-	@Column
+	@Column(length = 5)
 	private Long singleMsgFlag;
 
 	@Column(length = 1)
@@ -256,7 +256,7 @@ public class Ctransactions {
 	@Column(precision = 32, scale = 16)
 	private BigDecimal totalrebates;
 
-	@Column
+	@Column(length = 5)
 	private Long taxflag;
 
 	@Column(precision = 16, scale = 3)
@@ -292,7 +292,7 @@ public class Ctransactions {
 	@Column(length = 11)
 	private String logaction;
 
-	@Column
+	@Column(length = 1)
 	private Long recalculated;
 
 	@Column(precision = 26, scale = 2)

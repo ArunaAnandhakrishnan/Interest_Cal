@@ -66,12 +66,17 @@ public class AccountServiceImpl implements AccountService {
 		Products productsClass = byCard.getProducts();
 		Long sernoProduct = productsClass.getSerno();
 
+		//get discription
 		Optional<Products> productDatas = productsRepository.findById(sernoProduct);
-		String description = productDatas.get().getDescription();
+		//String description = productDatas.get().getDescription();
 
 		Optional<Mprofileacct> mprofilesAcctData = mprofileAcctRepository.findByProducts(productDatas);
 
 		Profiles profiles = mprofilesAcctData.get().getProfiles();
+		
+		Optional<Profiles> profilesData = profilesRepository.findById(profiles.getSerno());
+		String description = profilesData.get().getDescription();
+		
 		Optional<Cstmtsettings> cstmtSettingsData = cstatementSettingsRepository.findByProfiles(profiles);
 		Long minpaypercentage = cstmtSettingsData.get().getMinpaypercentage();
 
@@ -81,6 +86,7 @@ public class AccountServiceImpl implements AccountService {
 		c.setStgeneral(caccounts.getStgeneral());
 		c.setTransactorhistory(caccounts.getTransactorhistory());
 
+		
 		c.setName(productName);
 		c.setDescription(description);
 		c.setMinpaypercentage(minpaypercentage);
