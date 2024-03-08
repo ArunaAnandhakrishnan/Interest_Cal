@@ -184,8 +184,8 @@ public class Ctransactions {
 	@Column(length = 5)
 	private String instalmentpostindicator;
 
-	@Column(precision = 16, scale = 3)
-	private Long mbhagreementserno;
+	@Column
+	private Integer mbhagreementserno;
 
 	@Column(length = 25)
 	private String consolidationkey;
@@ -518,7 +518,7 @@ public class Ctransactions {
 		return instalmentpostindicator;
 	}
 
-	public Long getMbhagreementserno() {
+	public Integer getMbhagreementserno() {
 		return mbhagreementserno;
 	}
 
@@ -890,7 +890,7 @@ public class Ctransactions {
 		this.instalmentpostindicator = instalmentpostindicator;
 	}
 
-	public void setMbhagreementserno(Long mbhagreementserno) {
+	public void setMbhagreementserno(Integer mbhagreementserno) {
 		this.mbhagreementserno = mbhagreementserno;
 	}
 

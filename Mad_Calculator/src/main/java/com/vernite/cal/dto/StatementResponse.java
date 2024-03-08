@@ -5,16 +5,16 @@ import java.util.Date;
 
 public class StatementResponse {
 
-	private BigDecimal totaldebits;
+	private Long totaldebits;
 	private Long totalcredits;
-	private BigDecimal overdueamount;
+	private Long overdueamount;
 	private Date printduedate;
 	private Date duedate;
 	private Long mindueamount;
 	private Long closingbalance;
 	private Long openingbalance;
 
-	public BigDecimal getTotaldebits() {
+	public Long getTotaldebits() {
 		return totaldebits;
 	}
 
@@ -22,7 +22,7 @@ public class StatementResponse {
 		return totalcredits;
 	}
 
-	public BigDecimal getOverdueamount() {
+	public Long getOverdueamount() {
 		return overdueamount;
 	}
 
@@ -42,7 +42,7 @@ public class StatementResponse {
 		return closingbalance;
 	}
 
-	public void setTotaldebits(BigDecimal totaldebits) {
+	public void setTotaldebits(Long totaldebits) {
 		this.totaldebits = totaldebits;
 	}
 
@@ -50,7 +50,7 @@ public class StatementResponse {
 		this.totalcredits = totalcredits;
 	}
 
-	public void setOverdueamount(BigDecimal overdueamount) {
+	public void setOverdueamount(Long overdueamount) {
 		this.overdueamount = overdueamount;
 	}
 

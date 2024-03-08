@@ -50,12 +50,12 @@ public class Cstatements {
 	private Long averagedailybalance;
 	private Long paidinfullbalance;
 	private Long mindueamount;
-	private BigDecimal overdueamount;
+	private Long overdueamount;
 	private Long wishtopay;
 	private Long mindueamountwaived;
 	private Long cycleactivity;
 	private Long totalcredits;
-	private BigDecimal totaldebits;
+	private Long totaldebits;
 	private Long totalpayments;
 	private Long totalcreditsbyduedate;
 	private Long totalinterest;
@@ -75,7 +75,7 @@ public class Cstatements {
 	private Long overduecycles;
 	private Long overdueage;
 	private Long paymentindicator;
-	private Long currency;
+	private String currency;
 	private Date duedate;
 	private Date printduedate;
 	private Date overduedate;
@@ -87,7 +87,7 @@ public class Cstatements {
 	private Long repaymentplanserno;
 	private Long repaymentplanpartitionkey;
 	private Long repaymentplancycle;
-	private Long mbhagreementserno;
+	private Integer mbhagreementserno;
 	private Timestamp mbhagreementexpirydate;
 	private Long aprbalance;
 	private Long aprpastdue;
@@ -192,7 +192,7 @@ public class Cstatements {
 		return mindueamount;
 	}
 
-	public BigDecimal getOverdueamount() {
+	public Long getOverdueamount() {
 		return overdueamount;
 	}
 
@@ -212,7 +212,7 @@ public class Cstatements {
 		return totalcredits;
 	}
 
-	public BigDecimal getTotaldebits() {
+	public Long getTotaldebits() {
 		return totaldebits;
 	}
 
@@ -292,7 +292,7 @@ public class Cstatements {
 		return paymentindicator;
 	}
 
-	public Long getCurrency() {
+	public String getCurrency() {
 		return currency;
 	}
 
@@ -340,7 +340,7 @@ public class Cstatements {
 		return repaymentplancycle;
 	}
 
-	public Long getMbhagreementserno() {
+	public Integer getMbhagreementserno() {
 		return mbhagreementserno;
 	}
 
@@ -552,7 +552,7 @@ public class Cstatements {
 		this.mindueamount = mindueamount;
 	}
 
-	public void setOverdueamount(BigDecimal overdueamount) {
+	public void setOverdueamount(Long overdueamount) {
 		this.overdueamount = overdueamount;
 	}
 
@@ -572,7 +572,7 @@ public class Cstatements {
 		this.totalcredits = totalcredits;
 	}
 
-	public void setTotaldebits(BigDecimal totaldebits) {
+	public void setTotaldebits(Long totaldebits) {
 		this.totaldebits = totaldebits;
 	}
 
@@ -652,7 +652,7 @@ public class Cstatements {
 		this.paymentindicator = paymentindicator;
 	}
 
-	public void setCurrency(Long currency) {
+	public void setCurrency(String currency) {
 		this.currency = currency;
 	}
 
@@ -700,7 +700,7 @@ public class Cstatements {
 		this.repaymentplancycle = repaymentplancycle;
 	}
 
-	public void setMbhagreementserno(Long mbhagreementserno) {
+	public void setMbhagreementserno(Integer mbhagreementserno) {
 		this.mbhagreementserno = mbhagreementserno;
 	}
 
