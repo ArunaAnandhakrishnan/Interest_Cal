@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vernite.cal.dto.StatementResponse;
+import com.vernite.cal.model.Caccounts;
+import com.vernite.cal.model.Cardx;
 import com.vernite.cal.model.Cstatements;
+import com.vernite.cal.repository.CardxRepository;
 import com.vernite.cal.repository.CstatementsRepositoty;
 
 @Service
@@ -17,10 +20,14 @@ public class StatementServiceImpl {
 
 	@Autowired
 	private CstatementsRepositoty cstatementsRepositoty;
+	@Autowired
+	private CardxRepository cardxRepository;
 
-	public StatementResponse getStatementDetails(Date cycleDate) throws ParseException {
-
-		Optional<Cstatements> byCycledate = cstatementsRepositoty.findByCycledate(cycleDate);
+	public StatementResponse getStatementDetails(String cardNumber, Date cycleDate) throws ParseException {
+		
+		Cardx byCard = cardxRepository.findByNumberx(cardNumber);
+		Caccounts caccounts = byCard.getCaccounts();
+		Optional<Cstatements> byCycledate = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate, byCard.getCaccounts());
 
 		byCycledate.get().getTotalcredits();
 		byCycledate.get().getTotaldebits();

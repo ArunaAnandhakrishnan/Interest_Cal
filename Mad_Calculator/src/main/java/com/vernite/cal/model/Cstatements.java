@@ -1,7 +1,6 @@
 package com.vernite.cal.model;
 
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;

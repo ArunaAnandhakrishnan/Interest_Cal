@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.jsontype.impl.MinimalClassNameIdResolver;
 import com.vernite.cal.dto.TransactionDetailsDto;
 import com.vernite.cal.model.Caccounts;
 import com.vernite.cal.model.Cstatements;
@@ -73,8 +74,27 @@ public class TransactionServiceImpl {
 
 	public TransactionDetailsDto getTransactionByDate(Date cycleDate) {
 
+		Optional<Cstatements> cycledates = cstatementsRepositoty.findByCycledate(cycleDate);
+		
+		Optional<Tbalances> byId = tbalancesRepository.findById(cycledates.get().getSerno());
+		Long minpaypercentage = byId.get().getMinpaypercentage();
+		System.out.println(minpaypercentage);
+		
+
+//		Long overDueAmount = cycledates.get().getOverdueamount();
+//		System.out.println(overDueAmount);
 		
 		
+		
+
+//		Optional<Ctransactions> transactionData = ctransactionsRepository.findById(statementSerno);
+//		String i000MsgType = transactionData.get().getI000MsgType();
+//		System.out.println(i000MsgType);
+
+//		Optional<Tbalances> balanceData = tbalancesRepository.findById(statementSerno);
+//		BigDecimal outstandingamount = balanceData.get().getOutstandingamount();
+//		System.out.println(outstandingamount);
+
 		TransactionDetailsDto transactionDetails = new TransactionDetailsDto();
 
 		return transactionDetails;

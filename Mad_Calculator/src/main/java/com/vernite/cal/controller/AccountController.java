@@ -2,7 +2,11 @@ package com.vernite.cal.controller;
 
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -35,20 +39,23 @@ public class AccountController {
 	private TransactionServiceImpl transactionServiceImpl;
 
 	@GetMapping("/card/{numberx}")
-	public ResponseEntity<CardDetailsResponse> fetchCardDetails(@PathVariable String numberx) {
+	public ResponseEntity<CardDetailsResponse> fetchCardDetails(@PathVariable String numberx) throws ParseException {
 		CardDetailsResponse response = accountServiceImpl.getCardDeatils(numberx);
+		System.out.println(response.getCycleDate());
 		return new ResponseEntity<CardDetailsResponse>(response, HttpStatus.OK);
 
 	}
 
-	@GetMapping("/statement")
-	public StatementResponse getState(@RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate) throws ParseException {
-		StatementResponse details = statementServiceImpl.getStatementDetails(cycleDate);
+	@GetMapping("/statement/{numberx}")
+	public StatementResponse getState(@PathVariable String numberx, @RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate)
+			throws ParseException {
+		StatementResponse details = statementServiceImpl.getStatementDetails(numberx,cycleDate);
 		return details;
 	}
 
 	@GetMapping("/transaction")
-	public ResponseEntity<TransactionDetailsDto> getTransaction(@RequestParam("date") @DateTimeFormat(pattern = "dd-MM-yyyy") Date date) throws SQLException {
+	public ResponseEntity<TransactionDetailsDto> getTransaction(
+			@RequestParam("date") @DateTimeFormat(pattern = "dd-MM-yyyy") Date date) throws SQLException {
 		TransactionDetailsDto detailsDto = transactionServiceImpl.getTransactionByDate(date);
 		return new ResponseEntity<TransactionDetailsDto>(detailsDto, HttpStatus.OK);
 
