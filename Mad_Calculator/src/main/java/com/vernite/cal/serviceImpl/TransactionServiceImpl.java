@@ -80,6 +80,8 @@ public class TransactionServiceImpl {
 		Long minpaypercentage = byId.get().getMinpaypercentage();
 		System.out.println(minpaypercentage);
 		
+		
+		
 
 //		Long overDueAmount = cycledates.get().getOverdueamount();
 //		System.out.println(overDueAmount);

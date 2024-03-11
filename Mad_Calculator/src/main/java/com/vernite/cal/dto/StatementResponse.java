@@ -7,12 +7,23 @@ public class StatementResponse {
 	private Long totaldebits;
 	private Long totalcredits;
 	private Long overdueamount;
-	private Date printduedate;
-	private Date duedate;
+
+//	private Date printduedate;
+	private String printduedate;
+//	private Date duedate;
+	private String duedate;
 	private Long mindueamount;
 	private Long closingbalance;
 	private Long openingbalance;
 	private Long overduecycles;
+
+	public String getPrintduedate() {
+		return printduedate;
+	}
+
+	public void setPrintduedate(String printduedate) {
+		this.printduedate = printduedate;
+	}
 
 	public Long getOverduecycles() {
 		return overduecycles;
@@ -32,14 +43,6 @@ public class StatementResponse {
 
 	public Long getOverdueamount() {
 		return overdueamount;
-	}
-
-	public Date getPrintduedate() {
-		return printduedate;
-	}
-
-	public Date getDuedate() {
-		return duedate;
 	}
 
 	public Long getMindueamount() {
@@ -62,14 +65,6 @@ public class StatementResponse {
 		this.overdueamount = overdueamount;
 	}
 
-	public void setPrintduedate(Date printduedate) {
-		this.printduedate = printduedate;
-	}
-
-	public void setDuedate(Date duedate) {
-		this.duedate = duedate;
-	}
-
 	public void setMindueamount(Long mindueamount) {
 		this.mindueamount = mindueamount;
 	}
@@ -84,6 +79,14 @@ public class StatementResponse {
 
 	public void setOpeningbalance(Long openingbalance) {
 		this.openingbalance = openingbalance;
+	}
+
+	public String getDuedate() {
+		return duedate;
+	}
+
+	public void setDuedate(String duedate) {
+		this.duedate = duedate;
 	}
 
 }

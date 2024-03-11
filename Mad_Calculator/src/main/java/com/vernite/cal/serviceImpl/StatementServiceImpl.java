@@ -24,36 +24,56 @@ public class StatementServiceImpl {
 	private CardxRepository cardxRepository;
 
 	public StatementResponse getStatementDetails(String cardNumber, Date cycleDate) throws ParseException {
-		
+
 		Cardx byCard = cardxRepository.findByNumberx(cardNumber);
 		Caccounts caccounts = byCard.getCaccounts();
-		Optional<Cstatements> byCycledate = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate, byCard.getCaccounts());
+		Optional<Cstatements> byCycledate = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate,
+				byCard.getCaccounts());
 
 		byCycledate.get().getTotalcredits();
 		byCycledate.get().getTotaldebits();
 		byCycledate.get().getOverdueamount();
-		byCycledate.get().getPrintduedate();
+
+		Date printduedate = byCycledate.get().getPrintduedate();
+
+		String printDueDate = convertDateOne(printduedate);
+
 		byCycledate.get().getMindueamount();
 		byCycledate.get().getClosingbalance();
-		byCycledate.get().getDuedate();
+		Date duedate = byCycledate.get().getDuedate();
+
+		String dueDate = convertDateTwo(duedate);
+
 		byCycledate.get().getOpeningbalance();
 		byCycledate.get().getOverduecycles();
-		
 
 		StatementResponse st = new StatementResponse();
-		
+
 		st.setTotalcredits(byCycledate.get().getTotalcredits());
 		st.setTotaldebits(byCycledate.get().getTotaldebits());
 		st.setOverdueamount(byCycledate.get().getOverdueamount());
-		st.setPrintduedate(byCycledate.get().getPrintduedate());
+		// st.setPrintduedate(byCycledate.get().getPrintduedate());
+
+		st.setPrintduedate(printDueDate);
 		st.setMindueamount(byCycledate.get().getMindueamount());
 		st.setClosingbalance(byCycledate.get().getClosingbalance());
-		st.setDuedate(byCycledate.get().getDuedate());
+
+		// st.setDuedate(byCycledate.get().getDuedate());
+		st.setDuedate(dueDate);
 		st.setOpeningbalance(byCycledate.get().getOpeningbalance());
 		st.setOverduecycles(byCycledate.get().getOverduecycles());
-		
 
 		return st;
+	}
+
+	public static String convertDateOne(Date inputDate) throws ParseException {
+		SimpleDateFormat outputDateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		return outputDateFormat.format(inputDate);
+	}
+
+	public static String convertDateTwo(Date inputDate) throws ParseException {
+		SimpleDateFormat outputDateFormat = new SimpleDateFormat("MM-dd-yyyy");
+		return outputDateFormat.format(inputDate);
 	}
 
 	public Cstatements getStatementByNumberx(Long numberx) {
