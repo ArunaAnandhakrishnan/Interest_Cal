@@ -2,6 +2,7 @@ package com.vernite.cal.serviceImpl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class AccountServiceImpl implements AccountService {
 	private CstatementSettingsRepository cstatementSettingsRepository;
 
 	public CardDetailsResponse getCardDeatils(String numberx) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
 		Cardx byCard = cardxRepository.findByNumberx(numberx);
 		Caccounts caccounts = byCard.getCaccounts();
 
@@ -89,12 +90,16 @@ public class AccountServiceImpl implements AccountService {
 		Long minpaypercentage = cstmtSettingsData.get().getMinpaypercentage();
 
 
-		List<String> cycledate = new ArrayList<>();		
+	//	List<String> cycledate = new ArrayList<>();	
+		List<LocalDateTime> cycledate = new ArrayList<>();	
+		
 		List<Cstatements> cstatementsList = caccounts.getCstatementsList();
 		for (Cstatements statements : cstatementsList) {
-//	        LocalDateTime localDateTime = statements.getCycledate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-	        cycledate.add(sdf.format(statements.getCycledate()));
+	        LocalDateTime localDateTime = statements.getCycledate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+	        cycledate.add(localDateTime); 
+	     //  cycledate.add(sdf.format(statements.getCycledate()));
 		}
+		
 		
 		CardDetailsResponse c = new CardDetailsResponse();
 		c.setNumberx(caccounts.getNumberx());
