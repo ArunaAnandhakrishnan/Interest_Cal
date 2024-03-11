@@ -31,13 +31,14 @@ public class StatementServiceImpl {
 
 		byCycledate.get().getTotalcredits();
 		byCycledate.get().getTotaldebits();
-		byCycledate.get().getTotalcredits();
 		byCycledate.get().getOverdueamount();
 		byCycledate.get().getPrintduedate();
 		byCycledate.get().getMindueamount();
 		byCycledate.get().getClosingbalance();
 		byCycledate.get().getDuedate();
 		byCycledate.get().getOpeningbalance();
+		byCycledate.get().getOverduecycles();
+		
 
 		StatementResponse st = new StatementResponse();
 		
@@ -49,6 +50,8 @@ public class StatementServiceImpl {
 		st.setClosingbalance(byCycledate.get().getClosingbalance());
 		st.setDuedate(byCycledate.get().getDuedate());
 		st.setOpeningbalance(byCycledate.get().getOpeningbalance());
+		st.setOverduecycles(byCycledate.get().getOverduecycles());
+		
 
 		return st;
 	}

@@ -1,6 +1,5 @@
 package com.vernite.cal.dto;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 public class StatementResponse {
@@ -13,6 +12,15 @@ public class StatementResponse {
 	private Long mindueamount;
 	private Long closingbalance;
 	private Long openingbalance;
+	private Long overduecycles;
+
+	public Long getOverduecycles() {
+		return overduecycles;
+	}
+
+	public void setOverduecycles(Long overduecycles) {
+		this.overduecycles = overduecycles;
+	}
 
 	public Long getTotaldebits() {
 		return totaldebits;
