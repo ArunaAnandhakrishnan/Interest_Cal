@@ -2,16 +2,22 @@ package com.vernite.cal.serviceImpl;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vernite.cal.dto.TransactionDetailsDto;
+import com.vernite.cal.model.Caccounts;
+import com.vernite.cal.model.Cstatements;
 import com.vernite.cal.model.Ctransactions;
 import com.vernite.cal.model.Tbalances;
 import com.vernite.cal.model.Trxntypes;
+import com.vernite.cal.repository.AccountRepository;
+import com.vernite.cal.repository.CstatementsRepositoty;
 import com.vernite.cal.repository.CtransactionsRepository;
 import com.vernite.cal.repository.TbalancesRepository;
 import com.vernite.cal.repository.TrxntypesRepository;
@@ -27,6 +33,12 @@ public class TransactionServiceImpl {
 
 	@Autowired
 	private TrxntypesRepository trxntypesRepository;
+
+	@Autowired
+	private CstatementsRepositoty cstatementsRepositoty;
+
+	@Autowired
+	private AccountRepository accountRepository;
 
 	public TransactionDetailsDto getTransactionDetails(Long serno) throws SQLException {
 
@@ -56,6 +68,16 @@ public class TransactionServiceImpl {
 		dto.setRectype(rectype);
 
 		return dto;
+
+	}
+
+	public TransactionDetailsDto getTransactionByDate(Date cycleDate) {
+
+		
+		
+		TransactionDetailsDto transactionDetails = new TransactionDetailsDto();
+
+		return transactionDetails;
 
 	}
 }

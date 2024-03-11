@@ -1,5 +1,8 @@
 package com.vernite.cal.serviceImpl;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.vernite.cal.dto.CardDetailsResponse;
 import com.vernite.cal.model.Caccounts;
 import com.vernite.cal.model.Cardx;
+import com.vernite.cal.model.Cstatements;
 import com.vernite.cal.model.Cstmtsettings;
 import com.vernite.cal.model.Mprofileacct;
 import com.vernite.cal.model.Products;
@@ -66,31 +70,35 @@ public class AccountServiceImpl implements AccountService {
 		Products productsClass = byCard.getProducts();
 		Long sernoProduct = productsClass.getSerno();
 
-		//get discription
+		// get discription
 		Optional<Products> productDatas = productsRepository.findById(sernoProduct);
-		//String description = productDatas.get().getDescription();
+		// String description = productDatas.get().getDescription();
 
 		Optional<Mprofileacct> mprofilesAcctData = mprofileAcctRepository.findByProducts(productDatas);
 
 		Profiles profiles = mprofilesAcctData.get().getProfiles();
-		
+
 		Optional<Profiles> profilesData = profilesRepository.findById(profiles.getSerno());
 		String description = profilesData.get().getDescription();
-		
+
 		Optional<Cstmtsettings> cstmtSettingsData = cstatementSettingsRepository.findByProfiles(profiles);
 		Long minpaypercentage = cstmtSettingsData.get().getMinpaypercentage();
 
-		CardDetailsResponse c = new CardDetailsResponse();
 
+		List<Date> cycledate = new ArrayList<>();		
+		List<Cstatements> cstatementsList = caccounts.getCstatementsList();
+		for (Cstatements statements : cstatementsList) {
+			cycledate.add(statements.getCycledate());	 
+		}
+		
+		CardDetailsResponse c = new CardDetailsResponse();
 		c.setNumberx(caccounts.getNumberx());
 		c.setStgeneral(caccounts.getStgeneral());
 		c.setTransactorhistory(caccounts.getTransactorhistory());
-
-		
+		c.setCycleDate(cycledate);
 		c.setName(productName);
 		c.setDescription(description);
 		c.setMinpaypercentage(minpaypercentage);
-
 		c.setPrimarycard(primarycard);
 		c.setStgeneralCard(stgeneralCardx);
 		c.setExpirydatestatus(expirydatestatus);

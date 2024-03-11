@@ -1,8 +1,10 @@
 package com.vernite.cal.dto;
 
+import java.util.Date;
 import java.util.List;
 
 import com.vernite.cal.model.Caccounts;
+import com.vernite.cal.model.Cstatements;
 import com.vernite.cal.model.Cstmtsettings;
 import com.vernite.cal.model.Products;
 import com.vernite.cal.model.Profiles;
@@ -19,6 +21,8 @@ public class CardDetailsResponse {
 	private String stgeneralCard;
 	private Long primarycard;
 	private String expirydatestatus;
+
+	private List<Date> cycleDate;
 
 	public String getNumberx() {
 		return numberx;
@@ -90,6 +94,14 @@ public class CardDetailsResponse {
 
 	public void setExpirydatestatus(String expirydatestatus) {
 		this.expirydatestatus = expirydatestatus;
+	}
+
+	public List<Date> getCycleDate() {
+		return cycleDate;
+	}
+
+	public void setCycleDate(List<Date> cycleDate) {
+		this.cycleDate = cycleDate;
 	}
 
 }

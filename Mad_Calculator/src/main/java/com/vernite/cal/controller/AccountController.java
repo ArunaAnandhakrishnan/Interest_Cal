@@ -47,9 +47,9 @@ public class AccountController {
 		return details;
 	}
 
-	@GetMapping("/transaction/{serno}")
-	public ResponseEntity<TransactionDetailsDto> getTransaction(@PathVariable Long serno) throws SQLException {
-		TransactionDetailsDto detailsDto = transactionServiceImpl.getTransactionDetails(serno);
+	@GetMapping("/transaction")
+	public ResponseEntity<TransactionDetailsDto> getTransaction(@RequestParam("date") @DateTimeFormat(pattern = "dd-MM-yyyy") Date date) throws SQLException {
+		TransactionDetailsDto detailsDto = transactionServiceImpl.getTransactionByDate(date);
 		return new ResponseEntity<TransactionDetailsDto>(detailsDto, HttpStatus.OK);
 
 	}
