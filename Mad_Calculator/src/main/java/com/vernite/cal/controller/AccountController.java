@@ -47,7 +47,7 @@ public class AccountController {
 	}
 
 	@GetMapping("/statement/{numberx}")
-	public StatementResponse getState(@PathVariable String numberx, @RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate)
+	public StatementResponse getState(@PathVariable String numberx, @RequestParam("cycleDate") @DateTimeFormat(pattern = "MM-dd-yyyy") Date cycleDate)
 			throws ParseException {
 		StatementResponse details = statementServiceImpl.getStatementDetails(numberx,cycleDate);
 		return details;

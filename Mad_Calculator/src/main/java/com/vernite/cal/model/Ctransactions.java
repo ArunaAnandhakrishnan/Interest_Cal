@@ -86,46 +86,46 @@ public class Ctransactions {
 	@Column
 	private String origMsgType;
 
-	@Column
+	@Column(name = "I000_MSG_TYPE")
 	private String i000MsgType;
 
-	@Column
+	@Column(name = "I002_NUMBER")
 	private String i002Number;
 
-	@Column
+	@Column(name = "I003_PROC_CODE")
 	private String i003ProcCode;
 
-	@Column
-	private Double i004AmtTrxn;
+	@Column(name = "I004_AMT_TRXN")
+	private BigDecimal i004AmtTrxn;
 
-	@Column
-	private Double i005AmtSettle;
+	@Column(name = "I005_AMT_SETTLE")
+	private BigDecimal i005AmtSettle;
 
-	@Column
-	private Double i006AmtBill;
+	@Column(name = "I006_AMT_BILL")
+	private BigDecimal i006AmtBill;
 
-	@Column
+	@Column(name = "I007_LOAD_DATE")
 	private Date i007LoadDate;
 
 	@Column(name = "I008_BILLING_FEE")
-	private Float i008BillingFee;
+	private BigDecimal i008BillingFee;
 
-	@Column
+	@Column(name = "i013_TRXN_DATE")
 	private Date i013TrxnDate;
 
-	@Column
+	@Column(name = "I044_REASON_CODE")
 	private String i044ReasonCode;
 
-	@Column
+	@Column(name = "I048_TEXT_DATA")
 	private String i048TextData;
 
-	@Column
+	@Column(name = "I049_CUR_TRXN")
 	private String i049CurTrxn;
 
-	@Column
+	@Column(name = "I050_CUR_SETTLE")
 	private String i050CurSettle;
 
-	@Column
+	@Column(name = "I051_CUR_BILL")
 	private String i051CurBill;
 
 	@Column
@@ -493,44 +493,12 @@ public class Ctransactions {
 		this.i003ProcCode = i003ProcCode;
 	}
 
-	public Double getI004AmtTrxn() {
-		return i004AmtTrxn;
-	}
-
-	public void setI004AmtTrxn(Double i004AmtTrxn) {
-		this.i004AmtTrxn = i004AmtTrxn;
-	}
-
-	public Double getI005AmtSettle() {
-		return i005AmtSettle;
-	}
-
-	public void setI005AmtSettle(Double i005AmtSettle) {
-		this.i005AmtSettle = i005AmtSettle;
-	}
-
-	public Double getI006AmtBill() {
-		return i006AmtBill;
-	}
-
-	public void setI006AmtBill(Double i006AmtBill) {
-		this.i006AmtBill = i006AmtBill;
-	}
-
 	public Date getI007LoadDate() {
 		return i007LoadDate;
 	}
 
 	public void setI007LoadDate(Date i007LoadDate) {
 		this.i007LoadDate = i007LoadDate;
-	}
-
-	public Float getI008BillingFee() {
-		return i008BillingFee;
-	}
-
-	public void setI008BillingFee(Float i008BillingFee) {
-		this.i008BillingFee = i008BillingFee;
 	}
 
 	public Date getI013TrxnDate() {
@@ -1020,4 +988,37 @@ public class Ctransactions {
 	public void setConverted(Double converted) {
 		this.converted = converted;
 	}
+
+	public BigDecimal getI004AmtTrxn() {
+		return i004AmtTrxn;
+	}
+
+	public void setI004AmtTrxn(BigDecimal i004AmtTrxn) {
+		this.i004AmtTrxn = i004AmtTrxn;
+	}
+
+	public BigDecimal getI005AmtSettle() {
+		return i005AmtSettle;
+	}
+
+	public void setI005AmtSettle(BigDecimal i005AmtSettle) {
+		this.i005AmtSettle = i005AmtSettle;
+	}
+
+	public BigDecimal getI006AmtBill() {
+		return i006AmtBill;
+	}
+
+	public void setI006AmtBill(BigDecimal i006AmtBill) {
+		this.i006AmtBill = i006AmtBill;
+	}
+
+	public BigDecimal getI008BillingFee() {
+		return i008BillingFee;
+	}
+
+	public void setI008BillingFee(BigDecimal i008BillingFee) {
+		this.i008BillingFee = i008BillingFee;
+	}
+
 }
