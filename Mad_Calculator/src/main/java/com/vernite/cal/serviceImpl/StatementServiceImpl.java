@@ -46,24 +46,34 @@ public class StatementServiceImpl {
 
 		byCycledate.get().getOpeningbalance();
 		byCycledate.get().getOverduecycles();
-
+		long mad = madCalculation(cardNumber,cycleDate);
 		StatementResponse st = new StatementResponse();
 
 		st.setTotalcredits(byCycledate.get().getTotalcredits());
 		st.setTotaldebits(byCycledate.get().getTotaldebits());
-		st.setOverdueamount(byCycledate.get().getOverdueamount());
+		st.setOverdueamount(Math.abs(byCycledate.get().getOverdueamount()));
 		// st.setPrintduedate(byCycledate.get().getPrintduedate());
 
 		st.setPrintduedate(printDueDate);
-		st.setMindueamount(byCycledate.get().getMindueamount());
-		st.setClosingbalance(byCycledate.get().getClosingbalance());
+		st.setMindueamount(Math.abs(byCycledate.get().getMindueamount()));
+		st.setClosingbalance(Math.abs(byCycledate.get().getClosingbalance()));
 
 		// st.setDuedate(byCycledate.get().getDuedate());
 		st.setDuedate(dueDate);
-		st.setOpeningbalance(byCycledate.get().getOpeningbalance());
+		st.setOpeningbalance(Math.abs(byCycledate.get().getOpeningbalance()));
 		st.setOverduecycles(byCycledate.get().getOverduecycles());
 
 		return st;
+	}
+
+	public long madCalculation(String cardNumber, Date cycleDate ){
+		Cardx byCard = cardxRepository.findByNumberx(cardNumber);
+		Caccounts caccounts = byCard.getCaccounts();
+		Optional<Cstatements> statements = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate, byCard.getCaccounts());
+      if(statements.get().getExcesspaymentamount() <= 0){
+
+	  }
+		return 0;
 	}
 
 	public static String convertDateOne(Date inputDate) throws ParseException {

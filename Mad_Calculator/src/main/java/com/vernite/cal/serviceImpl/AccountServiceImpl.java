@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -88,20 +89,15 @@ public class AccountServiceImpl implements AccountService {
 
 		Optional<Cstmtsettings> cstmtSettingsData = cstatementSettingsRepository.findByProfiles(profiles);
 		Long minpaypercentage = cstmtSettingsData.get().getMinpaypercentage();
-
-
-	//	List<String> cycledate = new ArrayList<>();	
-		List<LocalDate> cycledate = new ArrayList<>();
-		
+		List<String> cycledate = new ArrayList<>();
 		List<Cstatements> cstatementsList = caccounts.getCstatementsList();
+		DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 		for (Cstatements statements : cstatementsList) {
 	        LocalDateTime localDateTime = statements.getCycledate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 			LocalDate localDate = localDateTime.toLocalDate();
-	        cycledate.add(localDate);
-	     //  cycledate.add(sdf.format(statements.getCycledate()));
+			String outputDateStr = outputFormatter.format(localDate);
+			cycledate.add(outputDateStr);
 		}
-		
-		
 		CardDetailsResponse c = new CardDetailsResponse();
 		c.setNumberx(caccounts.getNumberx());
 		c.setStgeneral(caccounts.getStgeneral());

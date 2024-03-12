@@ -24,7 +24,7 @@ public class CardDetailsResponse {
 	private Long primarycard;
 	private String expirydatestatus;
 
-	private List<LocalDate> cycleDate;
+	private List<String> cycleDate;
 
 	public String getNumberx() {
 		return numberx;
@@ -98,11 +98,11 @@ public class CardDetailsResponse {
 		this.expirydatestatus = expirydatestatus;
 	}
 
-	public List<LocalDate> getCycleDate() {
+	public List<String> getCycleDate() {
 		return cycleDate;
 	}
 
-	public void setCycleDate(List<LocalDate> cycleDate) {
+	public void setCycleDate(List<String> cycleDate) {
 		this.cycleDate = cycleDate;
 	}
 

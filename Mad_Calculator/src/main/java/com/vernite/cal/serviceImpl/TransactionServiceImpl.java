@@ -157,20 +157,6 @@ public class TransactionServiceImpl {
 			
 			transactionDetails.add(transactionDetail);
 		}
-		
-		Long minpaypercentage = byId.get().getMinpaypercentage();
-		
-	//	Optional<Ctransactions> transactionInfo = ctransactionsRepository.findByCaccount(caccounts.getSerno());
-	Optional<Ctransactions> transactionInfo = ctransactionsRepository.findByCaccounts(caccounts);
-
-	
-	
-		
-		
-		TransactionDetailsDto transactionDetailsDto = transactionDetails.get(0);
-		System.out.println(transactionDetails);
-		
-		
 		return transactionDetails;
 
 	}

@@ -8,14 +8,14 @@ public class StatementResponse {
 	private Long totalcredits;
 	private Long overdueamount;
 
-//	private Date printduedate;
 	private String printduedate;
-//	private Date duedate;
 	private String duedate;
 	private Long mindueamount;
 	private Long closingbalance;
 	private Long openingbalance;
 	private Long overduecycles;
+
+	private Long mad;
 
 	public String getPrintduedate() {
 		return printduedate;
@@ -89,4 +89,11 @@ public class StatementResponse {
 		this.duedate = duedate;
 	}
 
+	public Long getMad() {
+		return mad;
+	}
+
+	public void setMad(Long mad) {
+		this.mad = mad;
+	}
 }
