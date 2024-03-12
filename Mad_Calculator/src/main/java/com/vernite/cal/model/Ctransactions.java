@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.criteria.CriteriaBuilder;
 
 @Entity
 public class Ctransactions {
@@ -37,9 +38,6 @@ public class Ctransactions {
 	@Column
 	private Long partitionkey;
 
-//	@Column
-//	private Long caccserno;
-
 	@Column
 	private Long cardserno;
 
@@ -47,13 +45,10 @@ public class Ctransactions {
 	private Long defCaccserno;
 
 	@Column
-	private Long product;
+	private Integer product;
 
 	@Column
 	private Long batchserno;
-
-//	@Column
-//	private Long typesernoAlloc;
 
 	@Column
 	private Long typesernoFees;
@@ -94,76 +89,76 @@ public class Ctransactions {
 	@Column
 	private String i000MsgType;
 
-	@Column( length = 25)
+	@Column
 	private String i002Number;
 
-	@Column( length = 6)
+	@Column
 	private String i003ProcCode;
 
-	@Column(precision = 16, scale = 3)
-	private BigDecimal i004AmtTrxn;
+	@Column
+	private Double i004AmtTrxn;
 
-	@Column(precision = 16, scale = 3)
-	private BigDecimal i005AmtSettle;
+	@Column
+	private Double i005AmtSettle;
 
-	@Column(precision = 16, scale = 3)
-	private BigDecimal i006AmtBill;
+	@Column
+	private Double i006AmtBill;
 
 	@Column
 	private Date i007LoadDate;
 
-	@Column(precision = 16, scale = 3)
-	private BigDecimal i008BillingFee;
+	@Column(name = "I008_BILLING_FEE")
+	private Float i008BillingFee;
 
 	@Column
 	private Date i013TrxnDate;
 
-	@Column(length = 4)
+	@Column
 	private String i044ReasonCode;
 
-	@Column(length = 254)
+	@Column
 	private String i048TextData;
 
-	@Column(length = 3)
+	@Column
 	private String i049CurTrxn;
 
-	@Column(length = 3)
+	@Column
 	private String i050CurSettle;
 
-	@Column(length = 3)
+	@Column
 	private String i051CurBill;
 
-	@Column(length = 3)
+	@Column
 	private String centercurrency;
 
-	@Column(precision = 16, scale = 3)
-	private BigDecimal centeramount;
+	@Column
+	private Double centeramount;
 
-	@Column(length = 3)
-	private Long instalmenttype;
+	@Column
+	private Integer instalmenttype;
 
-	@Column(length = 5)
-	private Long instalmentindepflag;
+	@Column
+	private Integer instalmentindepflag;
 
-	@Column(length = 3)
-	private Long instalmentsnumber;
+	@Column
+	private Integer instalmentsnumber;
 
-	@Column(length = 5)
-	private Long instalmentseq;
+	@Column
+	private Integer instalmentseq;
 
-	@Column(length = 5)
-	private Long instalmentrepaymenttype;
+	@Column
+	private Integer instalmentrepaymenttype;
 
-	@Column(length = 5)
-	private Long instalmentoffset;
+	@Column
+	private Integer instalmentoffset;
 
-	@Column(precision = 16, scale = 3)
-	private BigDecimal instalmentorigamount;
+	@Column
+	private Double instalmentorigamount;
 
-	@Column(precision = 16, scale = 3)
-	private BigDecimal instalmenttotalamount;
+	@Column
+	private Double instalmenttotalamount;
 
-	@Column(length = 5)
+	@Column
 	private Long instalmentplanserno;
 
 	@Column
@@ -172,28 +167,28 @@ public class Ctransactions {
 	@Column
 	private Long instalmentserno;
 
-	@Column(length = 10)
+	@Column
 	private Long instalmentpartitionkey;
 
-	@Column(precision = 16, scale = 3)
-	private BigDecimal instalmentamrtprincipalamount;
+	@Column
+	private Double instalmentamrtprincipalamount;
 
 	@Column
-	private Long instalmentpaymentallocation;
+	private Integer instalmentpaymentallocation;
 
-	@Column(length = 5)
+	@Column
 	private String instalmentpostindicator;
 
 	@Column
-	private Integer mbhagreementserno;
+	private Double mbhagreementserno;
 
-	@Column(length = 25)
+	@Column
 	private String consolidationkey;
 
-	@Column(length = 10)
+	@Column
 	private Long ofstmtorinvoiceserno;
 
-	@Column(length = 10)
+	@Column
 	private Long ofstmtorinvoicepartitionkey;
 
 	@Column
@@ -208,47 +203,47 @@ public class Ctransactions {
 	@Column
 	private Date ofoverduestmtdate;
 
-	@Column(length = 1)
+	@Column
 	private String ofrectype;
 
-	@Column(length = 10)
+	@Column
 	private Long oftrxntype;
 
-	@Column(length = 10)
+	@Column
 	private Long rewardsflag;
 
-	@Column(length = 20)
+	@Column
 	private String rewardbalancereasoncode;
 
-	@Column(length = 5)
-	private Long singleMsgFlag;
+	@Column
+	private Integer singleMsgFlag;
 
-	@Column(length = 1)
+	@Column
 	private String authimmediateposting;
 
-	@Column(length = 2)
+	@Column
 	private String authaccounttype;
 
-	@Column(precision = 16, scale = 3)
-	private BigDecimal authamount;
+	@Column
+	private Double authamount;
 
-	@Column(length = 50)
+	@Column
 	private String originator;
 
-	@Column(length = 10)
+	@Column
 	private String originatorreasoncode;
 
-	@Column(length = 25)
+	@Column
 	private String proxycardnumber;
 
-	@Column(length = 25)
+	@Column
 	private String invoicenumber;
 
-	@Column(precision = 16, scale = 3)
-	private BigDecimal amount;
+	@Column
+	private Double amount;
 
-	@Column(precision = 16, scale = 3)
-	private BigDecimal embeddedfee;
+	@Column
+	private Double embeddedfee;
 
 	@Column(precision = 32, scale = 16)
 	private BigDecimal totalpoints;
@@ -256,11 +251,11 @@ public class Ctransactions {
 	@Column(precision = 32, scale = 16)
 	private BigDecimal totalrebates;
 
-	@Column(length = 5)
-	private Long taxflag;
+	@Column
+	private Integer taxflag;
 
-	@Column(precision = 16, scale = 3)
-	private BigDecimal taxbaseamount;
+	@Column
+	private Double taxbaseamount;
 
 	@Column
 	private Date valuedate;
@@ -274,772 +269,755 @@ public class Ctransactions {
 	@Column
 	private Date postdate;
 
-	@Column(length = 26)
+	@Column
 	private String posttimestamp;
 
-	@Column(length = 100)
+	@Column
 	private String textdescription;
 
-	@Column(length = 20)
+	@Column
 	private String fgresolutionstatus;
 
-	@Column(length = 36)
+	@Column
 	private String externaltrxnid;
 
-	@Column(length = 4, nullable = false)
+	@Column
 	private String stgeneral;
 
-	@Column(length = 11)
+	@Column
 	private String logaction;
 
-	@Column(length = 1)
-	private Long recalculated;
+	@Column
+	private Integer recalculated;
 
-	@Column(precision = 26, scale = 2)
-	private BigDecimal converted;
+	@Column
+	private Double converted;
 
 	public Long getSerno() {
 		return serno;
-	}
-
-	public Caccounts getCaccounts() {
-		return caccounts;
-	}
-
-	public Trxntypes getTrxntypes() {
-		return trxntypes;
-	}
-
-	public Cisotrxns getCisotrxns() {
-		return cisotrxns;
-	}
-
-	public Long getInstitutionId() {
-		return institutionId;
-	}
-
-	public Long getPartitionkey() {
-		return partitionkey;
-	}
-
-//	public Long getCaccserno() {
-//		return caccserno;
-//	}
-
-	public Long getCardserno() {
-		return cardserno;
-	}
-
-	public Long getDefCaccserno() {
-		return defCaccserno;
-	}
-
-	public Long getProduct() {
-		return product;
-	}
-
-	public Long getBatchserno() {
-		return batchserno;
-	}
-
-//	public Long getTypesernoAlloc() {
-//		return typesernoAlloc;
-//	}
-
-	public Long getTypesernoFees() {
-		return typesernoFees;
-	}
-
-	public Long getTypesernoReports() {
-		return typesernoReports;
-	}
-
-	public Long getTypesernoRewards() {
-		return typesernoRewards;
-	}
-
-	public Long getTypesernoGledger() {
-		return typesernoGledger;
-	}
-
-	public Long getTypesernoDivert() {
-		return typesernoDivert;
-	}
-
-	public Long getTypesernoNopost() {
-		return typesernoNopost;
-	}
-
-	public Long getTypesernoProbe() {
-		return typesernoProbe;
-	}
-
-	public Long getTypesernoText() {
-		return typesernoText;
-	}
-
-	public Long getMsgclass() {
-		return msgclass;
-	}
-
-	public Long getMsgtype() {
-		return msgtype;
-	}
-
-	public Long getTrxntype() {
-		return trxntype;
-	}
-
-	public String getOrigMsgType() {
-		return origMsgType;
-	}
-
-	public String getI000MsgType() {
-		return i000MsgType;
-	}
-
-	public String getI002Number() {
-		return i002Number;
-	}
-
-	public String getI003ProcCode() {
-		return i003ProcCode;
-	}
-
-	public BigDecimal getI004AmtTrxn() {
-		return i004AmtTrxn;
-	}
-
-	public BigDecimal getI005AmtSettle() {
-		return i005AmtSettle;
-	}
-
-	public BigDecimal getI006AmtBill() {
-		return i006AmtBill;
-	}
-
-	public Date getI007LoadDate() {
-		return i007LoadDate;
-	}
-
-	public BigDecimal getI008BillingFee() {
-		return i008BillingFee;
-	}
-
-	public Date getI013TrxnDate() {
-		return i013TrxnDate;
-	}
-
-	public String getI044ReasonCode() {
-		return i044ReasonCode;
-	}
-
-	public String getI048TextData() {
-		return i048TextData;
-	}
-
-	public String getI049CurTrxn() {
-		return i049CurTrxn;
-	}
-
-	public String getI050CurSettle() {
-		return i050CurSettle;
-	}
-
-	public String getI051CurBill() {
-		return i051CurBill;
-	}
-
-	public String getCentercurrency() {
-		return centercurrency;
-	}
-
-	public BigDecimal get() {
-		return centeramount;
-	}
-
-	public Long getInstalmenttype() {
-		return instalmenttype;
-	}
-
-	public Long getInstalmentindepflag() {
-		return instalmentindepflag;
-	}
-
-	public Long getInstalmentsnumber() {
-		return instalmentsnumber;
-	}
-
-	public Long getInstalmentseq() {
-		return instalmentseq;
-	}
-
-	public Long getInstalmentrepaymenttype() {
-		return instalmentrepaymenttype;
-	}
-
-	public Long getInstalmentoffset() {
-		return instalmentoffset;
-	}
-
-	public BigDecimal getInstalmentorigamount() {
-		return instalmentorigamount;
-	}
-
-	public BigDecimal getInstalmenttotalamount() {
-		return instalmenttotalamount;
-	}
-
-	public Long getInstalmentplanserno() {
-		return instalmentplanserno;
-	}
-
-	public Date getInstalmentinterestanchordate() {
-		return instalmentinterestanchordate;
-	}
-
-	public Long getInstalmentserno() {
-		return instalmentserno;
-	}
-
-	public Long getInstalmentpartitionkey() {
-		return instalmentpartitionkey;
-	}
-
-	public BigDecimal getInstalmentamrtprincipalamount() {
-		return instalmentamrtprincipalamount;
-	}
-
-	public Long getInstalmentpaymentallocation() {
-		return instalmentpaymentallocation;
-	}
-
-	public String getInstalmentpostindicator() {
-		return instalmentpostindicator;
-	}
-
-	public Integer getMbhagreementserno() {
-		return mbhagreementserno;
-	}
-
-	public String getConsolidationkey() {
-		return consolidationkey;
-	}
-
-	public Long getOfstmtorinvoiceserno() {
-		return ofstmtorinvoiceserno;
-	}
-
-	public Long getOfstmtorinvoicepartitionkey() {
-		return ofstmtorinvoicepartitionkey;
-	}
-
-	public Date getOfstmtdate() {
-		return ofstmtdate;
-	}
-
-	public Date getOfprintduedate() {
-		return ofprintduedate;
-	}
-
-	public Date getOfduedate() {
-		return ofduedate;
-	}
-
-	public Date getOfoverduestmtdate() {
-		return ofoverduestmtdate;
-	}
-
-	public String getOfrectype() {
-		return ofrectype;
-	}
-
-	public Long getOftrxntype() {
-		return oftrxntype;
-	}
-
-	public Long getRewardsflag() {
-		return rewardsflag;
-	}
-
-	public String getRewardbalancereasoncode() {
-		return rewardbalancereasoncode;
-	}
-
-	public Long getSingleMsgFlag() {
-		return singleMsgFlag;
-	}
-
-	public String getAuthimmediateposting() {
-		return authimmediateposting;
-	}
-
-	public String getAuthaccounttype() {
-		return authaccounttype;
-	}
-
-	public BigDecimal getAuthamount() {
-		return authamount;
-	}
-
-	public String getOriginator() {
-		return originator;
-	}
-
-	public String getOriginatorreasoncode() {
-		return originatorreasoncode;
-	}
-
-	public String getProxycardnumber() {
-		return proxycardnumber;
-	}
-
-	public String getInvoicenumber() {
-		return invoicenumber;
-	}
-
-	public BigDecimal getAmount() {
-		return amount;
-	}
-
-	public BigDecimal getEmbeddedfee() {
-		return embeddedfee;
-	}
-
-	public BigDecimal getTotalpoints() {
-		return totalpoints;
-	}
-
-	public BigDecimal getTotalrebates() {
-		return totalrebates;
-	}
-
-	public Long getTaxflag() {
-		return taxflag;
-	}
-
-	public BigDecimal getTaxbaseamount() {
-		return taxbaseamount;
-	}
-
-	public Date getValuedate() {
-		return valuedate;
-	}
-
-	public Date getStartofinterest() {
-		return startofinterest;
-	}
-
-	public Date getMinduevaluedate() {
-		return minduevaluedate;
-	}
-
-	public Date getPostdate() {
-		return postdate;
-	}
-
-	public String getPosttimestamp() {
-		return posttimestamp;
-	}
-
-	public String getTextdescription() {
-		return textdescription;
-	}
-
-	public String getFgresolutionstatus() {
-		return fgresolutionstatus;
-	}
-
-	public String getExternaltrxnid() {
-		return externaltrxnid;
-	}
-
-	public String getStgeneral() {
-		return stgeneral;
-	}
-
-	public String getLogaction() {
-		return logaction;
-	}
-
-	public Long getRecalculated() {
-		return recalculated;
-	}
-
-	public BigDecimal getConverted() {
-		return converted;
 	}
 
 	public void setSerno(Long serno) {
 		this.serno = serno;
 	}
 
+	public Caccounts getCaccounts() {
+		return caccounts;
+	}
+
 	public void setCaccounts(Caccounts caccounts) {
 		this.caccounts = caccounts;
+	}
+
+	public Trxntypes getTrxntypes() {
+		return trxntypes;
 	}
 
 	public void setTrxntypes(Trxntypes trxntypes) {
 		this.trxntypes = trxntypes;
 	}
 
+	public Cisotrxns getCisotrxns() {
+		return cisotrxns;
+	}
+
 	public void setCisotrxns(Cisotrxns cisotrxns) {
 		this.cisotrxns = cisotrxns;
+	}
+
+	public Long getInstitutionId() {
+		return institutionId;
 	}
 
 	public void setInstitutionId(Long institutionId) {
 		this.institutionId = institutionId;
 	}
 
+	public Long getPartitionkey() {
+		return partitionkey;
+	}
+
 	public void setPartitionkey(Long partitionkey) {
 		this.partitionkey = partitionkey;
 	}
 
-//	public void setCaccserno(Long caccserno) {
-//		this.caccserno = caccserno;
-//	}
+	public Long getCardserno() {
+		return cardserno;
+	}
 
 	public void setCardserno(Long cardserno) {
 		this.cardserno = cardserno;
+	}
+
+	public Long getDefCaccserno() {
+		return defCaccserno;
 	}
 
 	public void setDefCaccserno(Long defCaccserno) {
 		this.defCaccserno = defCaccserno;
 	}
 
-	public void setProduct(Long product) {
+	public Integer getProduct() {
+		return product;
+	}
+
+	public void setProduct(Integer product) {
 		this.product = product;
+	}
+
+	public Long getBatchserno() {
+		return batchserno;
 	}
 
 	public void setBatchserno(Long batchserno) {
 		this.batchserno = batchserno;
 	}
 
-//	public void setTypesernoAlloc(Long typesernoAlloc) {
-//		this.typesernoAlloc = typesernoAlloc;
-//	}
+	public Long getTypesernoFees() {
+		return typesernoFees;
+	}
 
 	public void setTypesernoFees(Long typesernoFees) {
 		this.typesernoFees = typesernoFees;
+	}
+
+	public Long getTypesernoReports() {
+		return typesernoReports;
 	}
 
 	public void setTypesernoReports(Long typesernoReports) {
 		this.typesernoReports = typesernoReports;
 	}
 
+	public Long getTypesernoRewards() {
+		return typesernoRewards;
+	}
+
 	public void setTypesernoRewards(Long typesernoRewards) {
 		this.typesernoRewards = typesernoRewards;
+	}
+
+	public Long getTypesernoGledger() {
+		return typesernoGledger;
 	}
 
 	public void setTypesernoGledger(Long typesernoGledger) {
 		this.typesernoGledger = typesernoGledger;
 	}
 
+	public Long getTypesernoDivert() {
+		return typesernoDivert;
+	}
+
 	public void setTypesernoDivert(Long typesernoDivert) {
 		this.typesernoDivert = typesernoDivert;
+	}
+
+	public Long getTypesernoNopost() {
+		return typesernoNopost;
 	}
 
 	public void setTypesernoNopost(Long typesernoNopost) {
 		this.typesernoNopost = typesernoNopost;
 	}
 
+	public Long getTypesernoProbe() {
+		return typesernoProbe;
+	}
+
 	public void setTypesernoProbe(Long typesernoProbe) {
 		this.typesernoProbe = typesernoProbe;
+	}
+
+	public Long getTypesernoText() {
+		return typesernoText;
 	}
 
 	public void setTypesernoText(Long typesernoText) {
 		this.typesernoText = typesernoText;
 	}
 
+	public Long getMsgclass() {
+		return msgclass;
+	}
+
 	public void setMsgclass(Long msgclass) {
 		this.msgclass = msgclass;
+	}
+
+	public Long getMsgtype() {
+		return msgtype;
 	}
 
 	public void setMsgtype(Long msgtype) {
 		this.msgtype = msgtype;
 	}
 
+	public Long getTrxntype() {
+		return trxntype;
+	}
+
 	public void setTrxntype(Long trxntype) {
 		this.trxntype = trxntype;
+	}
+
+	public String getOrigMsgType() {
+		return origMsgType;
 	}
 
 	public void setOrigMsgType(String origMsgType) {
 		this.origMsgType = origMsgType;
 	}
 
+	public String getI000MsgType() {
+		return i000MsgType;
+	}
+
 	public void setI000MsgType(String i000MsgType) {
 		this.i000MsgType = i000MsgType;
+	}
+
+	public String getI002Number() {
+		return i002Number;
 	}
 
 	public void setI002Number(String i002Number) {
 		this.i002Number = i002Number;
 	}
 
+	public String getI003ProcCode() {
+		return i003ProcCode;
+	}
+
 	public void setI003ProcCode(String i003ProcCode) {
 		this.i003ProcCode = i003ProcCode;
 	}
 
-	public void setI004AmtTrxn(BigDecimal i004AmtTrxn) {
+	public Double getI004AmtTrxn() {
+		return i004AmtTrxn;
+	}
+
+	public void setI004AmtTrxn(Double i004AmtTrxn) {
 		this.i004AmtTrxn = i004AmtTrxn;
 	}
 
-	public void setI005AmtSettle(BigDecimal i005AmtSettle) {
+	public Double getI005AmtSettle() {
+		return i005AmtSettle;
+	}
+
+	public void setI005AmtSettle(Double i005AmtSettle) {
 		this.i005AmtSettle = i005AmtSettle;
 	}
 
-	public void setI006AmtBill(BigDecimal i006AmtBill) {
+	public Double getI006AmtBill() {
+		return i006AmtBill;
+	}
+
+	public void setI006AmtBill(Double i006AmtBill) {
 		this.i006AmtBill = i006AmtBill;
+	}
+
+	public Date getI007LoadDate() {
+		return i007LoadDate;
 	}
 
 	public void setI007LoadDate(Date i007LoadDate) {
 		this.i007LoadDate = i007LoadDate;
 	}
 
-	public void setI008BillingFee(BigDecimal i008BillingFee) {
+	public Float getI008BillingFee() {
+		return i008BillingFee;
+	}
+
+	public void setI008BillingFee(Float i008BillingFee) {
 		this.i008BillingFee = i008BillingFee;
+	}
+
+	public Date getI013TrxnDate() {
+		return i013TrxnDate;
 	}
 
 	public void setI013TrxnDate(Date i013TrxnDate) {
 		this.i013TrxnDate = i013TrxnDate;
 	}
 
+	public String getI044ReasonCode() {
+		return i044ReasonCode;
+	}
+
 	public void setI044ReasonCode(String i044ReasonCode) {
 		this.i044ReasonCode = i044ReasonCode;
+	}
+
+	public String getI048TextData() {
+		return i048TextData;
 	}
 
 	public void setI048TextData(String i048TextData) {
 		this.i048TextData = i048TextData;
 	}
 
+	public String getI049CurTrxn() {
+		return i049CurTrxn;
+	}
+
 	public void setI049CurTrxn(String i049CurTrxn) {
 		this.i049CurTrxn = i049CurTrxn;
+	}
+
+	public String getI050CurSettle() {
+		return i050CurSettle;
 	}
 
 	public void setI050CurSettle(String i050CurSettle) {
 		this.i050CurSettle = i050CurSettle;
 	}
 
+	public String getI051CurBill() {
+		return i051CurBill;
+	}
+
 	public void setI051CurBill(String i051CurBill) {
 		this.i051CurBill = i051CurBill;
+	}
+
+	public String getCentercurrency() {
+		return centercurrency;
 	}
 
 	public void setCentercurrency(String centercurrency) {
 		this.centercurrency = centercurrency;
 	}
 
-	public void setCenteramount(BigDecimal centeramount) {
+	public Double getCenteramount() {
+		return centeramount;
+	}
+
+	public void setCenteramount(Double centeramount) {
 		this.centeramount = centeramount;
 	}
 
-	public void setInstalmenttype(Long instalmenttype) {
+	public Integer getInstalmenttype() {
+		return instalmenttype;
+	}
+
+	public void setInstalmenttype(Integer instalmenttype) {
 		this.instalmenttype = instalmenttype;
 	}
 
-	public void setInstalmentindepflag(Long instalmentindepflag) {
+	public Integer getInstalmentindepflag() {
+		return instalmentindepflag;
+	}
+
+	public void setInstalmentindepflag(Integer instalmentindepflag) {
 		this.instalmentindepflag = instalmentindepflag;
 	}
 
-	public void setInstalmentsnumber(Long instalmentsnumber) {
+	public Integer getInstalmentsnumber() {
+		return instalmentsnumber;
+	}
+
+	public void setInstalmentsnumber(Integer instalmentsnumber) {
 		this.instalmentsnumber = instalmentsnumber;
 	}
 
-	public void setInstalmentseq(Long instalmentseq) {
+	public Integer getInstalmentseq() {
+		return instalmentseq;
+	}
+
+	public void setInstalmentseq(Integer instalmentseq) {
 		this.instalmentseq = instalmentseq;
 	}
 
-	public void setInstalmentrepaymenttype(Long instalmentrepaymenttype) {
+	public Integer getInstalmentrepaymenttype() {
+		return instalmentrepaymenttype;
+	}
+
+	public void setInstalmentrepaymenttype(Integer instalmentrepaymenttype) {
 		this.instalmentrepaymenttype = instalmentrepaymenttype;
 	}
 
-	public void setInstalmentoffset(Long instalmentoffset) {
+	public Integer getInstalmentoffset() {
+		return instalmentoffset;
+	}
+
+	public void setInstalmentoffset(Integer instalmentoffset) {
 		this.instalmentoffset = instalmentoffset;
 	}
 
-	public void setInstalmentorigamount(BigDecimal instalmentorigamount) {
+	public Double getInstalmentorigamount() {
+		return instalmentorigamount;
+	}
+
+	public void setInstalmentorigamount(Double instalmentorigamount) {
 		this.instalmentorigamount = instalmentorigamount;
 	}
 
-	public void setInstalmenttotalamount(BigDecimal instalmenttotalamount) {
+	public Double getInstalmenttotalamount() {
+		return instalmenttotalamount;
+	}
+
+	public void setInstalmenttotalamount(Double instalmenttotalamount) {
 		this.instalmenttotalamount = instalmenttotalamount;
+	}
+
+	public Long getInstalmentplanserno() {
+		return instalmentplanserno;
 	}
 
 	public void setInstalmentplanserno(Long instalmentplanserno) {
 		this.instalmentplanserno = instalmentplanserno;
 	}
 
+	public Date getInstalmentinterestanchordate() {
+		return instalmentinterestanchordate;
+	}
+
 	public void setInstalmentinterestanchordate(Date instalmentinterestanchordate) {
 		this.instalmentinterestanchordate = instalmentinterestanchordate;
+	}
+
+	public Long getInstalmentserno() {
+		return instalmentserno;
 	}
 
 	public void setInstalmentserno(Long instalmentserno) {
 		this.instalmentserno = instalmentserno;
 	}
 
+	public Long getInstalmentpartitionkey() {
+		return instalmentpartitionkey;
+	}
+
 	public void setInstalmentpartitionkey(Long instalmentpartitionkey) {
 		this.instalmentpartitionkey = instalmentpartitionkey;
 	}
 
-	public void setInstalmentamrtprincipalamount(BigDecimal instalmentamrtprincipalamount) {
+	public Double getInstalmentamrtprincipalamount() {
+		return instalmentamrtprincipalamount;
+	}
+
+	public void setInstalmentamrtprincipalamount(Double instalmentamrtprincipalamount) {
 		this.instalmentamrtprincipalamount = instalmentamrtprincipalamount;
 	}
 
-	public void setInstalmentpaymentallocation(Long instalmentpaymentallocation) {
+	public Integer getInstalmentpaymentallocation() {
+		return instalmentpaymentallocation;
+	}
+
+	public void setInstalmentpaymentallocation(Integer instalmentpaymentallocation) {
 		this.instalmentpaymentallocation = instalmentpaymentallocation;
+	}
+
+	public String getInstalmentpostindicator() {
+		return instalmentpostindicator;
 	}
 
 	public void setInstalmentpostindicator(String instalmentpostindicator) {
 		this.instalmentpostindicator = instalmentpostindicator;
 	}
 
-	public void setMbhagreementserno(Integer mbhagreementserno) {
+	public Double getMbhagreementserno() {
+		return mbhagreementserno;
+	}
+
+	public void setMbhagreementserno(Double mbhagreementserno) {
 		this.mbhagreementserno = mbhagreementserno;
+	}
+
+	public String getConsolidationkey() {
+		return consolidationkey;
 	}
 
 	public void setConsolidationkey(String consolidationkey) {
 		this.consolidationkey = consolidationkey;
 	}
 
+	public Long getOfstmtorinvoiceserno() {
+		return ofstmtorinvoiceserno;
+	}
+
 	public void setOfstmtorinvoiceserno(Long ofstmtorinvoiceserno) {
 		this.ofstmtorinvoiceserno = ofstmtorinvoiceserno;
+	}
+
+	public Long getOfstmtorinvoicepartitionkey() {
+		return ofstmtorinvoicepartitionkey;
 	}
 
 	public void setOfstmtorinvoicepartitionkey(Long ofstmtorinvoicepartitionkey) {
 		this.ofstmtorinvoicepartitionkey = ofstmtorinvoicepartitionkey;
 	}
 
+	public Date getOfstmtdate() {
+		return ofstmtdate;
+	}
+
 	public void setOfstmtdate(Date ofstmtdate) {
 		this.ofstmtdate = ofstmtdate;
+	}
+
+	public Date getOfprintduedate() {
+		return ofprintduedate;
 	}
 
 	public void setOfprintduedate(Date ofprintduedate) {
 		this.ofprintduedate = ofprintduedate;
 	}
 
+	public Date getOfduedate() {
+		return ofduedate;
+	}
+
 	public void setOfduedate(Date ofduedate) {
 		this.ofduedate = ofduedate;
+	}
+
+	public Date getOfoverduestmtdate() {
+		return ofoverduestmtdate;
 	}
 
 	public void setOfoverduestmtdate(Date ofoverduestmtdate) {
 		this.ofoverduestmtdate = ofoverduestmtdate;
 	}
 
+	public String getOfrectype() {
+		return ofrectype;
+	}
+
 	public void setOfrectype(String ofrectype) {
 		this.ofrectype = ofrectype;
+	}
+
+	public Long getOftrxntype() {
+		return oftrxntype;
 	}
 
 	public void setOftrxntype(Long oftrxntype) {
 		this.oftrxntype = oftrxntype;
 	}
 
+	public Long getRewardsflag() {
+		return rewardsflag;
+	}
+
 	public void setRewardsflag(Long rewardsflag) {
 		this.rewardsflag = rewardsflag;
+	}
+
+	public String getRewardbalancereasoncode() {
+		return rewardbalancereasoncode;
 	}
 
 	public void setRewardbalancereasoncode(String rewardbalancereasoncode) {
 		this.rewardbalancereasoncode = rewardbalancereasoncode;
 	}
 
-	public void setSingleMsgFlag(Long singleMsgFlag) {
+	public Integer getSingleMsgFlag() {
+		return singleMsgFlag;
+	}
+
+	public void setSingleMsgFlag(Integer singleMsgFlag) {
 		this.singleMsgFlag = singleMsgFlag;
+	}
+
+	public String getAuthimmediateposting() {
+		return authimmediateposting;
 	}
 
 	public void setAuthimmediateposting(String authimmediateposting) {
 		this.authimmediateposting = authimmediateposting;
 	}
 
+	public String getAuthaccounttype() {
+		return authaccounttype;
+	}
+
 	public void setAuthaccounttype(String authaccounttype) {
 		this.authaccounttype = authaccounttype;
 	}
 
-	public void setAuthamount(BigDecimal authamount) {
+	public Double getAuthamount() {
+		return authamount;
+	}
+
+	public void setAuthamount(Double authamount) {
 		this.authamount = authamount;
+	}
+
+	public String getOriginator() {
+		return originator;
 	}
 
 	public void setOriginator(String originator) {
 		this.originator = originator;
 	}
 
+	public String getOriginatorreasoncode() {
+		return originatorreasoncode;
+	}
+
 	public void setOriginatorreasoncode(String originatorreasoncode) {
 		this.originatorreasoncode = originatorreasoncode;
+	}
+
+	public String getProxycardnumber() {
+		return proxycardnumber;
 	}
 
 	public void setProxycardnumber(String proxycardnumber) {
 		this.proxycardnumber = proxycardnumber;
 	}
 
+	public String getInvoicenumber() {
+		return invoicenumber;
+	}
+
 	public void setInvoicenumber(String invoicenumber) {
 		this.invoicenumber = invoicenumber;
 	}
 
-	public void setAmount(BigDecimal amount) {
+	public Double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(Double amount) {
 		this.amount = amount;
 	}
 
-	public void setEmbeddedfee(BigDecimal embeddedfee) {
+	public Double getEmbeddedfee() {
+		return embeddedfee;
+	}
+
+	public void setEmbeddedfee(Double embeddedfee) {
 		this.embeddedfee = embeddedfee;
+	}
+
+	public BigDecimal getTotalpoints() {
+		return totalpoints;
 	}
 
 	public void setTotalpoints(BigDecimal totalpoints) {
 		this.totalpoints = totalpoints;
 	}
 
+	public BigDecimal getTotalrebates() {
+		return totalrebates;
+	}
+
 	public void setTotalrebates(BigDecimal totalrebates) {
 		this.totalrebates = totalrebates;
 	}
 
-	public void setTaxflag(Long taxflag) {
+	public Integer getTaxflag() {
+		return taxflag;
+	}
+
+	public void setTaxflag(Integer taxflag) {
 		this.taxflag = taxflag;
 	}
 
-	public void setTaxbaseamount(BigDecimal taxbaseamount) {
+	public Double getTaxbaseamount() {
+		return taxbaseamount;
+	}
+
+	public void setTaxbaseamount(Double taxbaseamount) {
 		this.taxbaseamount = taxbaseamount;
+	}
+
+	public Date getValuedate() {
+		return valuedate;
 	}
 
 	public void setValuedate(Date valuedate) {
 		this.valuedate = valuedate;
 	}
 
+	public Date getStartofinterest() {
+		return startofinterest;
+	}
+
 	public void setStartofinterest(Date startofinterest) {
 		this.startofinterest = startofinterest;
+	}
+
+	public Date getMinduevaluedate() {
+		return minduevaluedate;
 	}
 
 	public void setMinduevaluedate(Date minduevaluedate) {
 		this.minduevaluedate = minduevaluedate;
 	}
 
+	public Date getPostdate() {
+		return postdate;
+	}
+
 	public void setPostdate(Date postdate) {
 		this.postdate = postdate;
+	}
+
+	public String getPosttimestamp() {
+		return posttimestamp;
 	}
 
 	public void setPosttimestamp(String posttimestamp) {
 		this.posttimestamp = posttimestamp;
 	}
 
+	public String getTextdescription() {
+		return textdescription;
+	}
+
 	public void setTextdescription(String textdescription) {
 		this.textdescription = textdescription;
+	}
+
+	public String getFgresolutionstatus() {
+		return fgresolutionstatus;
 	}
 
 	public void setFgresolutionstatus(String fgresolutionstatus) {
 		this.fgresolutionstatus = fgresolutionstatus;
 	}
 
+	public String getExternaltrxnid() {
+		return externaltrxnid;
+	}
+
 	public void setExternaltrxnid(String externaltrxnid) {
 		this.externaltrxnid = externaltrxnid;
+	}
+
+	public String getStgeneral() {
+		return stgeneral;
 	}
 
 	public void setStgeneral(String stgeneral) {
 		this.stgeneral = stgeneral;
 	}
 
+	public String getLogaction() {
+		return logaction;
+	}
+
 	public void setLogaction(String logaction) {
 		this.logaction = logaction;
 	}
 
-	public void setRecalculated(Long recalculated) {
+	public Integer getRecalculated() {
+		return recalculated;
+	}
+
+	public void setRecalculated(Integer recalculated) {
 		this.recalculated = recalculated;
 	}
 
-	public void setConverted(BigDecimal converted) {
-		this.converted = converted;
+	public Double getConverted() {
+		return converted;
 	}
 
+	public void setConverted(Double converted) {
+		this.converted = converted;
+	}
 }

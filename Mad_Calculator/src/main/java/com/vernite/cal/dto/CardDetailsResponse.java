@@ -1,5 +1,6 @@
 package com.vernite.cal.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +24,7 @@ public class CardDetailsResponse {
 	private Long primarycard;
 	private String expirydatestatus;
 
-	private List<LocalDateTime> cycleDate;
+	private List<LocalDate> cycleDate;
 
 	public String getNumberx() {
 		return numberx;
@@ -97,11 +98,11 @@ public class CardDetailsResponse {
 		this.expirydatestatus = expirydatestatus;
 	}
 
-	public List<LocalDateTime> getCycleDate() {
+	public List<LocalDate> getCycleDate() {
 		return cycleDate;
 	}
 
-	public void setCycleDate(List<LocalDateTime> cycleDate) {
+	public void setCycleDate(List<LocalDate> cycleDate) {
 		this.cycleDate = cycleDate;
 	}
 

@@ -91,12 +91,13 @@ public class AccountServiceImpl implements AccountService {
 
 
 	//	List<String> cycledate = new ArrayList<>();	
-		List<LocalDateTime> cycledate = new ArrayList<>();	
+		List<LocalDate> cycledate = new ArrayList<>();
 		
 		List<Cstatements> cstatementsList = caccounts.getCstatementsList();
 		for (Cstatements statements : cstatementsList) {
 	        LocalDateTime localDateTime = statements.getCycledate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-	        cycledate.add(localDateTime); 
+			LocalDate localDate = localDateTime.toLocalDate();
+	        cycledate.add(localDate);
 	     //  cycledate.add(sdf.format(statements.getCycledate()));
 		}
 		

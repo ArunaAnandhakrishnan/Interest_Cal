@@ -53,11 +53,11 @@ public class AccountController {
 		return details;
 	}
 
-	@GetMapping("/transaction")
-	public ResponseEntity<TransactionDetailsDto> getTransaction(
-			@RequestParam("date") @DateTimeFormat(pattern = "dd-MM-yyyy") Date date) throws SQLException {
-		TransactionDetailsDto detailsDto = transactionServiceImpl.getTransactionByDate(date);
-		return new ResponseEntity<TransactionDetailsDto>(detailsDto, HttpStatus.OK);
+	@GetMapping("/transaction/{cardNumber}")
+	public ResponseEntity<List<TransactionDetailsDto>> getTransaction(@PathVariable String cardNumber,
+																@RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate) throws SQLException {
+		List<TransactionDetailsDto> detailsDto = transactionServiceImpl.getTransactionByDate(cardNumber,cycleDate);
+		return new ResponseEntity<List<TransactionDetailsDto>>(detailsDto, HttpStatus.OK);
 
 	}
 
