@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -95,8 +97,11 @@ public class AccountServiceImpl implements AccountService {
 	        LocalDateTime localDateTime = statements.getCycledate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 			LocalDate localDate = localDateTime.toLocalDate();
 			String outputDateStr = outputFormatter.format(localDate);
+			
 			cycledate.add(outputDateStr);
 		}
+		
+		Collections.sort(cycledate, Comparator.reverseOrder());
 		CardDetailsResponse c = new CardDetailsResponse();
 		c.setNumberx(caccounts.getNumberx());
 		c.setStgeneral(caccounts.getStgeneral());

@@ -56,14 +56,14 @@ public class AccountController {
 
 	@GetMapping("/transaction/{cardNumber}")
 	public ResponseEntity<List<TransactionDetailsDto>> getTransaction(@PathVariable String cardNumber,
-																@RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate) throws SQLException {
+																@RequestParam("cycleDate") @DateTimeFormat(pattern = "MM-dd-yyyy") Date cycleDate) throws SQLException {
 		List<TransactionDetailsDto> detailsDto = transactionServiceImpl.getTransactionByDate(cardNumber,cycleDate);
 		return new ResponseEntity<List<TransactionDetailsDto>>(detailsDto, HttpStatus.OK);
 
 	}
 	@GetMapping("/downloadPdf/{cardNumber}")
 	public ResponseEntity<byte[]> downloadPdf(@PathVariable String cardNumber,
-																	  @RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate) throws SQLException {
+																	  @RequestParam("cycleDate") @DateTimeFormat(pattern = "MM-dd-yyyy") Date cycleDate) throws SQLException {
 		byte[] detailsDto = transactionServiceImpl.downloadPdf(cardNumber,cycleDate);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_PDF);
