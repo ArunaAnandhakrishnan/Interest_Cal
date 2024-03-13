@@ -145,16 +145,16 @@ public class TransactionServiceImpl {
 		
 		List<TransactionDetailsDto> transactionDetails = new ArrayList<>();
 		
-		List<Ctransactions> ctransactionsList = caccounts.getCtransactionsList();
+		List<Ctransactions> ctransactionsList = ctransactionsRepository.getByCaccounts(caccounts);
 		for(Ctransactions trx : ctransactionsList) {
 			TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
 			Ctransactions ctrx = new Ctransactions();
 			
 			transactionDetail.setDescription(trx.getI048TextData());
 			transactionDetail.setTransactionDate(trx.getI013TrxnDate());
-			transactionDetail.setTransactionAmount(trx.getI004AmtTrxn());
-			transactionDetail.setBillingAmount(trx.getI006AmtBill());
-			
+//			transactionDetail.setTransactionAmount(trx.getI004AmtTrxn());
+//			transactionDetail.setBillingAmount(trx.getI006AmtBill());
+			//transactionDetail.setRecType(trx.getTrxntypes().getRectype());
 			transactionDetails.add(transactionDetail);
 		}
 		return transactionDetails;

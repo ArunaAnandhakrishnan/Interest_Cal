@@ -1,20 +1,12 @@
 package com.vernite.cal.model;
-
 import java.math.BigDecimal;
 import java.util.Date;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 
 @Entity
+@Table(name = "CTRANSACTIONS")
 public class Ctransactions {
 
 	@Id
@@ -32,10 +24,10 @@ public class Ctransactions {
 	@OneToOne(mappedBy = "ctransactions", cascade = CascadeType.ALL)
 	private Cisotrxns cisotrxns;
 
-	@Column
+	@Column(name = "INSTITUTION_ID")
 	private Long institutionId;
 
-	@Column
+	@Column(name = "PARTITIONKEY")
 	private Long partitionkey;
 
 	@Column
@@ -83,56 +75,56 @@ public class Ctransactions {
 	@Column
 	private Long trxntype;
 
-	@Column
+	@Column( precision = 5)
 	private String origMsgType;
 
-	@Column(name = "I000_MSG_TYPE")
+	@Column(name = "I000_MSG_TYPE", precision = 4)
 	private String i000MsgType;
 
-	@Column(name = "I002_NUMBER")
+	@Column(name = "I002_NUMBER", precision = 25)
 	private String i002Number;
 
-	@Column(name = "I003_PROC_CODE")
+	@Column(name = "I003_PROC_CODE", precision = 6)
 	private String i003ProcCode;
 
-	@Column(name = "I004_AMT_TRXN")
+	@Column(name = "I004_AMT_TRXN", precision = 16, scale = 3)
 	private BigDecimal i004AmtTrxn;
 
-	@Column(name = "I005_AMT_SETTLE")
+	@Column(name = "I005_AMT_SETTLE",precision = 16, scale = 3)
 	private BigDecimal i005AmtSettle;
 
-	@Column(name = "I006_AMT_BILL")
+	@Column(name = "I006_AMT_BILL",precision = 16, scale = 3)
 	private BigDecimal i006AmtBill;
 
 	@Column(name = "I007_LOAD_DATE")
 	private Date i007LoadDate;
 
-	@Column(name = "I008_BILLING_FEE")
+	@Column(name = "I008_BILLING_FEE",precision = 16, scale = 3)
 	private BigDecimal i008BillingFee;
 
 	@Column(name = "i013_TRXN_DATE")
 	private Date i013TrxnDate;
 
-	@Column(name = "I044_REASON_CODE")
+	@Column(name = "I044_REASON_CODE",precision = 4)
 	private String i044ReasonCode;
 
-	@Column(name = "I048_TEXT_DATA")
+	@Column(name = "I048_TEXT_DATA",precision = 254)
 	private String i048TextData;
 
-	@Column(name = "I049_CUR_TRXN")
+	@Column(name = "I049_CUR_TRXN",precision = 3)
 	private String i049CurTrxn;
 
-	@Column(name = "I050_CUR_SETTLE")
+	@Column(name = "I050_CUR_SETTLE",precision = 3)
 	private String i050CurSettle;
 
-	@Column(name = "I051_CUR_BILL")
+	@Column(name = "I051_CUR_BILL",precision = 3)
 	private String i051CurBill;
 
-	@Column
+	@Column(precision = 3)
 	private String centercurrency;
 
-	@Column
-	private Double centeramount;
+	@Column(precision = 16, scale = 3)
+	private BigDecimal centeramount;
 
 	@Column
 	private Integer instalmenttype;
@@ -152,11 +144,11 @@ public class Ctransactions {
 	@Column
 	private Integer instalmentoffset;
 
-	@Column
-	private Double instalmentorigamount;
+	@Column(precision = 16, scale = 3)
+	private BigDecimal instalmentorigamount;
 
-	@Column
-	private Double instalmenttotalamount;
+	@Column(precision = 16, scale = 3)
+	private BigDecimal instalmenttotalamount;
 
 	@Column
 	private Long instalmentplanserno;
@@ -170,8 +162,8 @@ public class Ctransactions {
 	@Column
 	private Long instalmentpartitionkey;
 
-	@Column
-	private Double instalmentamrtprincipalamount;
+	@Column(precision = 16, scale = 3)
+	private BigDecimal instalmentamrtprincipalamount;
 
 	@Column
 	private Integer instalmentpaymentallocation;
@@ -180,7 +172,7 @@ public class Ctransactions {
 	private String instalmentpostindicator;
 
 	@Column
-	private Double mbhagreementserno;
+	private Long mbhagreementserno;
 
 	@Column
 	private String consolidationkey;
@@ -224,8 +216,8 @@ public class Ctransactions {
 	@Column
 	private String authaccounttype;
 
-	@Column
-	private Double authamount;
+	@Column(precision = 16, scale = 3)
+	private BigDecimal authamount;
 
 	@Column
 	private String originator;
@@ -239,11 +231,11 @@ public class Ctransactions {
 	@Column
 	private String invoicenumber;
 
-	@Column
-	private Double amount;
+	@Column(precision = 16, scale = 3)
+	private BigDecimal amount;
 
 	@Column
-	private Double embeddedfee;
+	private BigDecimal embeddedfee;
 
 	@Column(precision = 32, scale = 16)
 	private BigDecimal totalpoints;
@@ -254,8 +246,8 @@ public class Ctransactions {
 	@Column
 	private Integer taxflag;
 
-	@Column
-	private Double taxbaseamount;
+	@Column(precision = 16, scale = 3)
+	private BigDecimal taxbaseamount;
 
 	@Column
 	private Date valuedate;
@@ -290,8 +282,8 @@ public class Ctransactions {
 	@Column
 	private Integer recalculated;
 
-	@Column
-	private Double converted;
+	@Column(precision = 2)
+	private BigDecimal converted;
 
 	public Long getSerno() {
 		return serno;
@@ -557,11 +549,11 @@ public class Ctransactions {
 		this.centercurrency = centercurrency;
 	}
 
-	public Double getCenteramount() {
+	public BigDecimal getCenteramount() {
 		return centeramount;
 	}
 
-	public void setCenteramount(Double centeramount) {
+	public void setCenteramount(BigDecimal centeramount) {
 		this.centeramount = centeramount;
 	}
 
@@ -613,19 +605,19 @@ public class Ctransactions {
 		this.instalmentoffset = instalmentoffset;
 	}
 
-	public Double getInstalmentorigamount() {
+	public BigDecimal getInstalmentorigamount() {
 		return instalmentorigamount;
 	}
 
-	public void setInstalmentorigamount(Double instalmentorigamount) {
+	public void setInstalmentorigamount(BigDecimal instalmentorigamount) {
 		this.instalmentorigamount = instalmentorigamount;
 	}
 
-	public Double getInstalmenttotalamount() {
+	public BigDecimal getInstalmenttotalamount() {
 		return instalmenttotalamount;
 	}
 
-	public void setInstalmenttotalamount(Double instalmenttotalamount) {
+	public void setInstalmenttotalamount(BigDecimal instalmenttotalamount) {
 		this.instalmenttotalamount = instalmenttotalamount;
 	}
 
@@ -661,11 +653,11 @@ public class Ctransactions {
 		this.instalmentpartitionkey = instalmentpartitionkey;
 	}
 
-	public Double getInstalmentamrtprincipalamount() {
+	public BigDecimal getInstalmentamrtprincipalamount() {
 		return instalmentamrtprincipalamount;
 	}
 
-	public void setInstalmentamrtprincipalamount(Double instalmentamrtprincipalamount) {
+	public void setInstalmentamrtprincipalamount(BigDecimal instalmentamrtprincipalamount) {
 		this.instalmentamrtprincipalamount = instalmentamrtprincipalamount;
 	}
 
@@ -685,11 +677,11 @@ public class Ctransactions {
 		this.instalmentpostindicator = instalmentpostindicator;
 	}
 
-	public Double getMbhagreementserno() {
+	public Long getMbhagreementserno() {
 		return mbhagreementserno;
 	}
 
-	public void setMbhagreementserno(Double mbhagreementserno) {
+	public void setMbhagreementserno(Long mbhagreementserno) {
 		this.mbhagreementserno = mbhagreementserno;
 	}
 
@@ -805,11 +797,11 @@ public class Ctransactions {
 		this.authaccounttype = authaccounttype;
 	}
 
-	public Double getAuthamount() {
+	public BigDecimal getAuthamount() {
 		return authamount;
 	}
 
-	public void setAuthamount(Double authamount) {
+	public void setAuthamount(BigDecimal authamount) {
 		this.authamount = authamount;
 	}
 
@@ -845,19 +837,19 @@ public class Ctransactions {
 		this.invoicenumber = invoicenumber;
 	}
 
-	public Double getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Double amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 
-	public Double getEmbeddedfee() {
+	public BigDecimal getEmbeddedfee() {
 		return embeddedfee;
 	}
 
-	public void setEmbeddedfee(Double embeddedfee) {
+	public void setEmbeddedfee(BigDecimal embeddedfee) {
 		this.embeddedfee = embeddedfee;
 	}
 
@@ -885,11 +877,11 @@ public class Ctransactions {
 		this.taxflag = taxflag;
 	}
 
-	public Double getTaxbaseamount() {
+	public BigDecimal getTaxbaseamount() {
 		return taxbaseamount;
 	}
 
-	public void setTaxbaseamount(Double taxbaseamount) {
+	public void setTaxbaseamount(BigDecimal taxbaseamount) {
 		this.taxbaseamount = taxbaseamount;
 	}
 
@@ -981,11 +973,11 @@ public class Ctransactions {
 		this.recalculated = recalculated;
 	}
 
-	public Double getConverted() {
+	public BigDecimal getConverted() {
 		return converted;
 	}
 
-	public void setConverted(Double converted) {
+	public void setConverted(BigDecimal converted) {
 		this.converted = converted;
 	}
 
