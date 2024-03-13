@@ -4,13 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
 @Entity
 public class Cisotrxns {
@@ -38,7 +32,8 @@ public class Cisotrxns {
 	private Long i024_funct_code;
 	private Long i025_pos_cond;
 	private Long i028_trxn_fee;
-	private Long i031_arn;
+	@Column(precision = 38, scale = 0)
+	private BigDecimal i031_arn;
 	private String i032_acquirer_id;
 	private Long i037_ret_ref_num;
 	private String i038_auth_id;
@@ -415,7 +410,7 @@ public class Cisotrxns {
 		return i028_trxn_fee;
 	}
 
-	public Long getI031_arn() {
+	public BigDecimal getI031_arn() {
 		return i031_arn;
 	}
 
@@ -459,7 +454,7 @@ public class Cisotrxns {
 		this.i028_trxn_fee = i028_trxn_fee;
 	}
 
-	public void setI031_arn(Long i031_arn) {
+	public void setI031_arn(BigDecimal i031_arn) {
 		this.i031_arn = i031_arn;
 	}
 

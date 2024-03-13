@@ -150,8 +150,8 @@ public class TransactionServiceImpl {
 			TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
 			Ctransactions ctrx = new Ctransactions();
 			
-			transactionDetail.setDescription(trx.getI048TextData());
-			transactionDetail.setTransactionDate(trx.getI013TrxnDate());
+//			transactionDetail.setDescription(trx.getI048TextData());
+//			transactionDetail.setTransactionDate(trx.getI013TrxnDate());
 //			transactionDetail.setTransactionAmount(trx.getI004AmtTrxn());
 //			transactionDetail.setBillingAmount(trx.getI006AmtBill());
 			//transactionDetail.setRecType(trx.getTrxntypes().getRectype());
