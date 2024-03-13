@@ -27,16 +27,10 @@ public class Cstatements {
 	@ManyToOne
 	@JoinColumn(name = "caccserno", nullable = false)
 	private Caccounts caccounts;
-
 	@OneToMany(mappedBy = "cstatements", cascade = CascadeType.ALL)
 	private List<Tbalances> tbalanceList;
-
-//	private Integer caccserno;
-
 	private Long institution_id;
-	// serno NUMBER(10) not null,
 	private Long partitionkey;
-//	private Long caccserno;
 	private Long batchserno;
 	private Date cycledate;
 	private Date prevbillingdate;

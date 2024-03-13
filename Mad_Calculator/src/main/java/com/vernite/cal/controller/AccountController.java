@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +43,6 @@ public class AccountController {
 	@GetMapping("/card/{numberx}")
 	public ResponseEntity<CardDetailsResponse> fetchCardDetails(@PathVariable String numberx) throws ParseException {
 		CardDetailsResponse response = accountServiceImpl.getCardDeatils(numberx);
-		System.out.println(response.getCycleDate());
 		return new ResponseEntity<CardDetailsResponse>(response, HttpStatus.OK);
 
 	}
@@ -58,6 +59,17 @@ public class AccountController {
 																@RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate) throws SQLException {
 		List<TransactionDetailsDto> detailsDto = transactionServiceImpl.getTransactionByDate(cardNumber,cycleDate);
 		return new ResponseEntity<List<TransactionDetailsDto>>(detailsDto, HttpStatus.OK);
+
+	}
+	@GetMapping("/downloadPdf/{cardNumber}")
+	public ResponseEntity<byte[]> downloadPdf(@PathVariable String cardNumber,
+																	  @RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate) throws SQLException {
+		byte[] detailsDto = transactionServiceImpl.downloadPdf(cardNumber,cycleDate);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_PDF);
+		headers.setContentDispositionFormData("filename", "transaction_details.pdf");
+		headers.setContentLength(detailsDto.length);
+		return new ResponseEntity<byte[]>(detailsDto, headers, HttpStatus.OK);
 
 	}
 

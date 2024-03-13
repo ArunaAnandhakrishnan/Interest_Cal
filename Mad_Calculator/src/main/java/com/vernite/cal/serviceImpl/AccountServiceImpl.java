@@ -57,7 +57,6 @@ public class AccountServiceImpl implements AccountService {
 	private CstatementSettingsRepository cstatementSettingsRepository;
 
 	public CardDetailsResponse getCardDeatils(String numberx) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy");
 		Cardx byCard = cardxRepository.findByNumberx(numberx);
 		Caccounts caccounts = byCard.getCaccounts();
 
@@ -91,7 +90,7 @@ public class AccountServiceImpl implements AccountService {
 		Long minpaypercentage = cstmtSettingsData.get().getMinpaypercentage();
 		List<String> cycledate = new ArrayList<>();
 		List<Cstatements> cstatementsList = caccounts.getCstatementsList();
-		DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 		for (Cstatements statements : cstatementsList) {
 	        LocalDateTime localDateTime = statements.getCycledate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 			LocalDate localDate = localDateTime.toLocalDate();

@@ -1,10 +1,21 @@
 package com.vernite.cal.serviceImpl;
 
+import com.itextpdf.text.Document;
+
+import java.io.ByteArrayOutputStream;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,141 +34,105 @@ import com.vernite.cal.repository.TrxntypesRepository;
 @Service
 public class TransactionServiceImpl {
 
-	@Autowired
-	private CtransactionsRepository ctransactionsRepository;
+    @Autowired
+    private CtransactionsRepository ctransactionsRepository;
 
-	@Autowired
-	private TbalancesRepository tbalancesRepository;
+    @Autowired
+    private TbalancesRepository tbalancesRepository;
 
-	@Autowired
-	private TrxntypesRepository trxntypesRepository;
+    @Autowired
+    private TrxntypesRepository trxntypesRepository;
+    @Autowired
+    private CstatementsRepositoty cstatementsRepositoty;
 
-	@Autowired
-	private CstatementsRepositoty cstatementsRepositoty;
+    @Autowired
+    private CardxRepository cardxRepository;
+    private final ObjectMapper objectMapper;
 
-	@Autowired
-	private CardxRepository cardxRepository;
+    public TransactionServiceImpl(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
-//<<<<<<< Updated upstream
-//	public TransactionDetailsDto getTransactionDetails(Long serno) throws SQLException {
-//
-//		Optional<Ctransactions> transactionData = ctransactionsRepository.findById(serno);
-//
-////		BigDecimal i004_amt_trxn = transactionData.get().getI004_amt_trxn();
-////		Date i013_trxn_date = transactionData.get().getI013_trxn_date();
-////		String i048_text_data = transactionData.get().getI048_text_data();
-////		BigDecimal i006_amt_bill = transactionData.get().getI006_amt_bill();
-//
-//		Optional<Tbalances> balanceData = tbalancesRepository.findById(serno);
-//=======
-//	public TransactionDetailsDto getTransactionDetails(Long serno) throws SQLException {
-//
-//		Optional<Ctransactions> transactionData = ctransactionsRepository.findById(serno);
-//
-////		BigDecimal i004_amt_trxn = transactionData.get().getI004_amt_trxn();
-////		Date i013_trxn_date = transactionData.get().getI013_trxn_date();
-////		String i048_text_data = transactionData.get().getI048_text_data();
-////		BigDecimal i006_amt_bill = transactionData.get().getI006_amt_bill();
-//
-//		Optional<Tbalances> balanceData = tbalancesRepository.findById(serno);
-//		BigDecimal outstandingamount = balanceData.get().getOutstandingamount();
-//		Long minpaypercentage = balanceData.get().getMinpaypercentage();
-//
-//		Optional<Trxntypes> trxnTypesData = trxntypesRepository.findById(serno);
-//		String rectype = trxnTypesData.get().getRectype();
-//
-//		TransactionDetailsDto dto = new TransactionDetailsDto();
-//
-////		dto.setI004_amt_trxn(i004_amt_trxn);
-////		dto.setI048_text_data(i048_text_data);
-////		dto.setI013_trxn_date(i013_trxn_date);
-////		dto.setI048_text_data(i048_text_data);
-//
-//		dto.setMinpaypercentage(minpaypercentage);
-//		dto.setOutstandingamount(outstandingamount);
-//		dto.setRectype(rectype);
-//
-//		return dto;
-//
-//	}
-//	
-////	private Date i013_trxn_date;
-////	private String i048_text_data;
-////	private BigDecimal i004_amt_trxn;
-////	private BigDecimal i006_amt_bill;
-////	
-////	private BigDecimal outstandingamount;
-////	private Long minpaypercentage;
-////
-////	private String rectype;
-//	
-//	public TransactionDetailsDto getTransactionByDate(Date cycleDate) {
-//
-//		Optional<Cstatements> cycledates = cstatementsRepositoty.findByCycledate(cycleDate);
-//		
-//		Optional<Tbalances> byId = tbalancesRepository.findById(cycledates.get().getSerno());
-//		Long minpaypercentage = byId.get().getMinpaypercentage();
-//		System.out.println(minpaypercentage);
-//		
-//		
-//		
-//
-////		Long overDueAmount = cycledates.get().getOverdueamount();
-////		System.out.println(overDueAmount);
-//		
-//		
-//		
-//
-////		Optional<Ctransactions> transactionData = ctransactionsRepository.findById(statementSerno);
-////		String i000MsgType = transactionData.get().getI000MsgType();
-////		System.out.println(i000MsgType);
-//
-////		Optional<Tbalances> balanceData = tbalancesRepository.findById(statementSerno);
-//>>>>>>> Stashed changes
-//		BigDecimal outstandingamount = balanceData.get().getOutstandingamount();
-//		Long minpaypercentage = balanceData.get().getMinpaypercentage();
-//
-//		Optional<Trxntypes> trxnTypesData = trxntypesRepository.findById(serno);
-//		String rectype = trxnTypesData.get().getRectype();
-//
-//		TransactionDetailsDto dto = new TransactionDetailsDto();
-//
-////		dto.setI004_amt_trxn(i004_amt_trxn);
-////		dto.setI048_text_data(i048_text_data);
-////		dto.setI013_trxn_date(i013_trxn_date);
-////		dto.setI048_text_data(i048_text_data);
-//
-//		dto.setMinpaypercentage(minpaypercentage);
-//		dto.setOutstandingamount(outstandingamount);
-//		dto.setRecType(rectype);
-//
-//		return dto;
-//
-//	}
+    public List<TransactionDetailsDto> getTransactionByDate(String cardNumber, Date cycleDate) {
+        Cardx byCard = cardxRepository.findByNumberx(cardNumber);
+        Caccounts caccounts = byCard.getCaccounts();
+        Optional<Cstatements> cycledates = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate,
+                byCard.getCaccounts());
 
-	public List<TransactionDetailsDto> getTransactionByDate(String cardNumber,Date cycleDate) {
-		Cardx byCard = cardxRepository.findByNumberx(cardNumber);
-		Caccounts caccounts = byCard.getCaccounts();
-		Optional<Cstatements> cycledates = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate,
-				byCard.getCaccounts());
-		
-		Optional<Tbalances> byId = tbalancesRepository.findById(cycledates.get().getSerno());
-		
-		List<TransactionDetailsDto> transactionDetails = new ArrayList<>();
-		
-		List<Ctransactions> ctransactionsList = ctransactionsRepository.getByCaccounts(caccounts);
-		for(Ctransactions trx : ctransactionsList) {
-			TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
-			Ctransactions ctrx = new Ctransactions();
-			
-			transactionDetail.setDescription(trx.getI048TextData());
-			transactionDetail.setTransactionDate(trx.getI013TrxnDate());
-			transactionDetail.setTransactionAmount(trx.getI004AmtTrxn());
-			transactionDetail.setBillingAmount(trx.getI006AmtBill());
-			//transactionDetail.setRecType(trx.getTrxntypes().getRectype());
-			transactionDetails.add(transactionDetail);
-		}
-		return transactionDetails;
+        Optional<List<Tbalances>> tbalances = tbalancesRepository.findByCstatements(cycledates.get());
 
-	}
+        List<TransactionDetailsDto> transactionDetails = new ArrayList<>();
+
+        List<Ctransactions> ctransactionsList = ctransactionsRepository.getByCaccounts(caccounts);
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+
+        for (Ctransactions trx : ctransactionsList) {
+            TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
+            Ctransactions ctrx = new Ctransactions();
+            Optional<Tbalances> tbalance = tbalancesRepository.findByTrxnserno(trx.getSerno());
+            transactionDetail.setDescription(trx.getI048TextData());
+            LocalDateTime localDateTime = trx.getI013TrxnDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            LocalDate localDate = localDateTime.toLocalDate();
+            String outputDateStr = outputFormatter.format(localDate);
+            transactionDetail.setTransactionDate(outputDateStr);
+            transactionDetail.setTransactionAmount(trx.getI004AmtTrxn());
+            transactionDetail.setBillingAmount(trx.getI006AmtBill());
+            transactionDetail.setRecType(trx.getTrxntypes().getRectype());
+            if (tbalance.isPresent()) {
+                transactionDetail.setOutstandingamount(tbalance.get().getOutstandingamount());
+                transactionDetail.setMinpaypercentage(tbalance.get().getMinpaypercentage());
+            }
+            transactionDetails.add(transactionDetail);
+        }
+        generatePdf(transactionDetails);
+        return transactionDetails;
+
+    }
+     public byte[] downloadPdf(String cardNumber, Date cycleDate){
+         List<TransactionDetailsDto> transactionInfo = getTransactionByDate(cardNumber,cycleDate);
+        return generatePdf(transactionInfo);
+     }
+    public byte[] generatePdf(List<TransactionDetailsDto> transactionDetails) {
+        try {
+            Document document = new Document(PageSize.A4);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            PdfWriter.getInstance(document, byteArrayOutputStream);
+            document.open();
+
+            PdfPTable table = new PdfPTable(7);
+
+            // Add table headers
+            table.addCell("Description");
+            table.addCell("Transaction Date");
+            table.addCell("Transaction Amount");
+            table.addCell("Billing Amount");
+            table.addCell("Record Type");
+            table.addCell("Outstanding Amount");
+            table.addCell("Minimum Pay Percentage");
+
+            // Add transaction details to the table
+            for (TransactionDetailsDto transaction : transactionDetails) {
+                table.addCell(transaction.getDescription());
+                table.addCell(transaction.getTransactionDate());
+                table.addCell(transaction.getTransactionAmount().toString());
+                table.addCell(transaction.getBillingAmount().toString());
+                table.addCell(transaction.getRecType());
+                table.addCell(transaction.getOutstandingamount()!= null ? String.valueOf(transaction.getOutstandingamount()) : "0");
+                table.addCell(transaction.getMinpaypercentage() != null ? String.valueOf(transaction.getMinpaypercentage()) : "0");
+            }
+
+            // Add table to the document
+            document.add(table);
+
+            // Close the document
+            document.close();
+
+            // Return the generated PDF content as byte array
+            return byteArrayOutputStream.toByteArray();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

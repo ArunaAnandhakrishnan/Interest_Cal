@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class TransactionDetailsDto {
 
-	private Date transactionDate;
+	private String transactionDate;
 	private String description;
 	private String recType;
 	private BigDecimal transactionAmount;
@@ -14,11 +14,11 @@ public class TransactionDetailsDto {
 	private Long minpaypercentage;
 
 
-	public Date getTransactionDate() {
+	public String getTransactionDate() {
 		return transactionDate;
 	}
 
-	public void setTransactionDate(Date transactionDate) {
+	public void setTransactionDate(String transactionDate) {
 		this.transactionDate = transactionDate;
 	}
 
