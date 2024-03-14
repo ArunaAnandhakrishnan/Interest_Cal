@@ -13,6 +13,7 @@ public class TransactionDetailsDto {
 	private BigDecimal billingAmount;
 	private BigDecimal outstandingamount;
 	private Long minpaypercentage;
+	private String billingCurrency;
 
 
 	public String getTransactionDate() {
@@ -69,5 +70,21 @@ public class TransactionDetailsDto {
 
 	public void setMinpaypercentage(Long minpaypercentage) {
 		this.minpaypercentage = minpaypercentage;
+	}
+
+	public String getTransactionCurrency() {
+		return transactionCurrency;
+	}
+
+	public void setTransactionCurrency(String transactionCurrency) {
+		this.transactionCurrency = transactionCurrency;
+	}
+
+	public String getBillingCurrency() {
+		return billingCurrency;
+	}
+
+	public void setBillingCurrency(String billingCurrency) {
+		this.billingCurrency = billingCurrency;
 	}
 }

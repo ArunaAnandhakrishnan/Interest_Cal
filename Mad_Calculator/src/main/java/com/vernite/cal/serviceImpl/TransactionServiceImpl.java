@@ -3,6 +3,7 @@ package com.vernite.cal.serviceImpl;
 import com.itextpdf.text.Document;
 
 import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -55,43 +56,75 @@ public class TransactionServiceImpl {
 
     public List<TransactionDetailsDto> getTransactionByDate(String cardNumber, Date cycleDate) {
         Cardx byCard = cardxRepository.findByNumberx(cardNumber);
+
         Caccounts caccounts = byCard.getCaccounts();
         Optional<Cstatements> cycledates = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate,
                 byCard.getCaccounts());
-
-        Optional<List<Tbalances>> tbalances = tbalancesRepository.findByCstatements(cycledates.get());
-
+//Optional<List<Cstatements>> cstatementList = cstatementsRepositoty.findBySerNo(cycledates.get().getSerno());
         List<TransactionDetailsDto> transactionDetails = new ArrayList<>();
-
-        List<Ctransactions> ctransactionsList = ctransactionsRepository.getByCaccounts(caccounts);
         DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        Optional<List<Tbalances>> tbalances = tbalancesRepository.getTbalanceData(cycledates.get().getSerno(), caccounts.getSerno());
+        tbalances.ifPresent(tbalancesList -> {
+            for (Tbalances t : tbalancesList) {
+                TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
+                if (t.getOutstandingamount().compareTo(BigDecimal.ZERO) < 0) {
+                    if (t.getTrxnserno() != null) {
+                        Ctransactions ctransaction = ctransactionsRepository.getById(t.getTrxnserno());
+                        transactionDetail.setDescription(ctransaction.getI048TextData());
+                        LocalDateTime localDateTime = ctransaction.getI013TrxnDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                        LocalDate localDate = localDateTime.toLocalDate();
+                        String outputDateStr = outputFormatter.format(localDate);
+                        transactionDetail.setTransactionDate(outputDateStr);
+                        transactionDetail.setTransactionAmount(ctransaction.getI004AmtTrxn());
+                        transactionDetail.setBillingAmount(ctransaction.getI006AmtBill());
+                        transactionDetail.setRecType(ctransaction.getTrxntypes().getRectype());
+                        transactionDetail.setTransactionCurrency(ctransaction.getI049CurTrxn());
+                        transactionDetail.setBillingCurrency(ctransaction.getI051CurBill());
+                        if (t.getMinpaypercentage() == null) {
 
-        for (Ctransactions trx : ctransactionsList) {
-            TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
-            Ctransactions ctrx = new Ctransactions();
-            Optional<Tbalances> tbalance = tbalancesRepository.findByTrxnserno(trx.getSerno());
-            transactionDetail.setDescription(trx.getI048TextData());
-            LocalDateTime localDateTime = trx.getI013TrxnDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-            LocalDate localDate = localDateTime.toLocalDate();
-            String outputDateStr = outputFormatter.format(localDate);
-            transactionDetail.setTransactionDate(outputDateStr);
-            transactionDetail.setTransactionAmount(trx.getI004AmtTrxn());
-            transactionDetail.setBillingAmount(trx.getI006AmtBill());
-            transactionDetail.setRecType(trx.getTrxntypes().getRectype());
-            if (tbalance.isPresent()) {
-                transactionDetail.setOutstandingamount(tbalance.get().getOutstandingamount());
-                transactionDetail.setMinpaypercentage(tbalance.get().getMinpaypercentage());
+                        } else if (t.getMinpaypercentage() == 100) {
+                            transactionDetail.setMinpaypercentage(t.getMinpaypercentage());
+                        }
+
+                        transactionDetails.add(transactionDetail);
+                    }
+                    transactionDetail.setOutstandingamount(t.getOutstandingamount());
+                }
             }
-            transactionDetails.add(transactionDetail);
-        }
+        });
+
+
+//        List<TransactionDetailsDto> transactionDetails = new ArrayList<>();
+//        List<Ctransactions> ctransactionsList = ctransactionsRepository.getByCaccounts(caccounts);
+//
+//        for (Ctransactions trx : ctransactionsList) {
+//            TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
+//            Ctransactions ctrx = new Ctransactions();
+//            Optional<Tbalances> tbalance = tbalancesRepository.findByTrxnserno(trx.getSerno());
+//            transactionDetail.setDescription(trx.getI048TextData());
+//            LocalDateTime localDateTime = trx.getI013TrxnDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+//            LocalDate localDate = localDateTime.toLocalDate();
+//            String outputDateStr = outputFormatter.format(localDate);
+//            transactionDetail.setTransactionDate(outputDateStr);
+//            transactionDetail.setTransactionAmount(trx.getI004AmtTrxn());
+//            transactionDetail.setBillingAmount(trx.getI006AmtBill());
+//            transactionDetail.setRecType(trx.getTrxntypes().getRectype());
+//            if (tbalance.isPresent()) {
+//                transactionDetail.setOutstandingamount(tbalance.get().getOutstandingamount());
+//                transactionDetail.setMinpaypercentage(tbalance.get().getMinpaypercentage());
+//            }
+//            transactionDetails.add(transactionDetail);
+//        }
         generatePdf(transactionDetails);
         return transactionDetails;
 
     }
-     public byte[] downloadPdf(String cardNumber, Date cycleDate){
-         List<TransactionDetailsDto> transactionInfo = getTransactionByDate(cardNumber,cycleDate);
+
+    public byte[] downloadPdf(String cardNumber, Date cycleDate) {
+        List<TransactionDetailsDto> transactionInfo = getTransactionByDate(cardNumber, cycleDate);
         return generatePdf(transactionInfo);
-     }
+    }
+
     public byte[] generatePdf(List<TransactionDetailsDto> transactionDetails) {
         try {
             Document document = new Document(PageSize.A4);
@@ -117,7 +150,7 @@ public class TransactionServiceImpl {
                 table.addCell(transaction.getTransactionAmount().toString());
                 table.addCell(transaction.getBillingAmount().toString());
                 table.addCell(transaction.getRecType());
-                table.addCell(transaction.getOutstandingamount()!= null ? String.valueOf(transaction.getOutstandingamount()) : "0");
+                table.addCell(transaction.getOutstandingamount() != null ? String.valueOf(transaction.getOutstandingamount()) : "0");
                 table.addCell(transaction.getMinpaypercentage() != null ? String.valueOf(transaction.getMinpaypercentage()) : "0");
             }
 

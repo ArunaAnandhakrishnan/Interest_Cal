@@ -22,13 +22,8 @@ public class Tbalances {
 	@ManyToOne
 	@JoinColumn(name = "stmtserno", nullable = false)
 	private Cstatements cstatements;
-
-//	private Integer stmtserno;
-
 	private Long institution_id;
-	// serno NUMBER(10) not null,
 	private Long normaltbalanceserno;
-	// private Long stmtserno;
 	private Long partitionkey;
 	private Long invoiceserno;
 	private Long invoicepartitionkey;
