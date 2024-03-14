@@ -8,6 +8,7 @@ public class TransactionDetailsDto {
 	private String transactionDate;
 	private String description;
 	private String recType;
+	private String transactionCurrency;
 	private BigDecimal transactionAmount;
 	private BigDecimal billingAmount;
 	private BigDecimal outstandingamount;

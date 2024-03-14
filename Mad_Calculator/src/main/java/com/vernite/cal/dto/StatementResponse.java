@@ -11,11 +11,35 @@ public class StatementResponse {
 	private String printduedate;
 	private String duedate;
 	private Long mindueamount;
-	private Long closingbalance;
+	private Long tad;
 	private Long openingbalance;
 	private Long overduecycles;
 
 	private Long mad;
+
+	public Long getTotaldebits() {
+		return totaldebits;
+	}
+
+	public void setTotaldebits(Long totaldebits) {
+		this.totaldebits = totaldebits;
+	}
+
+	public Long getTotalcredits() {
+		return totalcredits;
+	}
+
+	public void setTotalcredits(Long totalcredits) {
+		this.totalcredits = totalcredits;
+	}
+
+	public Long getOverdueamount() {
+		return overdueamount;
+	}
+
+	public void setOverdueamount(Long overdueamount) {
+		this.overdueamount = overdueamount;
+	}
 
 	public String getPrintduedate() {
 		return printduedate;
@@ -25,52 +49,28 @@ public class StatementResponse {
 		this.printduedate = printduedate;
 	}
 
-	public Long getOverduecycles() {
-		return overduecycles;
+	public String getDuedate() {
+		return duedate;
 	}
 
-	public void setOverduecycles(Long overduecycles) {
-		this.overduecycles = overduecycles;
-	}
-
-	public Long getTotaldebits() {
-		return totaldebits;
-	}
-
-	public Long getTotalcredits() {
-		return totalcredits;
-	}
-
-	public Long getOverdueamount() {
-		return overdueamount;
+	public void setDuedate(String duedate) {
+		this.duedate = duedate;
 	}
 
 	public Long getMindueamount() {
 		return mindueamount;
 	}
 
-	public Long getClosingbalance() {
-		return closingbalance;
-	}
-
-	public void setTotaldebits(Long totaldebits) {
-		this.totaldebits = totaldebits;
-	}
-
-	public void setTotalcredits(Long totalcredits) {
-		this.totalcredits = totalcredits;
-	}
-
-	public void setOverdueamount(Long overdueamount) {
-		this.overdueamount = overdueamount;
-	}
-
 	public void setMindueamount(Long mindueamount) {
 		this.mindueamount = mindueamount;
 	}
 
-	public void setClosingbalance(Long closingbalance) {
-		this.closingbalance = closingbalance;
+	public Long getTad() {
+		return tad;
+	}
+
+	public void setTad(Long tad) {
+		this.tad = tad;
 	}
 
 	public Long getOpeningbalance() {
@@ -81,12 +81,12 @@ public class StatementResponse {
 		this.openingbalance = openingbalance;
 	}
 
-	public String getDuedate() {
-		return duedate;
+	public Long getOverduecycles() {
+		return overduecycles;
 	}
 
-	public void setDuedate(String duedate) {
-		this.duedate = duedate;
+	public void setOverduecycles(Long overduecycles) {
+		this.overduecycles = overduecycles;
 	}
 
 	public Long getMad() {

@@ -56,7 +56,7 @@ public class StatementServiceImpl {
 
 		st.setPrintduedate(printDueDate);
 		st.setMindueamount(Math.abs(byCycledate.get().getMindueamount()));
-		st.setClosingbalance(Math.abs(byCycledate.get().getClosingbalance()));
+		st.setTad(Math.abs(byCycledate.get().getClosingbalance()));
 
 		// st.setDuedate(byCycledate.get().getDuedate());
 		st.setDuedate(dueDate);
