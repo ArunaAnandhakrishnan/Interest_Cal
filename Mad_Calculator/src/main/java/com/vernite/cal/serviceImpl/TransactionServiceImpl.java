@@ -132,13 +132,15 @@ public class TransactionServiceImpl {
             PdfWriter.getInstance(document, byteArrayOutputStream);
             document.open();
 
-            PdfPTable table = new PdfPTable(7);
+            PdfPTable table = new PdfPTable(9);
 
             // Add table headers
             table.addCell("Description");
             table.addCell("Transaction Date");
             table.addCell("Transaction Amount");
+            table.addCell("Transaction Currency");
             table.addCell("Billing Amount");
+            table.addCell("Billing Currency");
             table.addCell("Record Type");
             table.addCell("Outstanding Amount");
             table.addCell("Minimum Pay Percentage");
@@ -148,7 +150,9 @@ public class TransactionServiceImpl {
                 table.addCell(transaction.getDescription());
                 table.addCell(transaction.getTransactionDate());
                 table.addCell(transaction.getTransactionAmount().toString());
+                table.addCell(transaction.getTransactionCurrency());
                 table.addCell(transaction.getBillingAmount().toString());
+                table.addCell(transaction.getBillingCurrency());
                 table.addCell(transaction.getRecType());
                 table.addCell(transaction.getOutstandingamount() != null ? String.valueOf(transaction.getOutstandingamount()) : "0");
                 table.addCell(transaction.getMinpaypercentage() != null ? String.valueOf(transaction.getMinpaypercentage()) : "0");
