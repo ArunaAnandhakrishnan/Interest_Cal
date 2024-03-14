@@ -3,7 +3,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
 
 @Entity
 @Table(name = "CTRANSACTIONS")

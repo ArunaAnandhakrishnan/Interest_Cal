@@ -80,6 +80,8 @@ public class TransactionServiceImpl {
                         transactionDetail.setRecType(ctransaction.getTrxntypes().getRectype());
                         transactionDetail.setTransactionCurrency(ctransaction.getI049CurTrxn());
                         transactionDetail.setBillingCurrency(ctransaction.getI051CurBill());
+                        transactionDetail.setOutstandingamount(t.getOutstandingamount());
+
                         if (t.getMinpaypercentage() == null) {
 
                         } else if (t.getMinpaypercentage() == 100) {
@@ -87,8 +89,57 @@ public class TransactionServiceImpl {
                         }
 
                         transactionDetails.add(transactionDetail);
+                    } else if (t.getTrxnserno() == null) {
+                        Tbalances lastFoundBalance = null;
+                        Long currentSerno = t.getSerno();
+                        Long foundSerno = 0L;
+                        int size = 0;
+
+                        while (t.getTrxnserno() == null) {
+                            List<Tbalances> nextBalances = tbalancesRepository.findByNextbalanceserno(currentSerno);
+                            if (!nextBalances.isEmpty()) {
+                                for (Tbalances nextBalance : nextBalances) {
+                                    if (nextBalance.getTrxnserno() != null) {
+                                        // Found trxnserno, store it in lastFoundBalance
+                                        if (foundSerno != nextBalance.getSerno()) {
+                                            Optional<Ctransactions> ctransactions = ctransactionsRepository.findById(nextBalance.getTrxnserno());
+                                            Ctransactions ctransaction =ctransactions.get();
+                                            transactionDetail.setDescription(ctransaction.getI048TextData());
+                                            LocalDateTime localDateTime = ctransaction.getI013TrxnDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                                            LocalDate localDate = localDateTime.toLocalDate();
+                                            String outputDateStr = outputFormatter.format(localDate);
+                                            transactionDetail.setTransactionDate(outputDateStr);
+                                            transactionDetail.setTransactionAmount(ctransaction.getI004AmtTrxn());
+                                            transactionDetail.setBillingAmount(ctransaction.getI006AmtBill());
+                                            transactionDetail.setRecType(ctransaction.getTrxntypes().getRectype());
+                                            transactionDetail.setTransactionCurrency(ctransaction.getI049CurTrxn());
+                                            transactionDetail.setBillingCurrency(ctransaction.getI051CurBill());
+                                            transactionDetail.setOutstandingamount(t.getOutstandingamount());
+
+                                            if (t.getMinpaypercentage() == null) {
+
+                                            } else if (t.getMinpaypercentage() == 100) {
+                                                transactionDetail.setMinpaypercentage(t.getMinpaypercentage());
+                                            }
+                                            foundSerno = nextBalance.getSerno();
+                                            transactionDetails.add(transactionDetail);
+                                            lastFoundBalance = nextBalance;
+                                            size++;
+                                            // Break out of the loop
+                                            break;
+                                        }
+                                    }
+                                    if(nextBalance.getTrxnserno() == null) {
+                                        currentSerno = nextBalance.getSerno();
+                                    }
+                                }
+                            }
+
+                            if(size == nextBalances.size() ){
+                                break;
+                            }
+                        }
                     }
-                    transactionDetail.setOutstandingamount(t.getOutstandingamount());
                 }
             }
         });
