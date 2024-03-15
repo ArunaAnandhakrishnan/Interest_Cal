@@ -69,7 +69,8 @@ public class TransactionServiceImpl {
                 TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
                 if (t.getOutstandingamount().compareTo(BigDecimal.ZERO) < 0) {
                     if (t.getTrxnserno() != null) {
-                        Ctransactions ctransaction = ctransactionsRepository.getById(t.getTrxnserno());
+                        Optional<Ctransactions> ctransactionDatas = ctransactionsRepository.findById(t.getTrxnserno());
+                        Ctransactions ctransaction = ctransactionDatas.get();
                         transactionDetail.setDescription(ctransaction.getI048TextData());
                         LocalDateTime localDateTime = ctransaction.getI013TrxnDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
                         LocalDate localDate = localDateTime.toLocalDate();
@@ -143,29 +144,6 @@ public class TransactionServiceImpl {
                 }
             }
         });
-
-
-//        List<TransactionDetailsDto> transactionDetails = new ArrayList<>();
-//        List<Ctransactions> ctransactionsList = ctransactionsRepository.getByCaccounts(caccounts);
-//
-//        for (Ctransactions trx : ctransactionsList) {
-//            TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
-//            Ctransactions ctrx = new Ctransactions();
-//            Optional<Tbalances> tbalance = tbalancesRepository.findByTrxnserno(trx.getSerno());
-//            transactionDetail.setDescription(trx.getI048TextData());
-//            LocalDateTime localDateTime = trx.getI013TrxnDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-//            LocalDate localDate = localDateTime.toLocalDate();
-//            String outputDateStr = outputFormatter.format(localDate);
-//            transactionDetail.setTransactionDate(outputDateStr);
-//            transactionDetail.setTransactionAmount(trx.getI004AmtTrxn());
-//            transactionDetail.setBillingAmount(trx.getI006AmtBill());
-//            transactionDetail.setRecType(trx.getTrxntypes().getRectype());
-//            if (tbalance.isPresent()) {
-//                transactionDetail.setOutstandingamount(tbalance.get().getOutstandingamount());
-//                transactionDetail.setMinpaypercentage(tbalance.get().getMinpaypercentage());
-//            }
-//            transactionDetails.add(transactionDetail);
-//        }
         generatePdf(transactionDetails);
         return transactionDetails;
 
