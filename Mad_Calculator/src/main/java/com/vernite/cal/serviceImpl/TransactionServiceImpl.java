@@ -17,20 +17,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.vernite.cal.model.*;
+import com.vernite.cal.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vernite.cal.dto.TransactionDetailsDto;
-import com.vernite.cal.model.Caccounts;
-import com.vernite.cal.model.Cardx;
-import com.vernite.cal.model.Cstatements;
-import com.vernite.cal.model.Ctransactions;
-import com.vernite.cal.model.Tbalances;
-import com.vernite.cal.repository.CardxRepository;
-import com.vernite.cal.repository.CstatementsRepositoty;
-import com.vernite.cal.repository.CtransactionsRepository;
-import com.vernite.cal.repository.TbalancesRepository;
-import com.vernite.cal.repository.TrxntypesRepository;
 
 @Service
 public class TransactionServiceImpl {
@@ -42,10 +34,15 @@ public class TransactionServiceImpl {
     private TbalancesRepository tbalancesRepository;
 
     @Autowired
-    private TrxntypesRepository trxntypesRepository;
+    private MprofileAcctRepository mprofileAcctRepository;
     @Autowired
     private CstatementsRepositoty cstatementsRepositoty;
-
+    @Autowired
+    private ProductsRepository productsRepository;
+    @Autowired
+    ProfilesRepository profilesRepository;
+    @Autowired
+    CstatementSettingsRepository cstatementSettingsRepository;
     @Autowired
     private CardxRepository cardxRepository;
     private final ObjectMapper objectMapper;
@@ -84,7 +81,11 @@ public class TransactionServiceImpl {
                         transactionDetail.setOutstandingamount(t.getOutstandingamount());
 
                         if (t.getMinpaypercentage() == null) {
-
+                            Optional<Products> product = productsRepository.findById(caccounts.getProduct());
+                            Optional<Mprofileacct> mprofileacct = mprofileAcctRepository.findByProducts(product);
+                            Optional<Profiles> profiles = profilesRepository.findById(mprofileacct.get().getProfiles().getSerno());
+                            Optional<Cstmtsettings> csetting = cstatementSettingsRepository.findByProfiles(profiles.get());
+                            transactionDetail.setMinpaypercentage(csetting.get().getMinpaypercentage());
                         } else if (t.getMinpaypercentage() == 100) {
                             transactionDetail.setMinpaypercentage(t.getMinpaypercentage());
                         }
@@ -104,7 +105,7 @@ public class TransactionServiceImpl {
                                         // Found trxnserno, store it in lastFoundBalance
                                         if (foundSerno != nextBalance.getSerno()) {
                                             Optional<Ctransactions> ctransactions = ctransactionsRepository.findById(nextBalance.getTrxnserno());
-                                            Ctransactions ctransaction =ctransactions.get();
+                                            Ctransactions ctransaction = ctransactions.get();
                                             transactionDetail.setDescription(ctransaction.getI048TextData());
                                             LocalDateTime localDateTime = ctransaction.getI013TrxnDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
                                             LocalDate localDate = localDateTime.toLocalDate();
@@ -118,6 +119,11 @@ public class TransactionServiceImpl {
                                             transactionDetail.setOutstandingamount(t.getOutstandingamount());
 
                                             if (t.getMinpaypercentage() == null) {
+                                                Optional<Products> product = productsRepository.findById(caccounts.getProduct());
+                                                Optional<Mprofileacct> mprofileacct = mprofileAcctRepository.findByProducts(product);
+                                                Optional<Profiles> profiles = profilesRepository.findById(mprofileacct.get().getProfiles().getSerno());
+                                                Optional<Cstmtsettings> csetting = cstatementSettingsRepository.findByProfiles(profiles.get());
+                                                transactionDetail.setMinpaypercentage(csetting.get().getMinpaypercentage());
 
                                             } else if (t.getMinpaypercentage() == 100) {
                                                 transactionDetail.setMinpaypercentage(t.getMinpaypercentage());
@@ -130,13 +136,13 @@ public class TransactionServiceImpl {
                                             break;
                                         }
                                     }
-                                    if(nextBalance.getTrxnserno() == null) {
+                                    if (nextBalance.getTrxnserno() == null) {
                                         currentSerno = nextBalance.getSerno();
                                     }
                                 }
                             }
 
-                            if(size == nextBalances.size() ){
+                            if (size == nextBalances.size()) {
                                 break;
                             }
                         }
