@@ -46,17 +46,8 @@ public class StatementServiceImpl {
 		byCycledate.get().getOverdueamount();
 		
 		double calculateOverLimitAmount = byCycledate.get().getClosingbalance() - byCycledate.get().getCreditlimit();
-
-		Date printduedate = byCycledate.get().getPrintduedate();
-
-		String printDueDate = convertDateOne(printduedate);
-
 		byCycledate.get().getMindueamount();
 		byCycledate.get().getClosingbalance();
-		Date duedate = byCycledate.get().getDuedate();
-
-		String dueDate = convertDateTwo(duedate);
-
 		byCycledate.get().getOpeningbalance();
 		byCycledate.get().getOverduecycles();
 		BigDecimal mad = madCalculation(cardNumber, cycleDate);
@@ -67,12 +58,12 @@ public class StatementServiceImpl {
 		st.setOverdueamount(Math.abs(byCycledate.get().getOverdueamount()));
 		// st.setPrintduedate(byCycledate.get().getPrintduedate());
 
-		st.setPrintduedate(printDueDate);
+		st.setPrintduedate(byCycledate.get().getPrintduedate());
 		st.setMindueamount(Math.abs(byCycledate.get().getMindueamount()));
 		st.setTad(Math.abs(byCycledate.get().getClosingbalance()));
 
 		// st.setDuedate(byCycledate.get().getDuedate());
-		st.setDuedate(dueDate);
+		st.setDuedate(byCycledate.get().getDuedate());
 		st.setOpeningbalance(Math.abs(byCycledate.get().getOpeningbalance()));
 		st.setOverduecycles(byCycledate.get().getOverduecycles());
 		st.setMad(mad);

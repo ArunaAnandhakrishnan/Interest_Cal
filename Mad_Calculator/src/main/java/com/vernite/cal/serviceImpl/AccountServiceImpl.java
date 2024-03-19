@@ -103,11 +103,11 @@ public class AccountServiceImpl implements AccountService {
 			cycledate.add(outputDateStr);
 		}
 		
-		Collections.sort(cycledate);
-		
-		for (String date : cycledate) {
-            System.out.println(date);
-        }
+//		Collections.sort(cycledate);
+//
+//		for (String date : cycledate) {
+//            System.out.println(date);
+//        }
 //		 Arrays.sort(cycledate, Comparator.reverseOrder());
 //		Arrays.sort(cycledate,Comparator.reverseOrder());
 		 
