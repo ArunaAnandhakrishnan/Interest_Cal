@@ -48,29 +48,44 @@ public class AccountController {
 	}
 
 	@GetMapping("/statement/{numberx}")
-	public StatementResponse getState(@PathVariable String numberx, @RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate)
-			throws ParseException {
-		StatementResponse details = statementServiceImpl.getStatementDetails(numberx,cycleDate);
+	public StatementResponse getState(@PathVariable String numberx,
+			@RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate) throws ParseException {
+		StatementResponse details = statementServiceImpl.getStatementDetails(numberx, cycleDate);
 		return details;
 	}
 
 	@GetMapping("/transaction/{cardNumber}")
 	public ResponseEntity<List<TransactionDetailsDto>> getTransaction(@PathVariable String cardNumber,
-																@RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate) throws SQLException {
-		List<TransactionDetailsDto> detailsDto = transactionServiceImpl.getTransactionByDate(cardNumber,cycleDate);
+			@RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate) throws SQLException {
+		List<TransactionDetailsDto> detailsDto = transactionServiceImpl.getTransactionByDate(cardNumber, cycleDate);
 		return new ResponseEntity<List<TransactionDetailsDto>>(detailsDto, HttpStatus.OK);
 
 	}
+
 	@GetMapping("/downloadPdf/{cardNumber}")
 	public ResponseEntity<byte[]> downloadPdf(@PathVariable String cardNumber,
-																	  @RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate) throws SQLException {
-		byte[] detailsDto = transactionServiceImpl.downloadPdf(cardNumber,cycleDate);
+			@RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate) throws SQLException {
+		byte[] detailsDto = transactionServiceImpl.downloadPdf(cardNumber, cycleDate);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_PDF);
 		headers.setContentDispositionFormData("filename", "transaction_details.pdf");
 		headers.setContentLength(detailsDto.length);
 		return new ResponseEntity<byte[]>(detailsDto, headers, HttpStatus.OK);
 
+	}
+
+	@GetMapping("/downloadExcel/{cardNumber}")
+	public ResponseEntity<byte[]> downloadExcel(@PathVariable String cardNumber,
+			@RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate) {
+		byte[] excelData = transactionServiceImpl.downloadExcel(cardNumber, cycleDate);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM); // Setting content type to octet-stream for Excel
+		headers.setContentDispositionFormData("attachment", "transaction_details.xlsx"); // Change filename extension to
+																							// .xlsx
+		headers.setContentLength(excelData.length);
+
+		return new ResponseEntity<>(excelData, headers, HttpStatus.OK);
 	}
 
 }
