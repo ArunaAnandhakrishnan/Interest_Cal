@@ -318,14 +318,13 @@ public class TransactionServiceImpl {
 	            
 	            org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet("statements");
 	            
-	            // Create header row
+	           
 	            Row headerRow = sheet.createRow(0);
 	            headerRow.createCell(0).setCellValue("Amount");
 	            headerRow.createCell(1).setCellValue("Outstanding Amount");
 	            headerRow.createCell(2).setCellValue("Minimum Pay Percentage");
 	            headerRow.createCell(3).setCellValue("Amount Contribution in MAD");
 
-	            // Add transaction details to the sheet
 	            int rowNum = 1;
 	            for (TransactionDetailsDto transaction : transactionDetails) {
 	                Row row = sheet.createRow(rowNum++);
@@ -335,7 +334,7 @@ public class TransactionServiceImpl {
 	                row.createCell(3).setCellValue(transaction.getMadAmount() != null ? String.valueOf(transaction.getMadAmount()) : "0");
 	            }
 
-	            // Auto-size columns
+	            
 	            for (int i = 0; i < 4; i++) {
 	                sheet.autoSizeColumn(i);
 	            }
