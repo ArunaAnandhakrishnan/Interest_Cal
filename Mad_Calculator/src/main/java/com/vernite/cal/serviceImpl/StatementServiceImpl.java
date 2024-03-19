@@ -44,11 +44,8 @@ public class StatementServiceImpl {
 		byCycledate.get().getTotalcredits();
 		byCycledate.get().getTotaldebits();
 		byCycledate.get().getOverdueamount();
-
-		// calculate overLimitAmount
-		Double closingbalance = byCycledate.get().getClosingbalance();
-		Double creditlimit = byCycledate.get().getCreditlimit();
-		double calculateOverLimitAmount = calculateOverLimitAmount(creditlimit, closingbalance);
+		
+		double calculateOverLimitAmount = byCycledate.get().getClosingbalance() - byCycledate.get().getCreditlimit();
 
 		Date printduedate = byCycledate.get().getPrintduedate();
 
@@ -81,19 +78,15 @@ public class StatementServiceImpl {
 		st.setMad(mad);
 		
 		if (calculateOverLimitAmount < 0) {
-			System.out.println("OverLimit :--------------- " + Math.abs(calculateOverLimitAmount));
 			st.setOverdueamount(Math.abs(calculateOverLimitAmount));
 		} else {
-			System.out.println("no overlimit--->0");
+			st.setOverdueamount(0.0);
 		}
 
 		return st;
 	}
 
-	// calculate over-limit amount
-	public double calculateOverLimitAmount(double creditLimit, double closingbalance) {
-		return creditLimit - closingbalance;
-	}
+	
 
 	public BigDecimal madCalculation(String cardNumber, Date cycleDate) {
 		Cardx byCard = cardxRepository.findByNumberx(cardNumber);

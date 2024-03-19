@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.comparator.Comparators;
 
 import com.vernite.cal.dto.CardDetailsResponse;
 import com.vernite.cal.model.Caccounts;
@@ -101,7 +103,14 @@ public class AccountServiceImpl implements AccountService {
 			cycledate.add(outputDateStr);
 		}
 		
-		Collections.sort(cycledate, Comparator.reverseOrder());
+		Collections.sort(cycledate);
+		
+		for (String date : cycledate) {
+            System.out.println(date);
+        }
+//		 Arrays.sort(cycledate, Comparator.reverseOrder());
+//		Arrays.sort(cycledate,Comparator.reverseOrder());
+		 
 		CardDetailsResponse c = new CardDetailsResponse();
 		c.setNumberx(caccounts.getNumberx());
 		c.setStgeneral(caccounts.getStgeneral());
