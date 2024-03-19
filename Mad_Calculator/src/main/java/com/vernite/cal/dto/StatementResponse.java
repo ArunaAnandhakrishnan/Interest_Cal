@@ -1,5 +1,6 @@
 package com.vernite.cal.dto;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class StatementResponse {
@@ -14,8 +15,7 @@ public class StatementResponse {
 	private Long tad;
 	private Long openingbalance;
 	private Long overduecycles;
-
-	private Long mad;
+	private BigDecimal mad;
 
 	public Long getTotaldebits() {
 		return totaldebits;
@@ -89,11 +89,11 @@ public class StatementResponse {
 		this.overduecycles = overduecycles;
 	}
 
-	public Long getMad() {
+	public BigDecimal getMad() {
 		return mad;
 	}
 
-	public void setMad(Long mad) {
+	public void setMad(BigDecimal mad) {
 		this.mad = mad;
 	}
 }

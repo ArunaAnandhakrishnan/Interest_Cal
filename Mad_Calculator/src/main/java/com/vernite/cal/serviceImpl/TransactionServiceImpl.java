@@ -28,9 +28,6 @@ import com.vernite.cal.dto.TransactionDetailsDto;
 public class TransactionServiceImpl {
 
     @Autowired
-    private CtransactionsRepository ctransactionsRepository;
-
-    @Autowired
     private TbalancesRepository tbalancesRepository;
 
     @Autowired
