@@ -51,7 +51,8 @@ public class StatementServiceImpl {
 		Date duedate = byCycledate.get().getDuedate();
 		String dueDateString = convertDateTwo(duedate);
 
-		double calculateOverLimitAmount = byCycledate.get().getClosingbalance() - byCycledate.get().getCreditlimit();
+		double calculateOverLimitAmount = byCycledate.get().getCreditlimit()-byCycledate.get().getClosingbalance();
+
 		byCycledate.get().getMindueamount();
 		byCycledate.get().getClosingbalance();
 		byCycledate.get().getOpeningbalance();
@@ -74,9 +75,9 @@ public class StatementServiceImpl {
 		st.setMad(mad);
 
 		if (calculateOverLimitAmount < 0) {
-			st.setOverdueamount(Math.abs(calculateOverLimitAmount));
+			st.setOverLimitAmount(Math.abs(calculateOverLimitAmount));
 		} else {
-			st.setOverdueamount(0.0);
+			st.setOverLimitAmount(0.0);
 		}
 
 		return st;
