@@ -17,7 +17,18 @@ public class StatementResponse {
 	private Long overduecycles;
 	private BigDecimal mad;
 
+	private double overLimitAmount;
+
+	public double getOverLimitAmount() {
+		return overLimitAmount;
+	}
+
+	public void setOverLimitAmount(double overLimitAmount) {
+		this.overLimitAmount = overLimitAmount;
+	}
+
 	public Double getTotaldebits() {
+
 		return totaldebits;
 	}
 
