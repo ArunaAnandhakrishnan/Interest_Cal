@@ -5,39 +5,39 @@ import java.util.Date;
 
 public class StatementResponse {
 
-	private Long totaldebits;
-	private Long totalcredits;
-	private Long overdueamount;
+	private Double totaldebits;
+	private Double totalcredits;
+	private Double overdueamount;
 
 	private String printduedate;
 	private String duedate;
-	private Long mindueamount;
-	private Long tad;
-	private Long openingbalance;
+	private Double mindueamount;
+	private Double tad;
+	private Double openingbalance;
 	private Long overduecycles;
 	private BigDecimal mad;
 
-	public Long getTotaldebits() {
+	public Double getTotaldebits() {
 		return totaldebits;
 	}
 
-	public void setTotaldebits(Long totaldebits) {
+	public void setTotaldebits(Double totaldebits) {
 		this.totaldebits = totaldebits;
 	}
 
-	public Long getTotalcredits() {
+	public Double getTotalcredits() {
 		return totalcredits;
 	}
 
-	public void setTotalcredits(Long totalcredits) {
+	public void setTotalcredits(Double totalcredits) {
 		this.totalcredits = totalcredits;
 	}
 
-	public Long getOverdueamount() {
+	public Double getOverdueamount() {
 		return overdueamount;
 	}
 
-	public void setOverdueamount(Long overdueamount) {
+	public void setOverdueamount(Double overdueamount) {
 		this.overdueamount = overdueamount;
 	}
 
@@ -57,27 +57,27 @@ public class StatementResponse {
 		this.duedate = duedate;
 	}
 
-	public Long getMindueamount() {
+	public Double getMindueamount() {
 		return mindueamount;
 	}
 
-	public void setMindueamount(Long mindueamount) {
+	public void setMindueamount(Double mindueamount) {
 		this.mindueamount = mindueamount;
 	}
 
-	public Long getTad() {
+	public Double getTad() {
 		return tad;
 	}
 
-	public void setTad(Long tad) {
+	public void setTad(Double tad) {
 		this.tad = tad;
 	}
 
-	public Long getOpeningbalance() {
+	public Double getOpeningbalance() {
 		return openingbalance;
 	}
 
-	public void setOpeningbalance(Long openingbalance) {
+	public void setOpeningbalance(Double openingbalance) {
 		this.openingbalance = openingbalance;
 	}
 
