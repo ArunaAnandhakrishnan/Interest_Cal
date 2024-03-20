@@ -40,39 +40,19 @@ public class StatementServiceImpl {
 		Caccounts caccounts = byCard.getCaccounts();
 		Optional<Cstatements> byCycledate = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate,
 				byCard.getCaccounts());
-
-		byCycledate.get().getTotalcredits();
-		byCycledate.get().getTotaldebits();
-		byCycledate.get().getOverdueamount();
-
-		Date printduedate = byCycledate.get().getPrintduedate();
-		String printDueDateString = convertDateOne(printduedate);
-
-		Date duedate = byCycledate.get().getDuedate();
-		String dueDateString = convertDateTwo(duedate);
-
-		double calculateOverLimitAmount = byCycledate.get().getCreditlimit()-byCycledate.get().getClosingbalance();
-
-		byCycledate.get().getMindueamount();
-		byCycledate.get().getClosingbalance();
-		byCycledate.get().getOpeningbalance();
-		byCycledate.get().getOverduecycles();
 		BigDecimal mad = madCalculation(cardNumber, cycleDate);
 		StatementResponse st = new StatementResponse();
-
 		st.setTotalcredits(byCycledate.get().getTotalcredits());
 		st.setTotaldebits(byCycledate.get().getTotaldebits());
 		st.setOverdueamount(Math.abs(byCycledate.get().getOverdueamount()));
-
-		st.setPrintduedate(printDueDateString);
-		st.setDuedate(dueDateString);
-
+		st.setPrintduedate(byCycledate.get().getPrintduedate());
+		st.setDuedate(byCycledate.get().getDuedate());
 		st.setMindueamount(Math.abs(byCycledate.get().getMindueamount()));
 		st.setTad(Math.abs(byCycledate.get().getClosingbalance()));
-
 		st.setOpeningbalance(Math.abs(byCycledate.get().getOpeningbalance()));
 		st.setOverduecycles(byCycledate.get().getOverduecycles());
 		st.setMad(mad);
+		double calculateOverLimitAmount = byCycledate.get().getCreditlimit()-byCycledate.get().getClosingbalance();
 
 		if (calculateOverLimitAmount < 0) {
 			st.setOverLimitAmount(Math.abs(calculateOverLimitAmount));
