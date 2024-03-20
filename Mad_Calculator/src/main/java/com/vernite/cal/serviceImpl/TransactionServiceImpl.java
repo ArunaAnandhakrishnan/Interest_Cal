@@ -383,10 +383,14 @@ public byte[] generateExcel(List<TransactionDetailsDto> transactionDetails) {
         CellStyle headerCellStyle = workbook.createCellStyle();
         headerCellStyle.setFont(headerFont);
         headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        
+     // Create a cell style for data with center alignment
+        CellStyle dataCellStyle = workbook.createCellStyle();
+        dataCellStyle.setAlignment(HorizontalAlignment.CENTER);
 
         // Create header row and set cell values with header cell style
         Row headerRow = sheet.createRow(0);
-        String[] headers = {"Amount", "Outstanding Amount", "Minimum Pay Percentage", "Amount Contribution in MAD", "Over Due Amount", "Over Limit Amount", "Mad"};
+        String[] headers = {"  Amount  ", "  Outstanding Amount  ", " Minimum Pay Percentage ", " Amount Contribution in MAD ", " Over Due Amount ", " Over Limit Amount ", "    Mad    "};
         for (int i = 0; i < headers.length; i++) {
             Cell cell = headerRow.createCell(i);
             cell.setCellValue(headers[i]);
@@ -406,8 +410,15 @@ public byte[] generateExcel(List<TransactionDetailsDto> transactionDetails) {
             row.createCell(4).setCellValue(transaction.getOverDueAmount() != null ? transaction.getOverDueAmount().toString() : "0");
             row.createCell(5).setCellValue(transaction.getOverLimitAmount() != null ? transaction.getOverLimitAmount().toString() : "0");
             row.createCell(6).setCellValue(transaction.getMad() != null ? transaction.getMad().toString() : "0");
+        
+            // Apply data cell style to data rows
+            for (Cell cell : row) {
+                cell.setCellStyle(dataCellStyle);
+            }
+            
         }
 
+        
         // Write the workbook content to a byte array
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         workbook.write(byteArrayOutputStream);
