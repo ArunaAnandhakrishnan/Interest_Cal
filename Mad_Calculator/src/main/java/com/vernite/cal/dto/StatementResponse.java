@@ -8,8 +8,8 @@ public class StatementResponse {
 	private Double totaldebits;
 	private Double totalcredits;
 	private Double overdueamount;
-	private String printduedate;
-	private String duedate;
+	private Date printduedate;
+	private Date duedate;
 	private Double mindueamount;
 	private Double tad;
 	private Double openingbalance;
@@ -51,19 +51,19 @@ public class StatementResponse {
 		this.overdueamount = overdueamount;
 	}
 
-	public String getPrintduedate() {
+	public Date getPrintduedate() {
 		return printduedate;
 	}
 
-	public void setPrintduedate(String printduedate) {
+	public void setPrintduedate(Date printduedate) {
 		this.printduedate = printduedate;
 	}
 
-	public String getDuedate() {
+	public Date getDuedate() {
 		return duedate;
 	}
 
-	public void setDuedate(String duedate) {
+	public void setDuedate(Date duedate) {
 		this.duedate = duedate;
 	}
 

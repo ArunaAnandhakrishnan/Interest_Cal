@@ -17,123 +17,133 @@ import com.vernite.cal.dto.StatementResponse;
 @Service
 public class StatementServiceImpl {
 
-	@Autowired
-	private CstatementsRepositoty cstatementsRepositoty;
-	@Autowired
-	private TbalancesRepository tbalancesRepository;
+    @Autowired
+    private CstatementsRepositoty cstatementsRepositoty;
+    @Autowired
+    private TbalancesRepository tbalancesRepository;
 
-	@Autowired
-	private MprofileAcctRepository mprofileAcctRepository;
+    @Autowired
+    private MprofileAcctRepository mprofileAcctRepository;
 
-	@Autowired
-	private ProductsRepository productsRepository;
-	@Autowired
-	ProfilesRepository profilesRepository;
-	@Autowired
-	CstatementSettingsRepository cstatementSettingsRepository;
-	@Autowired
-	private CardxRepository cardxRepository;
+    @Autowired
+    private ProductsRepository productsRepository;
+    @Autowired
+    ProfilesRepository profilesRepository;
+    @Autowired
+    CstatementSettingsRepository cstatementSettingsRepository;
+    @Autowired
+    private CardxRepository cardxRepository;
 
-	public StatementResponse getStatementDetails(String cardNumber, Date cycleDate) throws ParseException {
+    public StatementResponse getStatementDetails(String cardNumber, Date cycleDate) throws ParseException {
 
-		Cardx byCard = cardxRepository.findByNumberx(cardNumber);
-		Caccounts caccounts = byCard.getCaccounts();
-		Optional<Cstatements> byCycledate = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate,
-				byCard.getCaccounts());
+        Cardx byCard = cardxRepository.findByNumberx(cardNumber);
+        Caccounts caccounts = byCard.getCaccounts();
+        Optional<Cstatements> byCycledate = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate,
+                byCard.getCaccounts());
+        BigDecimal mad = madCalculation(cardNumber, cycleDate);
+        StatementResponse st = new StatementResponse();
+        st.setTotalcredits(byCycledate.get().getTotalcredits());
+        st.setTotaldebits(byCycledate.get().getTotaldebits());
+        st.setOverdueamount(Math.abs(byCycledate.get().getOverdueamount()));
+        st.setPrintduedate(byCycledate.get().getPrintduedate());
+        st.setDuedate(byCycledate.get().getDuedate());
+        st.setMindueamount(Math.abs(byCycledate.get().getMindueamount()));
+        st.setTad(Math.abs(byCycledate.get().getClosingbalance()));
+        st.setOpeningbalance(Math.abs(byCycledate.get().getOpeningbalance()));
+        st.setOverduecycles(byCycledate.get().getOverduecycles());
+        st.setMad(mad);
+        double calculateOverLimitAmount = byCycledate.get().getCreditlimit() - byCycledate.get().getClosingbalance();
 
-		Date printduedate = byCycledate.get().getPrintduedate();
-		String printDueDates = convertDateOne(printduedate);
+        if (calculateOverLimitAmount < 0) {
+            st.setOverLimitAmount(Math.abs(calculateOverLimitAmount));
+        } else {
+            st.setOverLimitAmount(0.0);
+        }
 
-		Date duedate = byCycledate.get().getDuedate();
-		String dueDates = convertDateTwo(duedate);
+        return st;
+    }
 
-		BigDecimal mad = madCalculation(cardNumber, cycleDate);
-		StatementResponse st = new StatementResponse();
-		st.setTotalcredits(byCycledate.get().getTotalcredits());
-		st.setTotaldebits(byCycledate.get().getTotaldebits());
-		st.setOverdueamount(Math.abs(byCycledate.get().getOverdueamount()));
+    public BigDecimal madCalculation(String cardNumber, Date cycleDate) {
+        Cardx byCard = cardxRepository.findByNumberx(cardNumber);
+        Caccounts caccounts = byCard.getCaccounts();
+        Optional<Cstatements> statements = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate, caccounts);
+        Double overLimitAmount = statements.get().getCreditlimit() - statements.get().getClosingbalance();
+        BigDecimal outStandingAmount = BigDecimal.ZERO;
+        BigDecimal madAmount = BigDecimal.ZERO;
+        BigDecimal overDueAmount = BigDecimal.valueOf(statements.get().getOverdueamount());
+        BigDecimal overLimit = BigDecimal.valueOf(overLimitAmount);
+        BigDecimal closingBalance = BigDecimal.valueOf(statements.get().getClosingbalance());
+        Optional<Products> product = productsRepository.findById(caccounts.getProduct());
+        Optional<Mprofileacct> mprofileacct = mprofileAcctRepository.findByProducts(product);
+        Optional<Profiles> profiles = profilesRepository
+                .findById(mprofileacct.get().getProfiles().getSerno());
+        Optional<Cstmtsettings> csetting = cstatementSettingsRepository.findByProfiles(profiles.get());
+        Long minPayPercentage = csetting.get().getMinpaypercentage();
+        if (statements.get().getOverdueamount() <= 0) {
+            Optional<List<Tbalances>> tbalances = tbalancesRepository.getTbalance(statements.get().getSerno(),
+                    caccounts.getSerno());
+            for (Tbalances tbalancedata : tbalances.get()) {
+                if (tbalancedata.getMinpaypercentage() != null) {
+                    if (tbalancedata.getMinpaypercentage() == 100 && tbalancedata.getTrxnserno() != null) {
+                        outStandingAmount = outStandingAmount.add(tbalancedata.getOutstandingamount());
+                    }
+                }
+            }
 
-		st.setPrintduedate(printDueDates);
-		st.setDuedate(dueDates);
-		st.setMindueamount(Math.abs(byCycledate.get().getMindueamount()));
-		st.setTad(Math.abs(byCycledate.get().getClosingbalance()));
-		st.setOpeningbalance(Math.abs(byCycledate.get().getOpeningbalance()));
-		st.setOverduecycles(byCycledate.get().getOverduecycles());
-		st.setMad(mad);
-		double calculateOverLimitAmount = byCycledate.get().getCreditlimit() - byCycledate.get().getClosingbalance();
+            BigDecimal v = ((closingBalance.subtract(overDueAmount.add(overLimit).add(outStandingAmount))).multiply(BigDecimal.valueOf(minPayPercentage)).divide(BigDecimal.valueOf(100))).add((overDueAmount.add(overLimit).add(outStandingAmount)));
+            madAmount = v;
+        } else if (statements.get().getOverdueamount() == 0) {
+            Optional<List<Tbalances>> tbalances = tbalancesRepository.getTbalance(statements.get().getSerno(),
+                    caccounts.getSerno());
+            for (Tbalances tbalancedata : tbalances.get()) {
+                if (tbalancedata.getMinpaypercentage() == null) {
+                    minPayPercentage = csetting.get().getMinpaypercentage();
+                } else if (tbalancedata.getMinpaypercentage() == 100) {
+                    minPayPercentage = tbalancedata.getMinpaypercentage();
+                }
+                outStandingAmount = outStandingAmount.add(tbalancedata.getOutstandingamount().abs()
+                        .multiply(BigDecimal.valueOf(minPayPercentage)).divide(BigDecimal.valueOf(100)));
+            }
+            madAmount = outStandingAmount;
+        }
 
-		if (calculateOverLimitAmount < 0) {
-			st.setOverLimitAmount(Math.abs(calculateOverLimitAmount));
-		} else {
-			st.setOverLimitAmount(0.0);
-		}
+        return madAmount;
+    }
 
-		return st;
-	}
+    public static String convertDateOne(Date inputDate) throws ParseException {
+        SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        return outputDateFormat.format(inputDate);
+    }
 
-	public BigDecimal madCalculation(String cardNumber, Date cycleDate) {
-		Cardx byCard = cardxRepository.findByNumberx(cardNumber);
-		Caccounts caccounts = byCard.getCaccounts();
-		Optional<List<Cstatements>> statements = cstatementsRepositoty.findByAccounts(caccounts.getSerno());
-		BigDecimal outStandingAmount = BigDecimal.ZERO;
-		for (Cstatements statement : statements.get()) {
-			Optional<List<Tbalances>> tbalances = tbalancesRepository.getTbalance(statement.getSerno(),
-					caccounts.getSerno());
-			for (Tbalances tbalancedata : tbalances.get()) {
-				Long minPayPercentage = 0L;
+    public static String convertDateTwo(Date inputDate) throws ParseException {
+        SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        return outputDateFormat.format(inputDate);
+    }
 
-				if (tbalancedata.getMinpaypercentage() == null) {
-					Optional<Products> product = productsRepository.findById(caccounts.getProduct());
-					Optional<Mprofileacct> mprofileacct = mprofileAcctRepository.findByProducts(product);
-					Optional<Profiles> profiles = profilesRepository
-							.findById(mprofileacct.get().getProfiles().getSerno());
-					Optional<Cstmtsettings> csetting = cstatementSettingsRepository.findByProfiles(profiles.get());
-					minPayPercentage = csetting.get().getMinpaypercentage();
-				} else if (tbalancedata.getMinpaypercentage() == 100) {
-					minPayPercentage = tbalancedata.getMinpaypercentage();
-				}
-				outStandingAmount = outStandingAmount.add(tbalancedata.getOutstandingamount().abs()
-						.multiply(BigDecimal.valueOf(minPayPercentage)).divide(BigDecimal.valueOf(100)));
-			}
-		}
+    public Cstatements getStatementByNumberx(Long numberx) {
 
-		return outStandingAmount;
-	}
+        Optional<Cstatements> findById = cstatementsRepositoty.findById(numberx);
 
-	public static String convertDateOne(Date inputDate) throws ParseException {
-		SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-		return outputDateFormat.format(inputDate);
-	}
+        if (findById.isPresent()) {
+            Cstatements statement = findById.get();
+            Long serno = statement.getSerno();
 
-	public static String convertDateTwo(Date inputDate) throws ParseException {
-		SimpleDateFormat outputDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-		return outputDateFormat.format(inputDate);
-	}
+            Date date = statement.getCycledate();
 
-	public Cstatements getStatementByNumberx(Long numberx) {
+            if (findById.equals(date)) {
 
-		Optional<Cstatements> findById = cstatementsRepositoty.findById(numberx);
+                Optional<Cstatements> statements = cstatementsRepositoty.findById(serno);
 
-		if (findById.isPresent()) {
-			Cstatements statement = findById.get();
-			Long serno = statement.getSerno();
+                return statement;
+            } else {
 
-			Date date = statement.getCycledate();
+                return null;
+            }
+        } else {
 
-			if (findById.equals(date)) {
+            return null;
+        }
 
-				Optional<Cstatements> statements = cstatementsRepositoty.findById(serno);
-
-				return statement;
-			} else {
-
-				return null;
-			}
-		} else {
-
-			return null;
-		}
-
-	}
+    }
 
 }
