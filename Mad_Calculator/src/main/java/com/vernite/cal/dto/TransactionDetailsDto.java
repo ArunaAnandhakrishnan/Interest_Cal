@@ -16,6 +16,9 @@ public class TransactionDetailsDto {
     private Long minpaypercentage;
     private BigDecimal amount;
     private BigDecimal madAmount;
+    private Double overDueAmount;
+    private Double overLimitAmount;
+    private BigDecimal mad;
 
     public BigDecimal getOutstandingamount() {
         return outstandingamount;
@@ -47,5 +50,29 @@ public class TransactionDetailsDto {
 
     public void setMadAmount(BigDecimal madAmount) {
         this.madAmount = madAmount;
+    }
+
+    public Double getOverDueAmount() {
+        return overDueAmount;
+    }
+
+    public void setOverDueAmount(Double overDueAmount) {
+        this.overDueAmount = overDueAmount;
+    }
+
+    public Double getOverLimitAmount() {
+        return overLimitAmount;
+    }
+
+    public void setOverLimitAmount(Double overLimitAmount) {
+        this.overLimitAmount = overLimitAmount;
+    }
+
+    public BigDecimal getMad() {
+        return mad;
+    }
+
+    public void setMad(BigDecimal mad) {
+        this.mad = mad;
     }
 }

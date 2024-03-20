@@ -76,7 +76,7 @@ public class AccountController {
 
 	@GetMapping("/downloadExcel/{cardNumber}")
 	public ResponseEntity<byte[]> downloadExcel(@PathVariable String cardNumber,
-			@RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate) {
+			@RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate) throws ParseException {
 		byte[] excelData = transactionServiceImpl.downloadExcel(cardNumber, cycleDate);
 
 		HttpHeaders headers = new HttpHeaders();
