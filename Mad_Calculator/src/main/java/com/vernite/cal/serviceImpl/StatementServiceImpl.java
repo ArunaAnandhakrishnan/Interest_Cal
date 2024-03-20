@@ -94,7 +94,7 @@ public class StatementServiceImpl {
 		Optional<Profiles> profiles = profilesRepository.findById(mprofileacct.get().getProfiles().getSerno());
 		Optional<Cstmtsettings> csetting = cstatementSettingsRepository.findByProfiles(profiles.get());
 		Long minPayPercentage = csetting.get().getMinpaypercentage();
-		if (statements.get().getOverdueamount() <= 0) {
+		if (statements.get().getOverdueamount() < 0) {
 			Optional<List<Tbalances>> tbalances = tbalancesRepository.getTbalance(statements.get().getSerno(),
 					caccounts.getSerno());
 			for (Tbalances tbalancedata : tbalances.get()) {
@@ -105,10 +105,15 @@ public class StatementServiceImpl {
 				}
 			}
 
-			BigDecimal v = ((closingBalance.subtract(overDueAmount.add(overLimit).add(outStandingAmount)))
-					.multiply(BigDecimal.valueOf(minPayPercentage)).divide(BigDecimal.valueOf(100)))
-					.add((overDueAmount.add(overLimit).add(outStandingAmount)));
-			madAmount = v;
+//			BigDecimal v = (closingBalance.subtract((overDueAmount.add(overLimit).add(outStandingAmount)).multiply(BigDecimal.valueOf(minPayPercentage)).divide(BigDecimal.valueOf(100))))
+//					.add((overDueAmount.add(overLimit).add(outStandingAmount)));
+			BigDecimal v = closingBalance.subtract(
+							(overDueAmount.add(overLimit).add(outStandingAmount))
+									.multiply(BigDecimal.valueOf(minPayPercentage))
+									.divide(BigDecimal.valueOf(100)))
+					.add(overDueAmount.add(overLimit).add(outStandingAmount));
+
+			madAmount = v.abs();
 		} else if (statements.get().getOverdueamount() == 0) {
 			Optional<List<Tbalances>> tbalances = tbalancesRepository.getTbalance(statements.get().getSerno(),
 					caccounts.getSerno());
