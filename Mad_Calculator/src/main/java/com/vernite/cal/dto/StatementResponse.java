@@ -15,8 +15,9 @@ public class StatementResponse {
 	private Double openingbalance;
 	private Long overduecycles;
 	private BigDecimal mad;
-
 	private double overLimitAmount;
+
+	private String accountSatus;
 
 	public double getOverLimitAmount() {
 		return overLimitAmount;
@@ -105,5 +106,13 @@ public class StatementResponse {
 
 	public void setMad(BigDecimal mad) {
 		this.mad = mad;
+	}
+
+	public String getAccountSatus() {
+		return accountSatus;
+	}
+
+	public void setAccountSatus(String accountSatus) {
+		this.accountSatus = accountSatus;
 	}
 }

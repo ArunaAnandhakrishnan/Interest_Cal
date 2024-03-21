@@ -56,6 +56,7 @@ public class StatementServiceImpl {
 		BigDecimal mad = madCalculation(cardNumber, cycleDate);
 
 		StatementResponse st = new StatementResponse();
+		st.setAccountSatus(byCycledate.get().getStgeneral());
 		st.setTotalcredits(byCycledate.get().getTotalcredits());
 		st.setTotaldebits(byCycledate.get().getTotaldebits());
 		st.setOverdueamount(Math.abs(byCycledate.get().getOverdueamount()));
@@ -83,17 +84,25 @@ public class StatementServiceImpl {
 		Cardx byCard = cardxRepository.findByNumberx(cardNumber);
 		Caccounts caccounts = byCard.getCaccounts();
 		Optional<Cstatements> statements = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate, caccounts);
-		Double overLimitAmount = statements.get().getCreditlimit() - statements.get().getClosingbalance();
+
+		Double overLimitAmount =  statements.get().getCreditlimit() - Math.abs(statements.get().getClosingbalance());
 		BigDecimal outStandingAmount = BigDecimal.ZERO;
 		BigDecimal madAmount = BigDecimal.ZERO;
 		BigDecimal overDueAmount = BigDecimal.valueOf(statements.get().getOverdueamount());
-		BigDecimal overLimit = BigDecimal.valueOf(overLimitAmount);
+		BigDecimal overLimit = BigDecimal.ZERO;
+		if(overLimitAmount < 0) {
+			 overLimit = BigDecimal.valueOf(overLimitAmount);
+		}
+		else{
+			overLimit = BigDecimal.ZERO;
+		}
 		BigDecimal closingBalance = BigDecimal.valueOf(statements.get().getClosingbalance());
 		Optional<Products> product = productsRepository.findById(caccounts.getProduct());
 		Optional<Mprofileacct> mprofileacct = mprofileAcctRepository.findByProducts(product);
 		Optional<Profiles> profiles = profilesRepository.findById(mprofileacct.get().getProfiles().getSerno());
 		Optional<Cstmtsettings> csetting = cstatementSettingsRepository.findByProfiles(profiles.get());
 		Long minPayPercentage = csetting.get().getMinpaypercentage();
+		Double minper = (double) (minPayPercentage /100);
 		if (statements.get().getOverdueamount() < 0) {
 			Optional<List<Tbalances>> tbalances = tbalancesRepository.getTbalance(statements.get().getSerno(),
 					caccounts.getSerno());
@@ -107,11 +116,9 @@ public class StatementServiceImpl {
 
 //			BigDecimal v = (closingBalance.subtract((overDueAmount.add(overLimit).add(outStandingAmount)).multiply(BigDecimal.valueOf(minPayPercentage)).divide(BigDecimal.valueOf(100))))
 //					.add((overDueAmount.add(overLimit).add(outStandingAmount)));
-			BigDecimal v = closingBalance.subtract(
-							(overDueAmount.add(overLimit).add(outStandingAmount))
-									.multiply(BigDecimal.valueOf(minPayPercentage))
-									.divide(BigDecimal.valueOf(100)))
-					.add(overDueAmount.add(overLimit).add(outStandingAmount));
+			BigDecimal v = (closingBalance.abs().subtract(overDueAmount.abs().add(overLimit.abs()).add(outStandingAmount.abs())))
+									.multiply(BigDecimal.valueOf(minper))
+					.add(overDueAmount.abs().add(overLimit.abs()).add(outStandingAmount.abs()));
 
 			madAmount = v.abs();
 		} else if (statements.get().getOverdueamount() == 0) {
