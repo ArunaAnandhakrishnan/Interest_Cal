@@ -17,7 +17,7 @@ public class StatementResponse {
 	private BigDecimal mad;
 	private double overLimitAmount;
 
-	private String accountSatus;
+	private String stGeneral;
 
 	public double getOverLimitAmount() {
 		return overLimitAmount;
@@ -108,11 +108,11 @@ public class StatementResponse {
 		this.mad = mad;
 	}
 
-	public String getAccountSatus() {
-		return accountSatus;
+	public String getStGeneral() {
+		return stGeneral;
 	}
 
-	public void setAccountSatus(String accountSatus) {
-		this.accountSatus = accountSatus;
+	public void setStGeneral(String stGeneral) {
+		this.stGeneral = stGeneral;
 	}
 }

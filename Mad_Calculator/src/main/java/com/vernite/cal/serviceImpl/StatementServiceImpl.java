@@ -56,7 +56,7 @@ public class StatementServiceImpl {
 		BigDecimal mad = madCalculation(cardNumber, cycleDate);
 
 		StatementResponse st = new StatementResponse();
-		st.setAccountSatus(byCycledate.get().getStgeneral());
+		st.setStGeneral(byCycledate.get().getStgeneral());
 		st.setTotalcredits(byCycledate.get().getTotalcredits());
 		st.setTotaldebits(byCycledate.get().getTotaldebits());
 		st.setOverdueamount(Math.abs(byCycledate.get().getOverdueamount()));
