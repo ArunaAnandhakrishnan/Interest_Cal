@@ -19,6 +19,7 @@ import com.vernite.cal.dto.StatementResponse;
 import com.vernite.cal.model.*;
 import com.vernite.cal.repository.*;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -229,6 +230,7 @@ public class TransactionServiceImpl {
                     if (t.getTrxnserno() != null) {
                         transactionDetail.setOutstandingamount(t.getOutstandingamount().abs());
                         transactionDetail.setAmount(t.getAmount().abs());
+                        transactionDetail.setTrxnSerno(t.getTrxnserno());
                         if (t.getMinpaypercentage() == null) {
                             Optional<Products> product = productsRepository.findById(caccounts.getProduct());
                             Optional<Mprofileacct> mprofileacct = mprofileAcctRepository.findByProducts(product);
@@ -248,6 +250,12 @@ public class TransactionServiceImpl {
                 }
             }
         });
+        if (transactionDetails.isEmpty()) {
+            TransactionDetailsDto dt = new TransactionDetailsDto();
+            dt.setOverDueAmount(cycledates.get().getOverdueamount());
+            dt.setOverLimitAmount(cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance());
+            transactionDetails.add(dt);
+        }
         generatePdf(transactionDetails);
         return transactionDetails;
 
@@ -315,7 +323,7 @@ public class TransactionServiceImpl {
         return generateExcel(transactionInfo);
     }
 
-//    public byte[] generateExcel(List<TransactionDetailsDto> transactionDetails) {
+    //    public byte[] generateExcel(List<TransactionDetailsDto> transactionDetails) {
 //        try {
 //            Workbook workbook = new XSSFWorkbook();
 //
@@ -369,66 +377,113 @@ public class TransactionServiceImpl {
 //            return null;
 //        }
 //    }
-public byte[] generateExcel(List<TransactionDetailsDto> transactionDetails) {
-    try {
-        Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("statements");
+    public byte[] generateExcel(List<TransactionDetailsDto> transactionDetails) {
+        try {
+            Workbook workbook = new XSSFWorkbook();
+            Sheet sheet = workbook.createSheet("statements");
 
-        // Create a bold font
-        Font headerFont = workbook.createFont();
-        headerFont.setBold(true);
-        headerFont.setColor(IndexedColors.BLUE.getIndex()); // Set the color to blue
+            // Create a bold font
+            Font headerFont = workbook.createFont();
+            headerFont.setBold(true);
+            headerFont.setColor(IndexedColors.BLUE.getIndex()); // Set the color to blue
 
-        // Create a cell style with the bold font for headers
-        CellStyle headerCellStyle = workbook.createCellStyle();
-        headerCellStyle.setFont(headerFont);
-        headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
-        
-     // Create a cell style for data with center alignment
-        CellStyle dataCellStyle = workbook.createCellStyle();
-        dataCellStyle.setAlignment(HorizontalAlignment.CENTER);
+            // Create a cell style with the bold font for headers
+            CellStyle headerCellStyle = workbook.createCellStyle();
+            headerCellStyle.setFont(headerFont);
+            headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
 
-        // Create header row and set cell values with header cell style
-        Row headerRow = sheet.createRow(0);
-        String[] headers = {"  Amount  ", "  Outstanding Amount  ", " Minimum Pay Percentage ", " Amount Contribution in MAD ", " Over Due Amount ", " Over Limit Amount ", "    Mad    "};
-        for (int i = 0; i < headers.length; i++) {
-            Cell cell = headerRow.createCell(i);
-            cell.setCellValue(headers[i]);
-            cell.setCellStyle(headerCellStyle);
-            // Optionally, set column width manually based on data length
-            sheet.setColumnWidth(i, headers[i].length() * 256); // Adjust 256 based on your preference for column width
-        }
+            // Create a cell style for data with center alignment
+            CellStyle dataCellStyle = workbook.createCellStyle();
+            dataCellStyle.setAlignment(HorizontalAlignment.CENTER);
 
-        // Populate data rows
-        int rowNum = 1;
-        for (TransactionDetailsDto transaction : transactionDetails) {
-            Row row = sheet.createRow(rowNum++);
-            row.createCell(0).setCellValue(transaction.getAmount().toString());
-            row.createCell(1).setCellValue(transaction.getOutstandingamount() != null ? transaction.getOutstandingamount().toString() : "0");
-            row.createCell(2).setCellValue(transaction.getMinpaypercentage() != null ? transaction.getMinpaypercentage().toString() : "0");
-            row.createCell(3).setCellValue(transaction.getMadAmount() != null ? transaction.getMadAmount().toString() : "0");
-            row.createCell(4).setCellValue(transaction.getOverDueAmount() != null ? transaction.getOverDueAmount().toString() : "0");
-            row.createCell(5).setCellValue(transaction.getOverLimitAmount() != null ? transaction.getOverLimitAmount().toString() : "0");
-            row.createCell(6).setCellValue(transaction.getMad() != null ? transaction.getMad().toString() : "0");
-        
-            // Apply data cell style to data rows
-            for (Cell cell : row) {
-                cell.setCellStyle(dataCellStyle);
+            // Create a cell style for note with red font color
+            CellStyle noteCellStyle = workbook.createCellStyle();
+            Font noteFont = workbook.createFont();
+            noteFont.setColor(IndexedColors.RED.getIndex());
+            noteCellStyle.setFont(noteFont);
+            noteCellStyle.setAlignment(HorizontalAlignment.CENTER);
+
+            // Create header row and set cell values with header cell style
+            Row headerRow = sheet.createRow(1); // Shifted header row down by one to accommodate the note
+            String[] headers = {"Trxn Serno", "  Amount  ", "  Outstanding Amount  ", " Minimum Pay Percentage ", " Amount Contribution in MAD ", " Over Due Amount ", " Over Limit Amount ", "    MAD    "};
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerCellStyle);
+                // Optionally, set column width manually based on data length
+                sheet.setColumnWidth(i, headers[i].length() * 256); // Adjust 256 based on your preference for column width
             }
-            
+
+            // Create note row above the header and set cell value with note cell style
+            Row noteRow = sheet.createRow(0);
+            Cell noteCell = noteRow.createCell(0);
+            if (transactionDetails.size() <= 1) {
+                noteFont.setColor(IndexedColors.RED.getIndex());
+                noteCell.setCellValue("Note: *Transaction details are not available for the selected statement");
+                noteCell.setCellStyle(noteCellStyle);
+                sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, headers.length - 1)); // Merge cells for the note
+            } else {
+                noteFont.setColor(IndexedColors.GREEN.getIndex());
+                noteCell.setCellValue("Note: *Selected statement transaction details");
+                noteCell.setCellStyle(noteCellStyle);
+                sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, headers.length - 1)); // Merge cells for the note
+            }
+            // Populate data rows
+            int rowNum = 2; // Start from the third row after the note and header
+            for (TransactionDetailsDto transaction : transactionDetails) {
+                Row row = sheet.createRow(rowNum++);
+                if (transaction.getTrxnSerno() == null) {
+                    row.createCell(0).setCellValue("");
+                } else {
+                    row.createCell(0).setCellValue(transaction.getTrxnSerno());
+                }
+                if (transaction.getAmount() == null) {
+                    row.createCell(1).setCellValue("");
+                } else {
+                    row.createCell(1).setCellValue(transaction.getAmount().toString());
+                }
+                if (transaction.getOutstandingamount() == null) {
+                    row.createCell(2).setCellValue("");
+                } else {
+                    row.createCell(2).setCellValue(transaction.getOutstandingamount() != null ? transaction.getOutstandingamount().toString() : "0");
+
+                }
+                if (transaction.getMinpaypercentage() == null) {
+                    row.createCell(3).setCellValue("");
+
+                } else {
+                    row.createCell(3).setCellValue(transaction.getMinpaypercentage() != null ? transaction.getMinpaypercentage().toString() : "0");
+                }
+                row.createCell(4).setCellValue(transaction.getMadAmount() != null ? transaction.getMadAmount().toString() : "0");
+
+                // Set only one value in the last three columns
+                if (rowNum == 3) { // Assuming you want to set the value only in the third row (after the header and note)
+                    row.createCell(5).setCellValue(transaction.getOverDueAmount() != null ? transaction.getOverDueAmount().toString() : "0");
+                    row.createCell(6).setCellValue(transaction.getOverLimitAmount() != null ? transaction.getOverLimitAmount().toString() : "0");
+                    row.createCell(7).setCellValue(transaction.getMad() != null ? transaction.getMad().toString() : "0");
+                } else {
+                    row.createCell(5).setCellValue("");
+                    row.createCell(6).setCellValue("");
+                    row.createCell(7).setCellValue("");
+                }
+
+                // Apply data cell style to data rows
+                for (Cell cell : row) {
+                    cell.setCellStyle(dataCellStyle);
+                }
+            }
+
+            // Write the workbook content to a byte array
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            workbook.write(byteArrayOutputStream);
+            workbook.close();
+
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
-
-        
-        // Write the workbook content to a byte array
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        workbook.write(byteArrayOutputStream);
-        workbook.close();
-
-        return byteArrayOutputStream.toByteArray();
-    } catch (IOException e) {
-        e.printStackTrace();
-        return null;
     }
-}
+
 
 }

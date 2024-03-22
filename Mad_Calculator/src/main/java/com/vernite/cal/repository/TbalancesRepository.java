@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TbalancesRepository extends JpaRepository<Tbalances, Long> {
-    @Query(value = "select * from tbalances where stmtserno  <= :serno and outstandingamount < 0 and caccserno = :cserno",nativeQuery = true)
+    @Query(value = "select * from tbalances where stmtserno  = :serno and outstandingamount < 0 and caccserno = :cserno",nativeQuery = true)
     Optional<List<Tbalances>> getTbalanceData(@Param("serno")Long serno, @Param("cserno") Long cserno);
 
    List<Tbalances> findByNextbalanceserno(Long serno);

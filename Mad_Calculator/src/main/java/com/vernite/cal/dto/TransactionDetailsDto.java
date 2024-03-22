@@ -20,6 +20,8 @@ public class TransactionDetailsDto {
     private Double overLimitAmount;
     private BigDecimal mad;
 
+    private Long trxnSerno;
+
     public BigDecimal getOutstandingamount() {
         return outstandingamount;
     }
@@ -74,5 +76,13 @@ public class TransactionDetailsDto {
 
     public void setMad(BigDecimal mad) {
         this.mad = mad;
+    }
+
+    public Long getTrxnSerno() {
+        return trxnSerno;
+    }
+
+    public void setTrxnSerno(Long trxnSerno) {
+        this.trxnSerno = trxnSerno;
     }
 }
