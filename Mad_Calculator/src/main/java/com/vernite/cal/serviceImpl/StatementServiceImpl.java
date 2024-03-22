@@ -54,7 +54,9 @@ public class StatementServiceImpl {
 		}
 
 		BigDecimal mad = madCalculation(cardNumber, cycleDate);
-
+		if (mad.compareTo(BigDecimal.valueOf(100)) < 0) {
+			mad = BigDecimal.valueOf(100);
+		}
 		StatementResponse st = new StatementResponse();
 		st.setStGeneral(byCycledate.get().getStgeneral());
 		st.setTotalcredits(byCycledate.get().getTotalcredits());

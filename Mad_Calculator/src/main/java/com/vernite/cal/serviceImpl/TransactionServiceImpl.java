@@ -256,60 +256,61 @@ public class TransactionServiceImpl {
             dt.setOverLimitAmount(cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance());
             transactionDetails.add(dt);
         }
-        generatePdf(transactionDetails);
+       // generatePdf(transactionDetails);
         return transactionDetails;
 
     }
 
     public byte[] downloadPdf(String cardNumber, Date cycleDate) {
         List<TransactionDetailsDto> transactionInfo = getTransactionByDate(cardNumber, cycleDate);
-        return generatePdf(transactionInfo);
+        //return generatePdf(transactionInfo);
+        return null;
     }
 
-    public byte[] generatePdf(List<TransactionDetailsDto> transactionDetails) {
-        try {
-            Document document = new Document(PageSize.A4);
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            PdfWriter.getInstance(document, byteArrayOutputStream);
-            document.open();
-
-            PdfPTable table = new PdfPTable(7);
-
-            // Add table headers
-
-            table.addCell("Amount");
-            table.addCell("Outstanding Amount");
-            table.addCell("Minimum Pay Percentage");
-            table.addCell("Amount Contribution in MAD");
-            table.addCell("Over Due Amount");
-            table.addCell("Over Limit Amount");
-            table.addCell("Mad");
-
-            // Add transaction details to the table
-            for (TransactionDetailsDto transaction : transactionDetails) {
-                table.addCell(transaction.getAmount().toString());
-                table.addCell(
-                        transaction.getOutstandingamount() != null ? String.valueOf(transaction.getOutstandingamount())
-                                : "0");
-                table.addCell(
-                        transaction.getMinpaypercentage() != null ? String.valueOf(transaction.getMinpaypercentage())
-                                : "0");
-                table.addCell(transaction.getMadAmount() != null ? String.valueOf(transaction.getMadAmount()) : "0");
-            }
-
-            // Add table to the document
-            document.add(table);
-
-            // Close the document
-            document.close();
-
-            // Return the generated PDF content as byte array
-            return byteArrayOutputStream.toByteArray();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+//    public byte[] generatePdf(List<TransactionDetailsDto> transactionDetails) {
+//        try {
+//            Document document = new Document(PageSize.A4);
+//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//            PdfWriter.getInstance(document, byteArrayOutputStream);
+//            document.open();
+//
+//            PdfPTable table = new PdfPTable(7);
+//
+//            // Add table headers
+//
+//            table.addCell("Amount");
+//            table.addCell("Outstanding Amount");
+//            table.addCell("Minimum Pay Percentage");
+//            table.addCell("Amount Contribution in MAD");
+//            table.addCell("Over Due Amount");
+//            table.addCell("Over Limit Amount");
+//            table.addCell("Mad");
+//
+//            // Add transaction details to the table
+//            for (TransactionDetailsDto transaction : transactionDetails) {
+//                table.addCell(transaction.getAmount().toString());
+//                table.addCell(
+//                        transaction.getOutstandingamount() != null ? String.valueOf(transaction.getOutstandingamount())
+//                                : "0");
+//                table.addCell(
+//                        transaction.getMinpaypercentage() != null ? String.valueOf(transaction.getMinpaypercentage())
+//                                : "0");
+//                table.addCell(transaction.getMadAmount() != null ? String.valueOf(transaction.getMadAmount()) : "0");
+//            }
+//
+//            // Add table to the document
+//            document.add(table);
+//
+//            // Close the document
+//            document.close();
+//
+//            // Return the generated PDF content as byte array
+//            return byteArrayOutputStream.toByteArray();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
 
     public byte[] downloadExcel(String cardNumber, Date cycleDate) throws ParseException {
