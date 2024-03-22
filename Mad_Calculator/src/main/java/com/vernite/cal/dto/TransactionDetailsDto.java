@@ -21,6 +21,7 @@ public class TransactionDetailsDto {
     private BigDecimal mad;
 
     private Long trxnSerno;
+    private String cycleDate;
 
     public BigDecimal getOutstandingamount() {
         return outstandingamount;
@@ -84,5 +85,13 @@ public class TransactionDetailsDto {
 
     public void setTrxnSerno(Long trxnSerno) {
         this.trxnSerno = trxnSerno;
+    }
+
+    public String getCycleDate() {
+        return cycleDate;
+    }
+
+    public void setCycleDate(String cycleDate) {
+        this.cycleDate = cycleDate;
     }
 }

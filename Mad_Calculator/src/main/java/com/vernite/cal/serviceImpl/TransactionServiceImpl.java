@@ -26,6 +26,8 @@ import org.springframework.stereotype.Service;
 
 import com.vernite.cal.dto.TransactionDetailsDto;
 
+import static com.vernite.cal.serviceImpl.StatementServiceImpl.convertDateOne;
+
 @Service
 public class TransactionServiceImpl {
 
@@ -215,50 +217,56 @@ public class TransactionServiceImpl {
 //    }
 
     public List<TransactionDetailsDto> getTransactionByDate(String cardNumber, Date cycleDate) {
-        Cardx byCard = cardxRepository.findByNumberx(cardNumber);
+        try {
+           String date = convertDateOne(cycleDate);
+            Cardx byCard = cardxRepository.findByNumberx(cardNumber);
 
-        Caccounts caccounts = byCard.getCaccounts();
-        Optional<Cstatements> cycledates = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate,
-                byCard.getCaccounts());
-        List<TransactionDetailsDto> transactionDetails = new ArrayList<>();
-        Optional<List<Tbalances>> tbalances = tbalancesRepository.getTbalanceData(cycledates.get().getSerno(),
-                caccounts.getSerno());
-        tbalances.ifPresent(tbalancesList -> {
-            for (Tbalances t : tbalancesList) {
-                TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
-                if (t.getOutstandingamount().compareTo(BigDecimal.ZERO) < 0) {
-                    if (t.getTrxnserno() != null) {
-                        transactionDetail.setOutstandingamount(t.getOutstandingamount().abs());
-                        transactionDetail.setAmount(t.getAmount().abs());
-                        transactionDetail.setTrxnSerno(t.getTrxnserno());
-                        if (t.getMinpaypercentage() == null) {
-                            Optional<Products> product = productsRepository.findById(caccounts.getProduct());
-                            Optional<Mprofileacct> mprofileacct = mprofileAcctRepository.findByProducts(product);
-                            Optional<Profiles> profiles = profilesRepository
-                                    .findById(mprofileacct.get().getProfiles().getSerno());
-                            Optional<Cstmtsettings> csetting = cstatementSettingsRepository
-                                    .findByProfiles(profiles.get());
-                            transactionDetail.setMinpaypercentage(csetting.get().getMinpaypercentage());
-                        } else if (t.getMinpaypercentage() == 100) {
-                            transactionDetail.setMinpaypercentage(t.getMinpaypercentage());
+            Caccounts caccounts = byCard.getCaccounts();
+            Optional<Cstatements> cycledates = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate,
+                    byCard.getCaccounts());
+            List<TransactionDetailsDto> transactionDetails = new ArrayList<>();
+            Optional<List<Tbalances>> tbalances = tbalancesRepository.getTbalanceData(cycledates.get().getSerno(),
+                    caccounts.getSerno());
+            tbalances.ifPresent(tbalancesList -> {
+                for (Tbalances t : tbalancesList) {
+                    TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
+                    if (t.getOutstandingamount().compareTo(BigDecimal.ZERO) < 0) {
+                        if (t.getTrxnserno() != null) {
+                            transactionDetail.setOutstandingamount(t.getOutstandingamount().abs());
+                            transactionDetail.setAmount(t.getAmount().abs());
+                            transactionDetail.setTrxnSerno(t.getTrxnserno());
+                            if (t.getMinpaypercentage() == null) {
+                                Optional<Products> product = productsRepository.findById(caccounts.getProduct());
+                                Optional<Mprofileacct> mprofileacct = mprofileAcctRepository.findByProducts(product);
+                                Optional<Profiles> profiles = profilesRepository
+                                        .findById(mprofileacct.get().getProfiles().getSerno());
+                                Optional<Cstmtsettings> csetting = cstatementSettingsRepository
+                                        .findByProfiles(profiles.get());
+                                transactionDetail.setMinpaypercentage(csetting.get().getMinpaypercentage());
+                            } else if (t.getMinpaypercentage() == 100) {
+                                transactionDetail.setMinpaypercentage(t.getMinpaypercentage());
+                            }
+                            BigDecimal madAmount = (t.getOutstandingamount().multiply(BigDecimal
+                                    .valueOf(transactionDetail.getMinpaypercentage()).divide(BigDecimal.valueOf(100))));
+                            transactionDetail.setMadAmount(madAmount.abs());
+                            transactionDetail.setCycleDate(date);
+                            transactionDetails.add(transactionDetail);
                         }
-                        BigDecimal madAmount = (t.getOutstandingamount().multiply(BigDecimal
-                                .valueOf(transactionDetail.getMinpaypercentage()).divide(BigDecimal.valueOf(100))));
-                        transactionDetail.setMadAmount(madAmount.abs());
-                        transactionDetails.add(transactionDetail);
                     }
                 }
+            });
+            if (transactionDetails.isEmpty()) {
+                TransactionDetailsDto dt = new TransactionDetailsDto();
+                dt.setOverDueAmount(cycledates.get().getOverdueamount());
+                dt.setOverLimitAmount(cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance());
+                dt.setCycleDate(date);
+                transactionDetails.add(dt);
             }
-        });
-        if (transactionDetails.isEmpty()) {
-            TransactionDetailsDto dt = new TransactionDetailsDto();
-            dt.setOverDueAmount(cycledates.get().getOverdueamount());
-            dt.setOverLimitAmount(cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance());
-            transactionDetails.add(dt);
+            // generatePdf(transactionDetails);
+            return transactionDetails;
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
-       // generatePdf(transactionDetails);
-        return transactionDetails;
-
     }
 
     public byte[] downloadPdf(String cardNumber, Date cycleDate) {
@@ -418,14 +426,19 @@ public class TransactionServiceImpl {
             // Create note row above the header and set cell value with note cell style
             Row noteRow = sheet.createRow(0);
             Cell noteCell = noteRow.createCell(0);
+            String cycleDate = null;
+            for (TransactionDetailsDto transactionDetailsDto : transactionDetails) {
+                cycleDate = transactionDetailsDto.getCycleDate();
+            }
             if (transactionDetails.size() <= 1) {
                 noteFont.setColor(IndexedColors.RED.getIndex());
-                noteCell.setCellValue("Note: *Transaction details are not available for the selected statement");
+                noteCell.setCellValue("Note: *Transaction details are not available for the selected statement -" + cycleDate);
                 noteCell.setCellStyle(noteCellStyle);
                 sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, headers.length - 1)); // Merge cells for the note
             } else {
+
                 noteFont.setColor(IndexedColors.GREEN.getIndex());
-                noteCell.setCellValue("Note: *Selected statement transaction details");
+                noteCell.setCellValue("Note: *Selected statement transaction details -" + cycleDate);
                 noteCell.setCellStyle(noteCellStyle);
                 sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, headers.length - 1)); // Merge cells for the note
             }
