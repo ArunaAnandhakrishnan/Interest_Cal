@@ -1,5 +1,6 @@
 package com.vernite.cal.controller;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.time.LocalDateTime;
@@ -8,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.itextpdf.text.DocumentException;
 import com.vernite.cal.model.Cardx;
 import com.vernite.cal.repository.AccountRepository;
 import com.vernite.cal.repository.CardxRepository;
@@ -78,13 +80,13 @@ public class AccountController {
 
     @GetMapping("/downloadPdf/{cardNumber}")
     public ResponseEntity<byte[]> downloadPdf(@PathVariable String cardNumber,
-                                              @RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate) throws SQLException {
-        byte[] detailsDto = transactionServiceImpl.downloadPdf(cardNumber, cycleDate);
+                                              @RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate) throws SQLException, ParseException, DocumentException, IOException {
+        byte[] downloadPDF = transactionServiceImpl.downloadPDF(cardNumber, cycleDate);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
         headers.setContentDispositionFormData("filename", "transaction_details.pdf");
-        headers.setContentLength(detailsDto.length);
-        return new ResponseEntity<byte[]>(detailsDto, headers, HttpStatus.OK);
+        headers.setContentLength(downloadPDF.length);
+        return new ResponseEntity<>(downloadPDF, headers, HttpStatus.OK);
 
     }
 

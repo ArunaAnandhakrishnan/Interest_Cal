@@ -1,6 +1,6 @@
 package com.vernite.cal.serviceImpl;
 
-import com.itextpdf.text.Document;
+import com.itextpdf.text.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,13 +12,14 @@ import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.itextpdf.text.PageSize;
+import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.vernite.cal.dto.StatementResponse;
 import com.vernite.cal.model.*;
 import com.vernite.cal.repository.*;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -250,8 +251,8 @@ public class TransactionServiceImpl {
                                     .valueOf(transactionDetail.getMinpaypercentage()).divide(BigDecimal.valueOf(100))));
                             transactionDetail.setMadAmount(madAmount.abs());
                             transactionDetail.setCycleDate(date);
-                            transactionDetail.setOverLimitAmount(cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance());
-                            transactionDetail.setOverDueAmount(cycledates.get().getOverdueamount());
+                            transactionDetail.setOverLimitAmount(Math.abs(cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance()));
+                            transactionDetail.setOverDueAmount(Math.abs(cycledates.get().getOverdueamount()));
                             transactionDetails.add(transactionDetail);
                         }
                     }
@@ -259,8 +260,8 @@ public class TransactionServiceImpl {
             });
             if (transactionDetails.isEmpty()) {
                 TransactionDetailsDto dt = new TransactionDetailsDto();
-                dt.setOverDueAmount(cycledates.get().getOverdueamount());
-                dt.setOverLimitAmount(cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance());
+                dt.setOverDueAmount(Math.abs(cycledates.get().getOverdueamount()));
+                dt.setOverLimitAmount(Math.abs(cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance()));
                 dt.setCycleDate(date);
                 transactionDetails.add(dt);
             }
@@ -271,57 +272,65 @@ public class TransactionServiceImpl {
         }
     }
 
-    public byte[] downloadPdf(String cardNumber, Date cycleDate) {
+    public byte[] downloadPDF(String cardNumber, Date cycleDate) throws ParseException {
         List<TransactionDetailsDto> transactionInfo = getTransactionByDate(cardNumber, cycleDate);
-        //return generatePdf(transactionInfo);
-        return null;
+        StatementResponse response = statementServiceImpl.getStatementDetails(cardNumber, cycleDate);
+        for (TransactionDetailsDto transaction : transactionInfo) {
+            transaction.setOverDueAmount(response.getOverdueamount());
+            transaction.setOverLimitAmount(response.getOverLimitAmount());
+            transaction.setMad(response.getMad());
+        }
+        return generatePDF(transactionInfo);
     }
 
-//    public byte[] generatePdf(List<TransactionDetailsDto> transactionDetails) {
-//        try {
-//            Document document = new Document(PageSize.A4);
-//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//            PdfWriter.getInstance(document, byteArrayOutputStream);
-//            document.open();
-//
-//            PdfPTable table = new PdfPTable(7);
-//
-//            // Add table headers
-//
-//            table.addCell("Amount");
-//            table.addCell("Outstanding Amount");
-//            table.addCell("Minimum Pay Percentage");
-//            table.addCell("Amount Contribution in MAD");
-//            table.addCell("Over Due Amount");
-//            table.addCell("Over Limit Amount");
-//            table.addCell("Mad");
-//
-//            // Add transaction details to the table
-//            for (TransactionDetailsDto transaction : transactionDetails) {
-//                table.addCell(transaction.getAmount().toString());
-//                table.addCell(
-//                        transaction.getOutstandingamount() != null ? String.valueOf(transaction.getOutstandingamount())
-//                                : "0");
-//                table.addCell(
-//                        transaction.getMinpaypercentage() != null ? String.valueOf(transaction.getMinpaypercentage())
-//                                : "0");
-//                table.addCell(transaction.getMadAmount() != null ? String.valueOf(transaction.getMadAmount()) : "0");
-//            }
-//
-//            // Add table to the document
-//            document.add(table);
-//
-//            // Close the document
-//            document.close();
-//
-//            // Return the generated PDF content as byte array
-//            return byteArrayOutputStream.toByteArray();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
+    public byte[] generatePDF(List<TransactionDetailsDto> transactionDetails) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        Document document = new Document(PageSize.A4.rotate());
 
+        try {
+            PdfWriter.getInstance(document, byteArrayOutputStream);
+            document.open();
+
+            // Add a new line
+            document.add(new Paragraph("\n"));
+
+            // Create table
+            PdfPTable table = new PdfPTable(8); // 8 columns
+            table.setWidthPercentage(100);
+
+            // Add headers
+            String[] headers = {"Trxn Serno", "Amount", "Outstanding Amount", "Minimum Pay Percentage", "Amount Contribution in MAD", "Over Due Amount", "Over Limit Amount", "MAD"};
+            // Font headerFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, Color.BLACK);
+
+            for (String header : headers) {
+                PdfPCell cell = new PdfPCell(new Paragraph(header));
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                table.addCell(cell);
+            }
+
+            // Add data rows
+            for (TransactionDetailsDto transaction : transactionDetails) {
+                table.addCell(transaction.getTrxnSerno() != null ? String.valueOf(transaction.getTrxnSerno()) : "");
+                table.addCell(transaction.getAmount() != null ? transaction.getAmount().toString() : "");
+                table.addCell(transaction.getOutstandingamount() != null ? transaction.getOutstandingamount().toString() : "");
+                table.addCell(transaction.getMinpaypercentage() != null ? transaction.getMinpaypercentage().toString() : "");
+                table.addCell(transaction.getMadAmount() != null ? transaction.getMadAmount().toString() : "");
+                table.addCell(transaction.getOverDueAmount() != null ? transaction.getOverDueAmount().toString() : "");
+                table.addCell(transaction.getOverLimitAmount() != null ? transaction.getOverLimitAmount().toString() : "");
+                table.addCell(transaction.getMad() != null ? transaction.getMad().toString() : "");
+            }
+            document.add(table);
+        } catch (DocumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            if (document != null) {
+                document.close();
+            }
+        }
+
+        return byteArrayOutputStream.toByteArray();
+    }
 
     public byte[] downloadExcel(String cardNumber, Date cycleDate) throws ParseException {
         List<TransactionDetailsDto> transactionInfo = getTransactionByDate(cardNumber, cycleDate);
@@ -334,60 +343,6 @@ public class TransactionServiceImpl {
         return generateExcel(transactionInfo);
     }
 
-    //    public byte[] generateExcel(List<TransactionDetailsDto> transactionDetails) {
-//        try {
-//            Workbook workbook = new XSSFWorkbook();
-//
-//            org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet("statements");
-//
-//            // Create a bold font
-//            Font headerFont = workbook.createFont();
-//            headerFont.setBold(true);
-//            headerFont.setColor(IndexedColors.BLUE.getIndex()); // Set the color to blue
-//
-//            // Create a cell style with the bold font
-//            CellStyle headerCellStyle = workbook.createCellStyle();
-//            headerCellStyle.setFont(headerFont);
-//            // Center alignment for header cells
-//            headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
-//            Row headerRow = sheet.createRow(0);
-//            headerRow.createCell(0).setCellValue("Amount");
-//            headerRow.createCell(1).setCellValue("Outstanding Amount");
-//            headerRow.createCell(2).setCellValue("Minimum Pay Percentage");
-//            headerRow.createCell(3).setCellValue("Amount Contribution in MAD");
-//            headerRow.createCell(4).setCellValue("Over Due Amount");
-//            headerRow.createCell(5).setCellValue("Over Limit Amount");
-//            headerRow.createCell(6).setCellValue("Mad");
-//
-//            int rowNum = 1;
-//            for (TransactionDetailsDto transaction : transactionDetails) {
-//                Row row = sheet.createRow(rowNum++);
-//                row.createCell(0).setCellValue(transaction.getAmount().toString());
-//                row.createCell(1).setCellValue(transaction.getOutstandingamount() != null ? String.valueOf(transaction.getOutstandingamount()) : "0");
-//                row.createCell(2).setCellValue(transaction.getMinpaypercentage() != null ? String.valueOf(transaction.getMinpaypercentage()) : "0");
-//                row.createCell(3).setCellValue(transaction.getMadAmount() != null ? String.valueOf(transaction.getMadAmount()) : "0");
-//                row.createCell(4).setCellValue(transaction.getOverDueAmount() != null ? String.valueOf(transaction.getOverDueAmount()) : "0");
-//                row.createCell(5).setCellValue(transaction.getOverLimitAmount() != null ? String.valueOf(transaction.getOverLimitAmount()) : "0");
-//                row.createCell(6).setCellValue(transaction.getMad() != null ? String.valueOf(transaction.getMad()) : "0");
-//
-//            }
-//
-//
-//            for (int i = 0; i < 4; i++) {
-//                sheet.autoSizeColumn(i);
-//            }
-//
-//            // Write the workbook content to a byte array
-//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//            workbook.write(byteArrayOutputStream);
-//            workbook.close();
-//
-//            return byteArrayOutputStream.toByteArray();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
     public byte[] generateExcel(List<TransactionDetailsDto> transactionDetails) {
         try {
             Workbook workbook = new XSSFWorkbook();
