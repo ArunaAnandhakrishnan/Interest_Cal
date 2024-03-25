@@ -309,15 +309,56 @@ public class TransactionServiceImpl {
             }
 
             // Add data rows
-            for (TransactionDetailsDto transaction : transactionDetails) {
-                table.addCell(transaction.getTrxnSerno() != null ? String.valueOf(transaction.getTrxnSerno()) : "");
-                table.addCell(transaction.getAmount() != null ? transaction.getAmount().toString() : "");
-                table.addCell(transaction.getOutstandingamount() != null ? transaction.getOutstandingamount().toString() : "");
-                table.addCell(transaction.getMinpaypercentage() != null ? transaction.getMinpaypercentage().toString() : "");
-                table.addCell(transaction.getMadAmount() != null ? transaction.getMadAmount().toString() : "");
-                table.addCell(transaction.getOverDueAmount() != null ? transaction.getOverDueAmount().toString() : "");
-                table.addCell(transaction.getOverLimitAmount() != null ? transaction.getOverLimitAmount().toString() : "");
-                table.addCell(transaction.getMad() != null ? transaction.getMad().toString() : "");
+//            for (TransactionDetailsDto transaction : transactionDetails) {
+//                table.addCell(transaction.getTrxnSerno() != null ? String.valueOf(transaction.getTrxnSerno()) : "");
+//                table.addCell(transaction.getAmount() != null ? transaction.getAmount().toString() : "");
+//                table.addCell(transaction.getOutstandingamount() != null ? transaction.getOutstandingamount().toString() : "");
+//                table.addCell(transaction.getMinpaypercentage() != null ? transaction.getMinpaypercentage().toString() : "");
+//                table.addCell(transaction.getMadAmount() != null ? transaction.getMadAmount().toString() : "");
+////                table.addCell(transaction.getOverDueAmount() != null ? transaction.getOverDueAmount().toString() : "");
+////                table.addCell(transaction.getOverLimitAmount() != null ? transaction.getOverLimitAmount().toString() : "");
+////                table.addCell(transaction.getMad() != null ? transaction.getMad().toString() : "");
+//                table.addCell(""); // Empty cell
+//                table.addCell(""); // Empty cell
+//                table.addCell(""); // Empty cell
+//            }
+            
+            for (int i = 0; i < transactionDetails.size(); i++) {
+                TransactionDetailsDto transaction = transactionDetails.get(i);
+                PdfPCell cell1 = new PdfPCell(new Paragraph(transaction.getTrxnSerno() != null ? String.valueOf(transaction.getTrxnSerno()) : ""));
+                PdfPCell cell2 = new PdfPCell(new Paragraph(transaction.getAmount() != null ? transaction.getAmount().toString() : ""));
+                PdfPCell cell3 = new PdfPCell(new Paragraph(transaction.getOutstandingamount() != null ? transaction.getOutstandingamount().toString() : ""));
+                PdfPCell cell4 = new PdfPCell(new Paragraph(transaction.getMinpaypercentage() != null ? transaction.getMinpaypercentage().toString() : ""));
+                PdfPCell cell5 = new PdfPCell(new Paragraph(transaction.getMadAmount() != null ? transaction.getMadAmount().toString() : ""));
+
+                PdfPCell cell6, cell7, cell8;
+                if (i == 0) { // Set values only in the first row
+                    cell6 = new PdfPCell(new Paragraph(transaction.getOverDueAmount() != null ? transaction.getOverDueAmount().toString() : ""));
+                    cell7 = new PdfPCell(new Paragraph(transaction.getOverLimitAmount() != null ? transaction.getOverLimitAmount().toString() : ""));
+                    cell8 = new PdfPCell(new Paragraph(transaction.getMad() != null ? transaction.getMad().toString() : ""));
+                } else {
+                    cell6 = new PdfPCell(new Paragraph(""));
+                    cell7 = new PdfPCell(new Paragraph(""));
+                    cell8 = new PdfPCell(new Paragraph(""));
+                }
+
+                cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell4.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell5.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell6.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell7.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell8.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+                table.addCell(cell1);
+                table.addCell(cell2);
+                table.addCell(cell3);
+                table.addCell(cell4);
+                table.addCell(cell5);
+                table.addCell(cell6);
+                table.addCell(cell7);
+                table.addCell(cell8);
             }
             document.add(table);
         } catch (DocumentException e) {
