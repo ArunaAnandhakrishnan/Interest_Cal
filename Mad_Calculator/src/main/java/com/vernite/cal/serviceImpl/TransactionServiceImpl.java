@@ -218,7 +218,7 @@ public class TransactionServiceImpl {
 
     public List<TransactionDetailsDto> getTransactionByDate(String cardNumber, Date cycleDate) {
         try {
-           String date = convertDateOne(cycleDate);
+            String date = convertDateOne(cycleDate);
             Cardx byCard = cardxRepository.findByNumberx(cardNumber);
 
             Caccounts caccounts = byCard.getCaccounts();
@@ -250,6 +250,8 @@ public class TransactionServiceImpl {
                                     .valueOf(transactionDetail.getMinpaypercentage()).divide(BigDecimal.valueOf(100))));
                             transactionDetail.setMadAmount(madAmount.abs());
                             transactionDetail.setCycleDate(date);
+                            transactionDetail.setOverLimitAmount(cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance());
+                            transactionDetail.setOverDueAmount(cycledates.get().getOverdueamount());
                             transactionDetails.add(transactionDetail);
                         }
                     }

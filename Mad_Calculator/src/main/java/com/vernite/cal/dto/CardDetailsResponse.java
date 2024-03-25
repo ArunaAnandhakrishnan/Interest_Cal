@@ -26,7 +26,7 @@ public class CardDetailsResponse {
 
 	private List<String> cycleDate;
 
-	public String getNumberx() {
+    public String getNumberx() {
 		return numberx;
 	}
 
