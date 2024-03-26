@@ -228,6 +228,7 @@ public class TransactionServiceImpl {
             List<TransactionDetailsDto> transactionDetails = new ArrayList<>();
             Optional<List<Tbalances>> tbalances = tbalancesRepository.getTbalanceData(cycledates.get().getSerno(),
                     caccounts.getSerno());
+            double overlimit = cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance();
             tbalances.ifPresent(tbalancesList -> {
                 for (Tbalances t : tbalancesList) {
                     TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
@@ -251,7 +252,6 @@ public class TransactionServiceImpl {
                                     .valueOf(transactionDetail.getMinpaypercentage()).divide(BigDecimal.valueOf(100))));
                             transactionDetail.setMadAmount(madAmount.abs());
                             transactionDetail.setCycleDate(date);
-                            double overlimit = cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance();
                             if (overlimit < 0) {
                                 transactionDetail.setOverLimitAmount(Math.abs(overlimit));
                             }
@@ -267,7 +267,13 @@ public class TransactionServiceImpl {
             if (transactionDetails.isEmpty()) {
                 TransactionDetailsDto dt = new TransactionDetailsDto();
                 dt.setOverDueAmount(Math.abs(cycledates.get().getOverdueamount()));
-                dt.setOverLimitAmount(Math.abs(cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance()));
+                if (overlimit < 0) {
+                    dt.setOverLimitAmount(Math.abs(overlimit));
+                }
+                else{
+                    dt.setOverLimitAmount(0.0);
+                }
+                //dt.setOverLimitAmount(Math.abs(cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance()));
                 dt.setCycleDate(date);
                 transactionDetails.add(dt);
             }
