@@ -290,6 +290,11 @@ public class TransactionServiceImpl {
     public byte[] generatePDF(List<TransactionDetailsDto> transactionDetails) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         Document document = new Document(PageSize.A4.rotate());
+        String cycleDate = null;
+        
+        for (TransactionDetailsDto transactionDetailsDto : transactionDetails) {
+            cycleDate = transactionDetailsDto.getCycleDate();
+        }
 
         try {
             PdfWriter.getInstance(document, byteArrayOutputStream);
@@ -301,7 +306,23 @@ public class TransactionServiceImpl {
             // Create table
             PdfPTable table = new PdfPTable(8); // 8 columns
             table.setWidthPercentage(100);
-
+  
+            if (transactionDetails.size() <= 1) {
+                // Add note
+                PdfPCell noteCell = new PdfPCell(new Paragraph("Note: *Transaction details are not available for the selected statement -" + cycleDate));
+                noteCell.setColspan(8); // Merge cells for the note
+                noteCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                noteCell.setBackgroundColor(BaseColor.RED);
+                table.addCell(noteCell);
+            } else {
+                // Add note
+                PdfPCell noteCell = new PdfPCell(new Paragraph("Note: *Selected statement transaction details -" + cycleDate));
+                noteCell.setColspan(8); // Merge cells for the note
+                noteCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                noteCell.setBackgroundColor(BaseColor.GREEN);
+                table.addCell(noteCell);
+            }
+            
             // Add headers
             String[] headers = {"Trxn Serno", "Amount", "Outstanding Amount", "Minimum Pay Percentage", "Amount Contribution in MAD", "Over Due Amount", "Over Limit Amount", "MAD"};
             // Font headerFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, Color.BLACK);
