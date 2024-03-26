@@ -276,8 +276,6 @@ public class TransactionServiceImpl {
         List<TransactionDetailsDto> transactionInfo = getTransactionByDate(cardNumber, cycleDate);
         StatementResponse response = statementServiceImpl.getStatementDetails(cardNumber, cycleDate);
         for (TransactionDetailsDto transaction : transactionInfo) {
-            transaction.setOverDueAmount(response.getOverdueamount());
-            transaction.setOverLimitAmount(response.getOverLimitAmount());
             transaction.setMad(response.getMad());
         }
         return generatePDF(transactionInfo);
@@ -377,8 +375,6 @@ public class TransactionServiceImpl {
         List<TransactionDetailsDto> transactionInfo = getTransactionByDate(cardNumber, cycleDate);
         StatementResponse response = statementServiceImpl.getStatementDetails(cardNumber, cycleDate);
         for (TransactionDetailsDto transaction : transactionInfo) {
-            transaction.setOverDueAmount(response.getOverdueamount());
-            transaction.setOverLimitAmount(response.getOverLimitAmount());
             transaction.setMad(response.getMad());
         }
         return generateExcel(transactionInfo);
