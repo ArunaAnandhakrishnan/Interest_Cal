@@ -251,7 +251,13 @@ public class TransactionServiceImpl {
                                     .valueOf(transactionDetail.getMinpaypercentage()).divide(BigDecimal.valueOf(100))));
                             transactionDetail.setMadAmount(madAmount.abs());
                             transactionDetail.setCycleDate(date);
-                            transactionDetail.setOverLimitAmount(Math.abs(cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance()));
+                            double overlimit = cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance();
+                            if (overlimit < 0) {
+                                transactionDetail.setOverLimitAmount(Math.abs(overlimit));
+                            }
+                            else{
+                                transactionDetail.setOverLimitAmount(0.0);
+                            }
                             transactionDetail.setOverDueAmount(Math.abs(cycledates.get().getOverdueamount()));
                             transactionDetails.add(transactionDetail);
                         }
@@ -320,7 +326,7 @@ public class TransactionServiceImpl {
 //                table.addCell(""); // Empty cell
 //                table.addCell(""); // Empty cell
 //            }
-            
+
             for (int i = 0; i < transactionDetails.size(); i++) {
                 TransactionDetailsDto transaction = transactionDetails.get(i);
                 PdfPCell cell1 = new PdfPCell(new Paragraph(transaction.getTrxnSerno() != null ? String.valueOf(transaction.getTrxnSerno()) : ""));
