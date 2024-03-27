@@ -317,18 +317,29 @@ public class TransactionServiceImpl {
                 // Add note
                 PdfPCell noteCell = new PdfPCell(new Paragraph("Note: *Transaction details are not available for the selected statement -" + cycleDate));
                 noteCell.setColspan(8); // Merge cells for the note
-                noteCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                noteCell.setBackgroundColor(BaseColor.RED);
+                //-------------------
+                com.itextpdf.text.Font redFont = new com.itextpdf.text.Font();
+                redFont.setColor(BaseColor.RED);                           
+                Paragraph noteParagraph = new Paragraph("Note: *Transaction details are not available for the selected statement -" + cycleDate, redFont);
+                noteParagraph.setAlignment(Element.ALIGN_CENTER);
+                noteCell.addElement(noteParagraph);               
+                //-----------
                 table.addCell(noteCell);
             } else {
                 // Add note
                 PdfPCell noteCell = new PdfPCell(new Paragraph("Note: *Selected statement transaction details -" + cycleDate));
                 noteCell.setColspan(8); // Merge cells for the note
-                noteCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                noteCell.setBackgroundColor(BaseColor.GREEN);
+               // noteCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+               // noteCell.setBackgroundColor(BaseColor.GREEN);
+               //---------------
+                com.itextpdf.text.Font redFont = new com.itextpdf.text.Font();
+                redFont.setColor(BaseColor.GREEN); 
+                Paragraph noteParagraph = new Paragraph("Note: *Selected statement transaction details -" + cycleDate, redFont);
+                noteParagraph.setAlignment(Element.ALIGN_CENTER);
+                noteCell.addElement(noteParagraph);
+                //----------------------
                 table.addCell(noteCell);
-            }
-            
+            }     
             // Add headers
             String[] headers = {"Trxn Serno", "Amount", "Outstanding Amount", "Minimum Pay Percentage", "Amount Contribution in MAD", "Over Due Amount", "Over Limit Amount", "MAD"};
             // Font headerFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, Color.BLACK);

@@ -50,7 +50,7 @@ public class StatementServiceImpl {
 
 		String dueDates = null;
 		if (duedate != null) {
-			dueDates = convertDateTwo(duedate);
+			dueDates = convertDateTwo(duedate);		
 		}
 
 		BigDecimal mad = madCalculation(cardNumber, cycleDate);
