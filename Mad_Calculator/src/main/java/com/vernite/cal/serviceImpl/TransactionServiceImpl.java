@@ -228,7 +228,8 @@ public class TransactionServiceImpl {
             List<TransactionDetailsDto> transactionDetails = new ArrayList<>();
             Optional<List<Tbalances>> tbalances = tbalancesRepository.getTbalanceData(cycledates.get().getSerno(),
                     caccounts.getSerno());
-            double overlimit = cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance();
+
+            // double overlimit = cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance();
             tbalances.ifPresent(tbalancesList -> {
                 for (Tbalances t : tbalancesList) {
                     TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
@@ -252,10 +253,14 @@ public class TransactionServiceImpl {
                                     .valueOf(transactionDetail.getMinpaypercentage()).divide(BigDecimal.valueOf(100))));
                             transactionDetail.setMadAmount(madAmount.abs());
                             transactionDetail.setCycleDate(date);
-                            if (overlimit < 0) {
-                                transactionDetail.setOverLimitAmount(Math.abs(overlimit));
-                            }
-                            else{
+                            if (cycledates.get().getClosingbalance() < 0) {
+                                double calculateOverLimitAmount = Math.abs(cycledates.get().getCreditlimit()) - Math.abs(cycledates.get().getClosingbalance());
+                                if (calculateOverLimitAmount < 0) {
+                                    transactionDetail.setOverLimitAmount(Math.abs(calculateOverLimitAmount));
+                                } else {
+                                    transactionDetail.setOverLimitAmount(0.0);
+                                }
+                            } else {
                                 transactionDetail.setOverLimitAmount(0.0);
                             }
                             transactionDetail.setOverDueAmount(Math.abs(cycledates.get().getOverdueamount()));
@@ -267,12 +272,17 @@ public class TransactionServiceImpl {
             if (transactionDetails.isEmpty()) {
                 TransactionDetailsDto dt = new TransactionDetailsDto();
                 dt.setOverDueAmount(Math.abs(cycledates.get().getOverdueamount()));
-                if (overlimit < 0) {
-                    dt.setOverLimitAmount(Math.abs(overlimit));
-                }
-                else{
+                if (cycledates.get().getClosingbalance() < 0) {
+                    double calculateOverLimitAmount = Math.abs(cycledates.get().getCreditlimit()) - Math.abs(cycledates.get().getClosingbalance());
+                    if (calculateOverLimitAmount < 0) {
+                        dt.setOverLimitAmount(Math.abs(calculateOverLimitAmount));
+                    } else {
+                        dt.setOverLimitAmount(0.0);
+                    }
+                } else {
                     dt.setOverLimitAmount(0.0);
                 }
+
                 //dt.setOverLimitAmount(Math.abs(cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance()));
                 dt.setCycleDate(date);
                 transactionDetails.add(dt);
@@ -297,7 +307,7 @@ public class TransactionServiceImpl {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         Document document = new Document(PageSize.A4.rotate());
         String cycleDate = null;
-        
+
         for (TransactionDetailsDto transactionDetailsDto : transactionDetails) {
             cycleDate = transactionDetailsDto.getCycleDate();
         }
@@ -312,34 +322,34 @@ public class TransactionServiceImpl {
             // Create table
             PdfPTable table = new PdfPTable(8); // 8 columns
             table.setWidthPercentage(100);
-  
+
             if (transactionDetails.size() <= 1) {
                 // Add note
                 PdfPCell noteCell = new PdfPCell(new Paragraph("Note: *Transaction details are not available for the selected statement -" + cycleDate));
                 noteCell.setColspan(8); // Merge cells for the note
                 //-------------------
                 com.itextpdf.text.Font redFont = new com.itextpdf.text.Font();
-                redFont.setColor(BaseColor.RED);                           
+                redFont.setColor(BaseColor.RED);
                 Paragraph noteParagraph = new Paragraph("Note: *Transaction details are not available for the selected statement -" + cycleDate, redFont);
                 noteParagraph.setAlignment(Element.ALIGN_CENTER);
-                noteCell.addElement(noteParagraph);               
+                noteCell.addElement(noteParagraph);
                 //-----------
                 table.addCell(noteCell);
             } else {
                 // Add note
                 PdfPCell noteCell = new PdfPCell(new Paragraph("Note: *Selected statement transaction details -" + cycleDate));
                 noteCell.setColspan(8); // Merge cells for the note
-               // noteCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-               // noteCell.setBackgroundColor(BaseColor.GREEN);
-               //---------------
+                // noteCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                // noteCell.setBackgroundColor(BaseColor.GREEN);
+                //---------------
                 com.itextpdf.text.Font redFont = new com.itextpdf.text.Font();
-                redFont.setColor(BaseColor.GREEN); 
+                redFont.setColor(BaseColor.GREEN);
                 Paragraph noteParagraph = new Paragraph("Note: *Selected statement transaction details -" + cycleDate, redFont);
                 noteParagraph.setAlignment(Element.ALIGN_CENTER);
                 noteCell.addElement(noteParagraph);
                 //----------------------
                 table.addCell(noteCell);
-            }     
+            }
             // Add headers
             String[] headers = {"Trxn Serno", "Amount", "Outstanding Amount", "Minimum Pay Percentage", "Amount Contribution in MAD", "Over Due Amount", "Over Limit Amount", "MAD"};
             // Font headerFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, Color.BLACK);
