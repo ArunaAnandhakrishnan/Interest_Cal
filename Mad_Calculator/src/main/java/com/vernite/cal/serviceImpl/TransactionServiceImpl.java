@@ -5,6 +5,7 @@ import com.itextpdf.text.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -228,7 +229,7 @@ public class TransactionServiceImpl {
             List<TransactionDetailsDto> transactionDetails = new ArrayList<>();
             Optional<List<Tbalances>> tbalances = tbalancesRepository.getTbalanceData(cycledates.get().getSerno(),
                     caccounts.getSerno());
-
+            DecimalFormat decimalFormat = new DecimalFormat("#.##");
             // double overlimit = cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance();
             tbalances.ifPresent(tbalancesList -> {
                 for (Tbalances t : tbalancesList) {
@@ -256,7 +257,7 @@ public class TransactionServiceImpl {
                             if (cycledates.get().getClosingbalance() < 0) {
                                 double calculateOverLimitAmount = Math.abs(cycledates.get().getCreditlimit()) - Math.abs(cycledates.get().getClosingbalance());
                                 if (calculateOverLimitAmount < 0) {
-                                    transactionDetail.setOverLimitAmount(Math.abs(calculateOverLimitAmount));
+                                    transactionDetail.setOverLimitAmount(Double.parseDouble(decimalFormat.format(Math.abs(calculateOverLimitAmount))));
                                 } else {
                                     transactionDetail.setOverLimitAmount(0.0);
                                 }
@@ -275,7 +276,7 @@ public class TransactionServiceImpl {
                 if (cycledates.get().getClosingbalance() < 0) {
                     double calculateOverLimitAmount = Math.abs(cycledates.get().getCreditlimit()) - Math.abs(cycledates.get().getClosingbalance());
                     if (calculateOverLimitAmount < 0) {
-                        dt.setOverLimitAmount(Math.abs(calculateOverLimitAmount));
+                        dt.setOverLimitAmount(Double.parseDouble(decimalFormat.format(Math.abs(calculateOverLimitAmount))));
                     } else {
                         dt.setOverLimitAmount(0.0);
                     }

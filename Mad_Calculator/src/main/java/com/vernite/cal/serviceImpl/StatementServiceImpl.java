@@ -1,6 +1,7 @@
 package com.vernite.cal.serviceImpl;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -54,10 +55,9 @@ public class StatementServiceImpl {
         }
 
         BigDecimal mad = madCalculation(cardNumber, cycleDate);
-        if(mad.compareTo(BigDecimal.ZERO) == 0){
+        if (mad.compareTo(BigDecimal.ZERO) == 0) {
             mad = mad;
-        }
-        else if (mad.compareTo(BigDecimal.valueOf(100)) < 0) {
+        } else if (mad.compareTo(BigDecimal.valueOf(100)) < 0) {
             mad = BigDecimal.valueOf(100);
         }
 
@@ -75,10 +75,11 @@ public class StatementServiceImpl {
         st.setOpeningbalance(Math.abs(byCycledate.get().getOpeningbalance()));
         st.setOverduecycles(byCycledate.get().getOverduecycles());
         st.setMad(mad);
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
         if (byCycledate.get().getClosingbalance() < 0) {
             double calculateOverLimitAmount = Math.abs(byCycledate.get().getCreditlimit()) - Math.abs(byCycledate.get().getClosingbalance());
             if (calculateOverLimitAmount < 0) {
-                st.setOverLimitAmount(Math.abs(calculateOverLimitAmount));
+                st.setOverLimitAmount(Double.parseDouble(decimalFormat.format(Math.abs(calculateOverLimitAmount))));
             } else {
                 st.setOverLimitAmount(0.0);
             }
