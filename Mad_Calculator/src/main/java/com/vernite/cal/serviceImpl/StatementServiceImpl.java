@@ -78,6 +78,8 @@ public class StatementServiceImpl {
         st.setMad(mad);
         if (byCycledate.get().getClosingbalance() < 0) {
             double calculateOverLimitAmount = Math.abs(byCycledate.get().getCreditlimit()) - Math.abs(byCycledate.get().getClosingbalance());
+          //  String formattedNumber = String.format("%.2f", number);
+           // String calculateOverLimitAmt = String.format("%.2f", calculateOverLimitAmount);
             if (calculateOverLimitAmount < 0) {
                 st.setOverLimitAmount(Double.parseDouble(decimalFormat.format(Math.abs(calculateOverLimitAmount))));
             } else {

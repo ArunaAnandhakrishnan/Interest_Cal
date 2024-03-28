@@ -3,6 +3,7 @@ package com.vernite.cal.controller;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -82,9 +83,12 @@ public class AccountController {
     public ResponseEntity<byte[]> downloadPdf(@PathVariable String cardNumber,
                                               @RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate) throws SQLException, ParseException, DocumentException, IOException {
         byte[] downloadPDF = transactionServiceImpl.downloadPDF(cardNumber, cycleDate);
+        //---------------------
+        String date = StatementServiceImpl.convertDateOne(cycleDate);
+        //-------------------
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("filename", "transaction_details.pdf");
+        headers.setContentDispositionFormData("filename", "Statement_Cycle_Date_"+date+".pdf");
         headers.setContentLength(downloadPDF.length);
         return new ResponseEntity<>(downloadPDF, headers, HttpStatus.OK);
 
@@ -95,9 +99,10 @@ public class AccountController {
                                                 @RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate) throws ParseException {
         byte[] excelData = transactionServiceImpl.downloadExcel(cardNumber, cycleDate);
 
+        String date = StatementServiceImpl.convertDateOne(cycleDate);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM); // Setting content type to octet-stream for Excel
-        headers.setContentDispositionFormData("attachment", "transaction_details.xlsx"); // Change filename extension to
+        headers.setContentDispositionFormData("attachment", "Statement_Cycle_Date_"+date+".xlsx"); // Change filename extension to
         // .xlsx
         headers.setContentLength(excelData.length);
 
