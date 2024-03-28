@@ -60,6 +60,7 @@ public class StatementServiceImpl {
         } else if (mad.compareTo(BigDecimal.valueOf(100)) < 0) {
             mad = BigDecimal.valueOf(100);
         }
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
         StatementResponse st = new StatementResponse();
         st.setStGeneral(byCycledate.get().getStgeneral());
@@ -75,7 +76,6 @@ public class StatementServiceImpl {
         st.setOpeningbalance(Math.abs(byCycledate.get().getOpeningbalance()));
         st.setOverduecycles(byCycledate.get().getOverduecycles());
         st.setMad(mad);
-        DecimalFormat decimalFormat = new DecimalFormat("#.##");
         if (byCycledate.get().getClosingbalance() < 0) {
             double calculateOverLimitAmount = Math.abs(byCycledate.get().getCreditlimit()) - Math.abs(byCycledate.get().getClosingbalance());
             if (calculateOverLimitAmount < 0) {
@@ -145,7 +145,8 @@ public class StatementServiceImpl {
             }
             madAmount = outStandingAmount;
         }
-
+        DecimalFormat df = new DecimalFormat("#0.00");
+        madAmount = new BigDecimal(df.format(madAmount));
         return madAmount;
     }
 
