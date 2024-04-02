@@ -1,6 +1,7 @@
 package com.vernite.cal.serviceImpl;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -61,7 +62,11 @@ public class StatementServiceImpl {
             mad = BigDecimal.valueOf(100);
         }
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
-
+        if(BigDecimal.valueOf(byCycledate.get().getClosingbalance()).compareTo(mad) == 0){
+            int scale = 0;
+            RoundingMode roundingMode = RoundingMode.UP;
+             mad = mad.setScale(scale, roundingMode);
+        }
         StatementResponse st = new StatementResponse();
         st.setStGeneral(byCycledate.get().getStgeneral());
         st.setTotalcredits(byCycledate.get().getTotalcredits());
