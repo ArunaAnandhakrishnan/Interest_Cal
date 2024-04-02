@@ -62,7 +62,8 @@ public class StatementServiceImpl {
             mad = BigDecimal.valueOf(100);
         }
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        if(BigDecimal.valueOf(byCycledate.get().getClosingbalance()).compareTo(mad) == 0){
+
+        if(mad.compareTo(BigDecimal.valueOf(byCycledate.get().getClosingbalance())) == 0){
             int scale = 0;
             RoundingMode roundingMode = RoundingMode.UP;
              mad = mad.setScale(scale, roundingMode);
@@ -72,7 +73,8 @@ public class StatementServiceImpl {
         st.setTotalcredits(byCycledate.get().getTotalcredits());
         st.setTotaldebits(byCycledate.get().getTotaldebits());
         st.setOverdueamount(Math.abs(byCycledate.get().getOverdueamount()));
-
+        st.setCardNo(cardNumber);
+        st.setAccountNo(caccounts.getNumberx());
         st.setPrintduedate(printDueDates);
         st.setDuedate(dueDates);
 

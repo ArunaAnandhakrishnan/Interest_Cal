@@ -5,13 +5,7 @@ import java.util.Date;
 
 public class TransactionDetailsDto {
 
-    //    private String transactionDate;
-//    private String description;
-//    private String recType;
-//    private String transactionCurrency;
-//    private BigDecimal transactionAmount;
-//    private BigDecimal billingAmount;
-//    private String billingCurrency;
+
     private BigDecimal outstandingamount;
     private Long minpaypercentage;
     private BigDecimal amount;
@@ -19,9 +13,10 @@ public class TransactionDetailsDto {
     private Double overDueAmount;
     private Double overLimitAmount;
     private BigDecimal mad;
-
     private Long trxnSerno;
     private String cycleDate;
+    private String accountNo;
+    private String cardNo;
 
     public BigDecimal getOutstandingamount() {
         return outstandingamount;
@@ -93,5 +88,21 @@ public class TransactionDetailsDto {
 
     public void setCycleDate(String cycleDate) {
         this.cycleDate = cycleDate;
+    }
+
+    public String getAccountNo() {
+        return accountNo;
+    }
+
+    public void setAccountNo(String accountNo) {
+        this.accountNo = accountNo;
+    }
+
+    public String getCardNo() {
+        return cardNo;
+    }
+
+    public void setCardNo(String cardNo) {
+        this.cardNo = cardNo;
     }
 }

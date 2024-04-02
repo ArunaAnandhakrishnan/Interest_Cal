@@ -234,8 +234,8 @@ public class TransactionServiceImpl {
             tbalances.ifPresent(tbalancesList -> {
                 for (Tbalances t : tbalancesList) {
                     TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
-                    if (t.getOutstandingamount().compareTo(BigDecimal.ZERO) < 0) {
-                        if (t.getTrxnserno() != null) {
+                            transactionDetail.setAccountNo(caccounts.getNumberx());
+                            transactionDetail.setCardNo(maskCardNumber(cardNumber));
                             transactionDetail.setOutstandingamount(t.getOutstandingamount().abs());
                             transactionDetail.setAmount(t.getAmount().abs());
                             transactionDetail.setTrxnSerno(t.getTrxnserno());
@@ -266,12 +266,12 @@ public class TransactionServiceImpl {
                             }
                             transactionDetail.setOverDueAmount(Math.abs(cycledates.get().getOverdueamount()));
                             transactionDetails.add(transactionDetail);
-                        }
-                    }
                 }
             });
             if (transactionDetails.isEmpty()) {
                 TransactionDetailsDto dt = new TransactionDetailsDto();
+                dt.setCardNo(maskCardNumber(cardNumber));
+                dt.setAccountNo(caccounts.getNumberx());
                 dt.setOverDueAmount(Math.abs(cycledates.get().getOverdueamount()));
                 if (cycledates.get().getClosingbalance() < 0) {
                     double calculateOverLimitAmount = Math.abs(cycledates.get().getCreditlimit()) - Math.abs(cycledates.get().getClosingbalance());
@@ -299,9 +299,30 @@ public class TransactionServiceImpl {
         List<TransactionDetailsDto> transactionInfo = getTransactionByDate(cardNumber, cycleDate);
         StatementResponse response = statementServiceImpl.getStatementDetails(cardNumber, cycleDate);
         for (TransactionDetailsDto transaction : transactionInfo) {
+            transaction.setAccountNo(response.getAccountNo());
+            transaction.setCardNo(maskCardNumber(response.getCardNo()));
             transaction.setMad(response.getMad());
         }
         return generatePDF(transactionInfo);
+    }
+    public String maskCardNumber(String cardNumber) {
+        // Check if the card number is valid and has at least 4 characters
+        if (cardNumber != null && cardNumber.length() >= 4) {
+            // Get the length of the card number
+            int length = cardNumber.length();
+
+            // Get the last four characters of the card number
+            String lastFourDigits = cardNumber.substring(length - 4);
+
+            // Mask the remaining digits with asterisks
+            String maskedDigits = "*".repeat(length - 4);
+
+            // Combine the masked digits and the last four digits
+            return maskedDigits + lastFourDigits;
+        } else {
+            // Invalid card number, return empty string or handle the error as needed
+            return "";
+        }
     }
 
     public byte[] generatePDF(List<TransactionDetailsDto> transactionDetails) {

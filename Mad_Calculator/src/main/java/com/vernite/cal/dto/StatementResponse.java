@@ -5,114 +5,131 @@ import java.util.Date;
 
 public class StatementResponse {
 
-	private Double totaldebits;
-	private Double totalcredits;
-	private Double overdueamount;
-	private String printduedate;
-	private String duedate;
-	private Double mindueamount;
-	private Double tad;
-	private Double openingbalance;
-	private Long overduecycles;
-	private BigDecimal mad;
-	private double overLimitAmount;
+    private Double totaldebits;
+    private Double totalcredits;
+    private Double overdueamount;
+    private String printduedate;
+    private String duedate;
+    private Double mindueamount;
+    private Double tad;
+    private Double openingbalance;
+    private Long overduecycles;
+    private BigDecimal mad;
+    private double overLimitAmount;
 
-	private String stGeneral;
+    private String stGeneral;
+    private String cardNo;
+    private String accountNo;
 
-	public double getOverLimitAmount() {
-		return overLimitAmount;
-	}
+    public Double getTotaldebits() {
+        return totaldebits;
+    }
 
-	public void setOverLimitAmount(double overLimitAmount) {
-		this.overLimitAmount = overLimitAmount;
-	}
+    public void setTotaldebits(Double totaldebits) {
+        this.totaldebits = totaldebits;
+    }
 
-	public Double getTotaldebits() {
+    public Double getTotalcredits() {
+        return totalcredits;
+    }
 
-		return totaldebits;
-	}
+    public void setTotalcredits(Double totalcredits) {
+        this.totalcredits = totalcredits;
+    }
 
-	public void setTotaldebits(Double totaldebits) {
-		this.totaldebits = totaldebits;
-	}
+    public Double getOverdueamount() {
+        return overdueamount;
+    }
 
-	public Double getTotalcredits() {
-		return totalcredits;
-	}
+    public void setOverdueamount(Double overdueamount) {
+        this.overdueamount = overdueamount;
+    }
 
-	public void setTotalcredits(Double totalcredits) {
-		this.totalcredits = totalcredits;
-	}
+    public String getPrintduedate() {
+        return printduedate;
+    }
 
-	public Double getOverdueamount() {
-		return overdueamount;
-	}
+    public void setPrintduedate(String printduedate) {
+        this.printduedate = printduedate;
+    }
 
-	public void setOverdueamount(Double overdueamount) {
-		this.overdueamount = overdueamount;
-	}
+    public String getDuedate() {
+        return duedate;
+    }
 
-	public String getPrintduedate() {
-		return printduedate;
-	}
+    public void setDuedate(String duedate) {
+        this.duedate = duedate;
+    }
 
-	public void setPrintduedate(String printduedate) {
-		this.printduedate = printduedate;
-	}
+    public Double getMindueamount() {
+        return mindueamount;
+    }
 
-	public String getDuedate() {
-		return duedate;
-	}
+    public void setMindueamount(Double mindueamount) {
+        this.mindueamount = mindueamount;
+    }
 
-	public void setDuedate(String duedate) {
-		this.duedate = duedate;
-	}
+    public Double getTad() {
+        return tad;
+    }
 
-	public Double getMindueamount() {
-		return mindueamount;
-	}
+    public void setTad(Double tad) {
+        this.tad = tad;
+    }
 
-	public void setMindueamount(Double mindueamount) {
-		this.mindueamount = mindueamount;
-	}
+    public Double getOpeningbalance() {
+        return openingbalance;
+    }
 
-	public Double getTad() {
-		return tad;
-	}
+    public void setOpeningbalance(Double openingbalance) {
+        this.openingbalance = openingbalance;
+    }
 
-	public void setTad(Double tad) {
-		this.tad = tad;
-	}
+    public Long getOverduecycles() {
+        return overduecycles;
+    }
 
-	public Double getOpeningbalance() {
-		return openingbalance;
-	}
+    public void setOverduecycles(Long overduecycles) {
+        this.overduecycles = overduecycles;
+    }
 
-	public void setOpeningbalance(Double openingbalance) {
-		this.openingbalance = openingbalance;
-	}
+    public BigDecimal getMad() {
+        return mad;
+    }
 
-	public Long getOverduecycles() {
-		return overduecycles;
-	}
+    public void setMad(BigDecimal mad) {
+        this.mad = mad;
+    }
 
-	public void setOverduecycles(Long overduecycles) {
-		this.overduecycles = overduecycles;
-	}
+    public double getOverLimitAmount() {
+        return overLimitAmount;
+    }
 
-	public BigDecimal getMad() {
-		return mad;
-	}
+    public void setOverLimitAmount(double overLimitAmount) {
+        this.overLimitAmount = overLimitAmount;
+    }
 
-	public void setMad(BigDecimal mad) {
-		this.mad = mad;
-	}
+    public String getStGeneral() {
+        return stGeneral;
+    }
 
-	public String getStGeneral() {
-		return stGeneral;
-	}
+    public void setStGeneral(String stGeneral) {
+        this.stGeneral = stGeneral;
+    }
 
-	public void setStGeneral(String stGeneral) {
-		this.stGeneral = stGeneral;
-	}
+    public String getCardNo() {
+        return cardNo;
+    }
+
+    public void setCardNo(String cardNo) {
+        this.cardNo = cardNo;
+    }
+
+    public String getAccountNo() {
+        return accountNo;
+    }
+
+    public void setAccountNo(String accountNo) {
+        this.accountNo = accountNo;
+    }
 }
