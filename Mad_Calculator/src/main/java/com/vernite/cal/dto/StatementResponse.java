@@ -16,10 +16,10 @@ public class StatementResponse {
     private Long overduecycles;
     private BigDecimal mad;
     private double overLimitAmount;
-
     private String stGeneral;
     private String cardNo;
     private String accountNo;
+
 
     public Double getTotaldebits() {
         return totaldebits;
@@ -109,27 +109,31 @@ public class StatementResponse {
         this.overLimitAmount = overLimitAmount;
     }
 
-    public String getStGeneral() {
-        return stGeneral;
-    }
+	public String getStGeneral() {
+		return stGeneral;
+	}
 
-    public void setStGeneral(String stGeneral) {
-        this.stGeneral = stGeneral;
-    }
+	public void setStGeneral(String stGeneral) {
+		this.stGeneral = stGeneral;
+	}
 
-    public String getCardNo() {
-        return cardNo;
-    }
+	public String getCardNo() {
+		return cardNo;
+	}
 
-    public void setCardNo(String cardNo) {
-        this.cardNo = cardNo;
-    }
+	public void setCardNo(String cardNo) {
+		this.cardNo = cardNo;
+	}
 
-    public String getAccountNo() {
-        return accountNo;
-    }
+	public String getAccountNo() {
+		return accountNo;
+	}
 
-    public void setAccountNo(String accountNo) {
-        this.accountNo = accountNo;
-    }
+	public void setAccountNo(String accountNo) {
+		this.accountNo = accountNo;
+	}
+
+    
+ 
+
 }

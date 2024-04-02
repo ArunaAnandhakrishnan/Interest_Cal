@@ -33,27 +33,27 @@ import static com.vernite.cal.serviceImpl.StatementServiceImpl.convertDateOne;
 @Service
 public class TransactionServiceImpl {
 
-    @Autowired
-    private TbalancesRepository tbalancesRepository;
-    @Autowired
-    StatementServiceImpl statementServiceImpl;
-    @Autowired
-    private MprofileAcctRepository mprofileAcctRepository;
-    @Autowired
-    private CstatementsRepositoty cstatementsRepositoty;
-    @Autowired
-    private ProductsRepository productsRepository;
-    @Autowired
-    ProfilesRepository profilesRepository;
-    @Autowired
-    CstatementSettingsRepository cstatementSettingsRepository;
-    @Autowired
-    private CardxRepository cardxRepository;
-    private final ObjectMapper objectMapper;
+	@Autowired
+	private TbalancesRepository tbalancesRepository;
+	@Autowired
+	StatementServiceImpl statementServiceImpl;
+	@Autowired
+	private MprofileAcctRepository mprofileAcctRepository;
+	@Autowired
+	private CstatementsRepositoty cstatementsRepositoty;
+	@Autowired
+	private ProductsRepository productsRepository;
+	@Autowired
+	ProfilesRepository profilesRepository;
+	@Autowired
+	CstatementSettingsRepository cstatementSettingsRepository;
+	@Autowired
+	private CardxRepository cardxRepository;
+	private final ObjectMapper objectMapper;
 
-    public TransactionServiceImpl(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
+	public TransactionServiceImpl(ObjectMapper objectMapper) {
+		this.objectMapper = objectMapper;
+	}
 
 //    public List<TransactionDetailsDto> getTransactionByDate(String cardNumber, Date cycleDate) {
 //        Cardx byCard = cardxRepository.findByNumberx(cardNumber);
@@ -218,356 +218,507 @@ public class TransactionServiceImpl {
 //
 //    }
 
-    public List<TransactionDetailsDto> getTransactionByDate(String cardNumber, Date cycleDate) {
-        try {
-            String date = convertDateOne(cycleDate);
-            Cardx byCard = cardxRepository.findByNumberx(cardNumber);
+	public List<TransactionDetailsDto> getTransactionByDate(String cardNumber, Date cycleDate) {
+		try {
+			String date = convertDateOne(cycleDate);
+			Cardx byCard = cardxRepository.findByNumberx(cardNumber);
 
-            Caccounts caccounts = byCard.getCaccounts();
-            Optional<Cstatements> cycledates = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate,
-                    byCard.getCaccounts());
-            List<TransactionDetailsDto> transactionDetails = new ArrayList<>();
-            Optional<List<Tbalances>> tbalances = tbalancesRepository.getTbalanceData(cycledates.get().getSerno(),
-                    caccounts.getSerno());
-            DecimalFormat decimalFormat = new DecimalFormat("#.##");
-            // double overlimit = cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance();
-            tbalances.ifPresent(tbalancesList -> {
-                for (Tbalances t : tbalancesList) {
-                    TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
-                            transactionDetail.setAccountNo(caccounts.getNumberx());
-                            transactionDetail.setCardNo(maskCardNumber(cardNumber));
-                            transactionDetail.setOutstandingamount(t.getOutstandingamount().abs());
-                            transactionDetail.setAmount(t.getAmount().abs());
-                            transactionDetail.setTrxnSerno(t.getTrxnserno());
-                            if (t.getMinpaypercentage() == null) {
-                                Optional<Products> product = productsRepository.findById(caccounts.getProduct());
-                                Optional<Mprofileacct> mprofileacct = mprofileAcctRepository.findByProducts(product);
-                                Optional<Profiles> profiles = profilesRepository
-                                        .findById(mprofileacct.get().getProfiles().getSerno());
-                                Optional<Cstmtsettings> csetting = cstatementSettingsRepository
-                                        .findByProfiles(profiles.get());
-                                transactionDetail.setMinpaypercentage(csetting.get().getMinpaypercentage());
-                            } else if (t.getMinpaypercentage() == 100) {
-                                transactionDetail.setMinpaypercentage(t.getMinpaypercentage());
-                            }
-                            BigDecimal madAmount = (t.getOutstandingamount().multiply(BigDecimal
-                                    .valueOf(transactionDetail.getMinpaypercentage()).divide(BigDecimal.valueOf(100))));
-                            transactionDetail.setMadAmount(madAmount.abs());
-                            transactionDetail.setCycleDate(date);
-                            if (cycledates.get().getClosingbalance() < 0) {
-                                double calculateOverLimitAmount = Math.abs(cycledates.get().getCreditlimit()) - Math.abs(cycledates.get().getClosingbalance());
-                                if (calculateOverLimitAmount < 0) {
-                                    transactionDetail.setOverLimitAmount(Double.parseDouble(decimalFormat.format(Math.abs(calculateOverLimitAmount))));
-                                } else {
-                                    transactionDetail.setOverLimitAmount(0.0);
-                                }
-                            } else {
-                                transactionDetail.setOverLimitAmount(0.0);
-                            }
-                            transactionDetail.setOverDueAmount(Math.abs(cycledates.get().getOverdueamount()));
-                            transactionDetails.add(transactionDetail);
-                }
-            });
-            if (transactionDetails.isEmpty()) {
-                TransactionDetailsDto dt = new TransactionDetailsDto();
-                dt.setCardNo(maskCardNumber(cardNumber));
-                dt.setAccountNo(caccounts.getNumberx());
-                dt.setOverDueAmount(Math.abs(cycledates.get().getOverdueamount()));
-                if (cycledates.get().getClosingbalance() < 0) {
-                    double calculateOverLimitAmount = Math.abs(cycledates.get().getCreditlimit()) - Math.abs(cycledates.get().getClosingbalance());
-                    if (calculateOverLimitAmount < 0) {
-                        dt.setOverLimitAmount(Double.parseDouble(decimalFormat.format(Math.abs(calculateOverLimitAmount))));
-                    } else {
-                        dt.setOverLimitAmount(0.0);
-                    }
-                } else {
-                    dt.setOverLimitAmount(0.0);
-                }
+			Caccounts caccounts = byCard.getCaccounts();
 
-                //dt.setOverLimitAmount(Math.abs(cycledates.get().getCreditlimit() - cycledates.get().getClosingbalance()));
-                dt.setCycleDate(date);
-                transactionDetails.add(dt);
-            }
-            // generatePdf(transactionDetails);
-            return transactionDetails;
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-    }
+			Optional<Cstatements> cycledates = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate,
+					byCard.getCaccounts());
+			List<TransactionDetailsDto> transactionDetails = new ArrayList<>();
+			Optional<List<Tbalances>> tbalances = tbalancesRepository.getTbalanceData(cycledates.get().getSerno(),
+					caccounts.getSerno());
+			DecimalFormat decimalFormat = new DecimalFormat("#.##");
+			// double overlimit = cycledates.get().getCreditlimit() -
+			// cycledates.get().getClosingbalance();
+			tbalances.ifPresent(tbalancesList -> {
+				for (Tbalances t : tbalancesList) {
+					TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
 
-    public byte[] downloadPDF(String cardNumber, Date cycleDate) throws ParseException {
-        List<TransactionDetailsDto> transactionInfo = getTransactionByDate(cardNumber, cycleDate);
-        StatementResponse response = statementServiceImpl.getStatementDetails(cardNumber, cycleDate);
-        for (TransactionDetailsDto transaction : transactionInfo) {
-            transaction.setAccountNo(response.getAccountNo());
-            transaction.setCardNo(maskCardNumber(response.getCardNo()));
-            transaction.setMad(response.getMad());
-        }
-        return generatePDF(transactionInfo);
-    }
-    public String maskCardNumber(String cardNumber) {
-        // Check if the card number is valid and has at least 4 characters
-        if (cardNumber != null && cardNumber.length() >= 4) {
-            // Get the length of the card number
-            int length = cardNumber.length();
+					transactionDetail.setAccountNo(caccounts.getNumberx());
+					transactionDetail.setCardNo(maskCardNumber(cardNumber));
 
-            // Get the last four characters of the card number
-            String lastFourDigits = cardNumber.substring(length - 4);
+					transactionDetail.setOutstandingamount(t.getOutstandingamount().abs());
+					transactionDetail.setAmount(t.getAmount().abs());
+					transactionDetail.setTrxnSerno(t.getTrxnserno());
+					if (t.getMinpaypercentage() == null) {
+						Optional<Products> product = productsRepository.findById(caccounts.getProduct());
+						Optional<Mprofileacct> mprofileacct = mprofileAcctRepository.findByProducts(product);
+						Optional<Profiles> profiles = profilesRepository
+								.findById(mprofileacct.get().getProfiles().getSerno());
+						Optional<Cstmtsettings> csetting = cstatementSettingsRepository.findByProfiles(profiles.get());
+						transactionDetail.setMinpaypercentage(csetting.get().getMinpaypercentage());
+					} else if (t.getMinpaypercentage() == 100) {
+						transactionDetail.setMinpaypercentage(t.getMinpaypercentage());
+					}
+					BigDecimal madAmount = (t.getOutstandingamount().multiply(BigDecimal
+							.valueOf(transactionDetail.getMinpaypercentage()).divide(BigDecimal.valueOf(100))));
+					transactionDetail.setMadAmount(madAmount.abs());
+					transactionDetail.setCycleDate(date);
+					if (cycledates.get().getClosingbalance() < 0) {
+						double calculateOverLimitAmount = Math.abs(cycledates.get().getCreditlimit())
+								- Math.abs(cycledates.get().getClosingbalance());
+						if (calculateOverLimitAmount < 0) {
+							transactionDetail.setOverLimitAmount(
+									Double.parseDouble(decimalFormat.format(Math.abs(calculateOverLimitAmount))));
+						} else {
+							transactionDetail.setOverLimitAmount(0.0);
+						}
+					} else {
+						transactionDetail.setOverLimitAmount(0.0);
+					}
+					transactionDetail.setOverDueAmount(Math.abs(cycledates.get().getOverdueamount()));
+					transactionDetails.add(transactionDetail);
 
-            // Mask the remaining digits with asterisks
-            String maskedDigits = "*".repeat(length - 4);
+				}
+			});
+			if (transactionDetails.isEmpty()) {
+				TransactionDetailsDto dt = new TransactionDetailsDto();
+				dt.setCardNo(maskCardNumber(cardNumber));
+				dt.setAccountNo(caccounts.getNumberx());
+				dt.setOverDueAmount(Math.abs(cycledates.get().getOverdueamount()));
+				if (cycledates.get().getClosingbalance() < 0) {
+					double calculateOverLimitAmount = Math.abs(cycledates.get().getCreditlimit())
+							- Math.abs(cycledates.get().getClosingbalance());
+					if (calculateOverLimitAmount < 0) {
+						dt.setOverLimitAmount(
+								Double.parseDouble(decimalFormat.format(Math.abs(calculateOverLimitAmount))));
+					} else {
+						dt.setOverLimitAmount(0.0);
+					}
+				} else {
+					dt.setOverLimitAmount(0.0);
+				}
 
-            // Combine the masked digits and the last four digits
-            return maskedDigits + lastFourDigits;
-        } else {
-            // Invalid card number, return empty string or handle the error as needed
-            return "";
-        }
-    }
+				// dt.setOverLimitAmount(Math.abs(cycledates.get().getCreditlimit() -
+				// cycledates.get().getClosingbalance()));
+				dt.setCycleDate(date);
 
-    public byte[] generatePDF(List<TransactionDetailsDto> transactionDetails) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        Document document = new Document(PageSize.A4.rotate());
-        String cycleDate = null;
+				transactionDetails.add(dt);
+			}
 
-        for (TransactionDetailsDto transactionDetailsDto : transactionDetails) {
-            cycleDate = transactionDetailsDto.getCycleDate();
-        }
+			// generatePdf(transactionDetails);
+			return transactionDetails;
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
+		}
 
-        try {
-            PdfWriter.getInstance(document, byteArrayOutputStream);
-            document.open();
+	}
 
-            // Add a new line
-            document.add(new Paragraph("\n"));
+	public byte[] downloadPDF(String cardNumber, Date cycleDate) throws ParseException {
+		List<TransactionDetailsDto> transactionInfo = getTransactionByDate(cardNumber, cycleDate);
+		StatementResponse response = statementServiceImpl.getStatementDetails(cardNumber, cycleDate);
+		for (TransactionDetailsDto transaction : transactionInfo) {
+			transaction.setAccountNo(response.getAccountNo());
+			transaction.setCardNo(maskCardNumber(response.getCardNo()));
+			transaction.setMad(response.getMad());
+		}
+		return generatePDF(transactionInfo);
+	}
 
-            // Create table
-            PdfPTable table = new PdfPTable(8); // 8 columns
-            table.setWidthPercentage(100);
+	public String maskCardNumber(String cardNumber) {
+		// Check if the card number is valid and has at least 4 characters
+		if (cardNumber != null && cardNumber.length() >= 4) {
+			// Get the length of the card number
+			int length = cardNumber.length();
 
-            if (transactionDetails.size() <= 1) {
-                // Add note
-                PdfPCell noteCell = new PdfPCell(new Paragraph("Note: *Transaction details are not available for the selected statement -" + cycleDate));
-                noteCell.setColspan(8); // Merge cells for the note
-                //-------------------
-                com.itextpdf.text.Font redFont = new com.itextpdf.text.Font();
-                redFont.setColor(BaseColor.RED);
-                Paragraph noteParagraph = new Paragraph("Note: *Transaction details are not available for the selected statement -" + cycleDate, redFont);
-                noteParagraph.setAlignment(Element.ALIGN_CENTER);
-                noteCell.addElement(noteParagraph);
-                //-----------
-                table.addCell(noteCell);
-            } else {
-                // Add note
-                PdfPCell noteCell = new PdfPCell(new Paragraph("Note: *Selected statement transaction details -" + cycleDate));
-                noteCell.setColspan(8); // Merge cells for the note
-                // noteCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                // noteCell.setBackgroundColor(BaseColor.GREEN);
-                //---------------
-                com.itextpdf.text.Font redFont = new com.itextpdf.text.Font();
-                redFont.setColor(BaseColor.GREEN);
-                Paragraph noteParagraph = new Paragraph("Note: *Selected statement transaction details -" + cycleDate, redFont);
-                noteParagraph.setAlignment(Element.ALIGN_CENTER);
-                noteCell.addElement(noteParagraph);
-                //----------------------
-                table.addCell(noteCell);
-            }
-            // Add headers
-            String[] headers = {"Trxn Serno", "Amount", "Outstanding Amount", "Minimum Pay Percentage", "Amount Contribution in MAD", "Over Due Amount", "Over Limit Amount", "MAD"};
-            // Font headerFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD, Color.BLACK);
+			// Get the last four characters of the card number
+			String lastFourDigits = cardNumber.substring(length - 4);
 
-            for (String header : headers) {
-                PdfPCell cell = new PdfPCell(new Paragraph(header));
-                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                table.addCell(cell);
-            }
+			// Mask the remaining digits with asterisks
+			String maskedDigits = "*".repeat(length - 4);
 
-            // Add data rows
-//            for (TransactionDetailsDto transaction : transactionDetails) {
-//                table.addCell(transaction.getTrxnSerno() != null ? String.valueOf(transaction.getTrxnSerno()) : "");
-//                table.addCell(transaction.getAmount() != null ? transaction.getAmount().toString() : "");
-//                table.addCell(transaction.getOutstandingamount() != null ? transaction.getOutstandingamount().toString() : "");
-//                table.addCell(transaction.getMinpaypercentage() != null ? transaction.getMinpaypercentage().toString() : "");
-//                table.addCell(transaction.getMadAmount() != null ? transaction.getMadAmount().toString() : "");
-////                table.addCell(transaction.getOverDueAmount() != null ? transaction.getOverDueAmount().toString() : "");
-////                table.addCell(transaction.getOverLimitAmount() != null ? transaction.getOverLimitAmount().toString() : "");
-////                table.addCell(transaction.getMad() != null ? transaction.getMad().toString() : "");
-//                table.addCell(""); // Empty cell
-//                table.addCell(""); // Empty cell
-//                table.addCell(""); // Empty cell
-//            }
+			// Combine the masked digits and the last four digits
+			return maskedDigits + lastFourDigits;
+		} else {
+			// Invalid card number, return empty string or handle the error as needed
+			return "";
+		}
+	}
 
-            for (int i = 0; i < transactionDetails.size(); i++) {
-                TransactionDetailsDto transaction = transactionDetails.get(i);
-                PdfPCell cell1 = new PdfPCell(new Paragraph(transaction.getTrxnSerno() != null ? String.valueOf(transaction.getTrxnSerno()) : ""));
-                PdfPCell cell2 = new PdfPCell(new Paragraph(transaction.getAmount() != null ? transaction.getAmount().toString() : ""));
-                PdfPCell cell3 = new PdfPCell(new Paragraph(transaction.getOutstandingamount() != null ? transaction.getOutstandingamount().toString() : ""));
-                PdfPCell cell4 = new PdfPCell(new Paragraph(transaction.getMinpaypercentage() != null ? transaction.getMinpaypercentage().toString() : ""));
-                PdfPCell cell5 = new PdfPCell(new Paragraph(transaction.getMadAmount() != null ? transaction.getMadAmount().toString() : ""));
+	public byte[] generatePDF(List<TransactionDetailsDto> transactionDetails) {
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		Document document = new Document(PageSize.A4.rotate());
+		String cycleDate = null;
 
-                PdfPCell cell6, cell7, cell8;
-                if (i == 0) { // Set values only in the first row
-                    cell6 = new PdfPCell(new Paragraph(transaction.getOverDueAmount() != null ? transaction.getOverDueAmount().toString() : ""));
-                    cell7 = new PdfPCell(new Paragraph(transaction.getOverLimitAmount() != null ? transaction.getOverLimitAmount().toString() : ""));
-                    cell8 = new PdfPCell(new Paragraph(transaction.getMad() != null ? transaction.getMad().toString() : ""));
-                } else {
-                    cell6 = new PdfPCell(new Paragraph(""));
-                    cell7 = new PdfPCell(new Paragraph(""));
-                    cell8 = new PdfPCell(new Paragraph(""));
-                }
+		for (TransactionDetailsDto transactionDetailsDto : transactionDetails) {
+			cycleDate = transactionDetailsDto.getCycleDate();
+		}
 
-                cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cell4.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cell5.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cell6.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cell7.setHorizontalAlignment(Element.ALIGN_CENTER);
-                cell8.setHorizontalAlignment(Element.ALIGN_CENTER);
+		try {
+			PdfWriter.getInstance(document, byteArrayOutputStream);
+			document.open();
 
-                table.addCell(cell1);
-                table.addCell(cell2);
-                table.addCell(cell3);
-                table.addCell(cell4);
-                table.addCell(cell5);
-                table.addCell(cell6);
-                table.addCell(cell7);
-                table.addCell(cell8);
-            }
-            document.add(table);
-        } catch (DocumentException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } finally {
-            if (document != null) {
-                document.close();
-            }
-        }
+			// Add a new line
+			document.add(new Paragraph("\n"));
 
-        return byteArrayOutputStream.toByteArray();
-    }
+			// Add note
+			PdfPTable noteTable = new PdfPTable(1);
+			PdfPCell noteCell = new PdfPCell(
+					new Paragraph("Note: *Selected statement transaction details -" + cycleDate));
+			noteCell.setBorder(0); // Remove border
+			noteCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			noteTable.addCell(noteCell);
+			document.add(noteTable);
 
-    public byte[] downloadExcel(String cardNumber, Date cycleDate) throws ParseException {
-        List<TransactionDetailsDto> transactionInfo = getTransactionByDate(cardNumber, cycleDate);
-        StatementResponse response = statementServiceImpl.getStatementDetails(cardNumber, cycleDate);
-        for (TransactionDetailsDto transaction : transactionInfo) {
-            transaction.setMad(response.getMad());
-        }
-        return generateExcel(transactionInfo);
-    }
+			// Add space between tables
+			document.add(new Paragraph("\n")); // Empty paragraph 
+			
+			PdfPTable cardTable = new PdfPTable(2);
+			cardTable.setWidthPercentage(100);
+			cardTable.setWidths(new float[] { 1, 1 });
+			
+			// Add headers
+			String[] secondaryHeader = { "Account No", "Mask Card Number"};
+					for (String header : secondaryHeader) {
+							PdfPCell cell = new PdfPCell(new Paragraph(header));
+							cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+							cardTable.addCell(cell);
+						}
+					TransactionDetailsDto getAmountData = transactionDetails.get(0);
+					cardTable.addCell(
+							getAmountData.getAccountNo() != null ? getAmountData.getAccountNo().toString() : "");
+					cardTable.addCell(
+							getAmountData.getCardNo() != null ? getAmountData.getCardNo().toString() : "");
+			
+					document.add(cardTable);
+				
+			// Add space between tables
+						document.add(new Paragraph("\n")); // Empty paragraph or
+		
 
-    public byte[] generateExcel(List<TransactionDetailsDto> transactionDetails) {
-        try {
-            Workbook workbook = new XSSFWorkbook();
-            Sheet sheet = workbook.createSheet("statements");
+			// Create secondary table for Over Due Amount, Over Limit Amount, and MAD
+			PdfPTable secondaryTable = new PdfPTable(3);
+			secondaryTable.setWidthPercentage(100);
+			secondaryTable.setWidths(new float[] { 1, 1, 1 });
 
-            // Create a bold font
-            Font headerFont = workbook.createFont();
-            headerFont.setBold(true);
-            headerFont.setColor(IndexedColors.BLUE.getIndex()); // Set the color to blue
+			// Add headers
+			String[] secondaryHeaders = { "Over Due Amount", "Over Limit Amount", "MAD" };
+			for (String header : secondaryHeaders) {
+				PdfPCell cell = new PdfPCell(new Paragraph(header));
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				secondaryTable.addCell(cell);
+			}
 
-            // Create a cell style with the bold font for headers
-            CellStyle headerCellStyle = workbook.createCellStyle();
-            headerCellStyle.setFont(headerFont);
-            headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
+			// Add data row
+			// Assuming the data is available in the first transactionDetailsDto
+			TransactionDetailsDto firstTransaction = transactionDetails.get(0);
+			secondaryTable.addCell(
+					firstTransaction.getOverDueAmount() != null ? firstTransaction.getOverDueAmount().toString() : "");
+			secondaryTable.addCell(
+					firstTransaction.getOverLimitAmount() != null ? firstTransaction.getOverLimitAmount().toString()
+							: "");
+			secondaryTable.addCell(firstTransaction.getMad() != null ? firstTransaction.getMad().toString() : "");
 
-            // Create a cell style for data with center alignment
-            CellStyle dataCellStyle = workbook.createCellStyle();
-            dataCellStyle.setAlignment(HorizontalAlignment.CENTER);
+			document.add(secondaryTable);
 
-            // Create a cell style for note with red font color
-            CellStyle noteCellStyle = workbook.createCellStyle();
-            Font noteFont = workbook.createFont();
-            noteFont.setColor(IndexedColors.RED.getIndex());
-            noteCellStyle.setFont(noteFont);
-            noteCellStyle.setAlignment(HorizontalAlignment.CENTER);
+			// Add space between tables
+			document.add(new Paragraph("\n")); // Empty paragraph or
+			
+			// Create main table
+			PdfPTable mainTable = new PdfPTable(5); // 8 columns
+			mainTable.setWidthPercentage(100);
 
-            // Create header row and set cell values with header cell style
-            Row headerRow = sheet.createRow(1); // Shifted header row down by one to accommodate the note
-            String[] headers = {"Trxn Serno", "  Amount  ", "  Outstanding Amount  ", " Minimum Pay Percentage ", " Amount Contribution in MAD ", " Over Due Amount ", " Over Limit Amount ", "    MAD    "};
-            for (int i = 0; i < headers.length; i++) {
-                Cell cell = headerRow.createCell(i);
-                cell.setCellValue(headers[i]);
-                cell.setCellStyle(headerCellStyle);
-                // Optionally, set column width manually based on data length
-                sheet.setColumnWidth(i, headers[i].length() * 256); // Adjust 256 based on your preference for column width
-            }
+			// Add headers
+			String[] headers = { "Trxn Serno", "Amount", "Outstanding Amount", "Minimum Pay Percentage",
+					"Amount Contribution in MAD" };
+			for (String header : headers) {
+				PdfPCell cell = new PdfPCell(new Paragraph(header));
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				mainTable.addCell(cell);
+			}
 
-            // Create note row above the header and set cell value with note cell style
-            Row noteRow = sheet.createRow(0);
-            Cell noteCell = noteRow.createCell(0);
-            String cycleDate = null;
-            for (TransactionDetailsDto transactionDetailsDto : transactionDetails) {
-                cycleDate = transactionDetailsDto.getCycleDate();
-            }
-            if (transactionDetails.size() <= 1) {
-                noteFont.setColor(IndexedColors.RED.getIndex());
-                noteCell.setCellValue("Note: *Transaction details are not available for the selected statement -" + cycleDate);
-                noteCell.setCellStyle(noteCellStyle);
-                sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, headers.length - 1)); // Merge cells for the note
-            } else {
+			// Add data rows
+			for (TransactionDetailsDto transaction : transactionDetails) {
+				mainTable.addCell(transaction.getTrxnSerno() != null ? String.valueOf(transaction.getTrxnSerno()) : "");
+				mainTable.addCell(transaction.getAmount() != null ? transaction.getAmount().toString() : "");
+				mainTable.addCell(
+						transaction.getOutstandingamount() != null ? transaction.getOutstandingamount().toString()
+								: "");
+				mainTable.addCell(
+						transaction.getMinpaypercentage() != null ? transaction.getMinpaypercentage().toString() : "");
+				mainTable.addCell(transaction.getMadAmount() != null ? transaction.getMadAmount().toString() : "");
 
-                noteFont.setColor(IndexedColors.GREEN.getIndex());
-                noteCell.setCellValue("Note: *Selected statement transaction details -" + cycleDate);
-                noteCell.setCellStyle(noteCellStyle);
-                sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, headers.length - 1)); // Merge cells for the note
-            }
-            // Populate data rows
-            int rowNum = 2; // Start from the third row after the note and header
-            for (TransactionDetailsDto transaction : transactionDetails) {
-                Row row = sheet.createRow(rowNum++);
-                if (transaction.getTrxnSerno() == null) {
-                    row.createCell(0).setCellValue("");
-                } else {
-                    row.createCell(0).setCellValue(transaction.getTrxnSerno());
-                }
-                if (transaction.getAmount() == null) {
-                    row.createCell(1).setCellValue("");
-                } else {
-                    row.createCell(1).setCellValue(transaction.getAmount().toString());
-                }
-                if (transaction.getOutstandingamount() == null) {
-                    row.createCell(2).setCellValue("");
-                } else {
-                    row.createCell(2).setCellValue(transaction.getOutstandingamount() != null ? transaction.getOutstandingamount().toString() : "0");
+			}
 
-                }
-                if (transaction.getMinpaypercentage() == null) {
-                    row.createCell(3).setCellValue("");
+			document.add(mainTable);
 
-                } else {
-                    row.createCell(3).setCellValue(transaction.getMinpaypercentage() != null ? transaction.getMinpaypercentage().toString() : "0");
-                }
-                row.createCell(4).setCellValue(transaction.getMadAmount() != null ? transaction.getMadAmount().toString() : "0");
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		} finally {
+			if (document != null) {
+				document.close();
+			}
+		}
 
-                // Set only one value in the last three columns
-                if (rowNum == 3) { // Assuming you want to set the value only in the third row (after the header and note)
-                    row.createCell(5).setCellValue(transaction.getOverDueAmount() != null ? transaction.getOverDueAmount().toString() : "0");
-                    row.createCell(6).setCellValue(transaction.getOverLimitAmount() != null ? transaction.getOverLimitAmount().toString() : "0");
-                    row.createCell(7).setCellValue(transaction.getMad() != null ? transaction.getMad().toString() : "0");
-                } else {
-                    row.createCell(5).setCellValue("");
-                    row.createCell(6).setCellValue("");
-                    row.createCell(7).setCellValue("");
-                }
+		return byteArrayOutputStream.toByteArray();
+	}
 
-                // Apply data cell style to data rows
-                for (Cell cell : row) {
-                    cell.setCellStyle(dataCellStyle);
-                }
-            }
+	public byte[] downloadExcel(String cardNumber, Date cycleDate) throws ParseException {
+		List<TransactionDetailsDto> transactionInfo = getTransactionByDate(cardNumber, cycleDate);
+		StatementResponse response = statementServiceImpl.getStatementDetails(cardNumber, cycleDate);
+		for (TransactionDetailsDto transaction : transactionInfo) {
+			transaction.setMad(response.getMad());
+		}
+		return generateExcel(transactionInfo);
+	}
 
-            // Write the workbook content to a byte array
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            workbook.write(byteArrayOutputStream);
-            workbook.close();
+//	public byte[] generateExcel(List<TransactionDetailsDto> transactionDetails) {
+//		try {
+//			Workbook workbook = new XSSFWorkbook();
+//			Sheet sheet = workbook.createSheet("statements");
+//
+//			// Create a bold font
+//			Font headerFont = workbook.createFont();
+//			headerFont.setBold(true);
+//			headerFont.setColor(IndexedColors.BLUE.getIndex()); // Set the color to blue
+//
+//			// Create a cell style with the bold font for headers
+//			CellStyle headerCellStyle = workbook.createCellStyle();
+//			headerCellStyle.setFont(headerFont);
+//			headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
+//
+//			// Create a cell style for data with center alignment
+//			CellStyle dataCellStyle = workbook.createCellStyle();
+//			dataCellStyle.setAlignment(HorizontalAlignment.CENTER);
+//
+//			// Create a cell style for note with red font color
+//			CellStyle noteCellStyle = workbook.createCellStyle();
+//			Font noteFont = workbook.createFont();
+//			noteFont.setColor(IndexedColors.RED.getIndex());
+//			noteCellStyle.setFont(noteFont);
+//			noteCellStyle.setAlignment(HorizontalAlignment.CENTER);
+//
+//			// Create header row and set cell values with header cell style
+//			Row headerRow = sheet.createRow(1); // Shifted header row down by one to accommodate the note
+//			String[] headers = { "Trxn Serno", "  Amount  ", "  Outstanding Amount  ", " Minimum Pay Percentage ",
+//					" Amount Contribution in MAD ", " Over Due Amount ", " Over Limit Amount ", "    MAD    " };
+//			for (int i = 0; i < headers.length; i++) {
+//				Cell cell = headerRow.createCell(i);
+//				cell.setCellValue(headers[i]);
+//				cell.setCellStyle(headerCellStyle);
+//				// Optionally, set column width manually based on data length
+//				sheet.setColumnWidth(i, headers[i].length() * 256); // Adjust 256 based on your preference for column
+//																	// width
+//			}
+//
+//			// Create note row above the header and set cell value with note cell style
+//			Row noteRow = sheet.createRow(0);
+//			Cell noteCell = noteRow.createCell(0);
+//			String cycleDate = null;
+//			for (TransactionDetailsDto transactionDetailsDto : transactionDetails) {
+//				cycleDate = transactionDetailsDto.getCycleDate();
+//			}
+//			if (transactionDetails.size() <= 1) {
+//				noteFont.setColor(IndexedColors.RED.getIndex());
+//				noteCell.setCellValue(
+//						"Note: *Transaction details are not available for the selected statement -" + cycleDate);
+//				noteCell.setCellStyle(noteCellStyle);
+//				sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, headers.length - 1)); // Merge cells for the note
+//			} else {
+//
+//				noteFont.setColor(IndexedColors.GREEN.getIndex());
+//				noteCell.setCellValue("Note: *Selected statement transaction details -" + cycleDate);
+//				noteCell.setCellStyle(noteCellStyle);
+//				sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, headers.length - 1)); // Merge cells for the note
+//			}
+//			// Populate data rows
+//			int rowNum = 2; // Start from the third row after the note and header
+//			for (TransactionDetailsDto transaction : transactionDetails) {
+//				Row row = sheet.createRow(rowNum++);
+//				if (transaction.getTrxnSerno() == null) {
+//					row.createCell(0).setCellValue("");
+//				} else {
+//					row.createCell(0).setCellValue(transaction.getTrxnSerno());
+//				}
+//				if (transaction.getAmount() == null) {
+//					row.createCell(1).setCellValue("");
+//				} else {
+//					row.createCell(1).setCellValue(transaction.getAmount().toString());
+//				}
+//				if (transaction.getOutstandingamount() == null) {
+//					row.createCell(2).setCellValue("");
+//				} else {
+//					row.createCell(2)
+//							.setCellValue(transaction.getOutstandingamount() != null
+//									? transaction.getOutstandingamount().toString()
+//									: "0");
+//
+//				}
+//				if (transaction.getMinpaypercentage() == null) {
+//					row.createCell(3).setCellValue("");
+//
+//				} else {
+//					row.createCell(3)
+//							.setCellValue(transaction.getMinpaypercentage() != null
+//									? transaction.getMinpaypercentage().toString()
+//									: "0");
+//				}
+//				row.createCell(4)
+//						.setCellValue(transaction.getMadAmount() != null ? transaction.getMadAmount().toString() : "0");
+//
+//				// Set only one value in the last three columns
+//				if (rowNum == 3) { // Assuming you want to set the value only in the third row (after the header
+//									// and note)
+//					row.createCell(5).setCellValue(
+//							transaction.getOverDueAmount() != null ? transaction.getOverDueAmount().toString() : "0");
+//					row.createCell(6)
+//							.setCellValue(transaction.getOverLimitAmount() != null
+//									? transaction.getOverLimitAmount().toString()
+//									: "0");
+//					row.createCell(7)
+//							.setCellValue(transaction.getMad() != null ? transaction.getMad().toString() : "0");
+//				} else {
+//					row.createCell(5).setCellValue("");
+//					row.createCell(6).setCellValue("");
+//					row.createCell(7).setCellValue("");
+//				}
+//
+//				// Apply data cell style to data rows
+//				for (Cell cell : row) {
+//					cell.setCellStyle(dataCellStyle);
+//				}
+//			}
+//
+//			// Write the workbook content to a byte array
+//			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//			workbook.write(byteArrayOutputStream);
+//			workbook.close();
+//
+//			return byteArrayOutputStream.toByteArray();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
+	
+	public byte[] generateExcel(List<TransactionDetailsDto> transactionDetails) {
+	    try {
+	        Workbook workbook = new XSSFWorkbook();
+	        Sheet sheet = workbook.createSheet("statements");
 
-            return byteArrayOutputStream.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+	        // Create a bold font
+	        Font headerFont = workbook.createFont();
+	        headerFont.setBold(true);
+	        headerFont.setColor(IndexedColors.BLUE.getIndex()); // Set the color to blue
+
+	        // Create a cell style with the bold font for headers
+	        CellStyle headerCellStyle = workbook.createCellStyle();
+	        headerCellStyle.setFont(headerFont);
+	        headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
+
+	        // Create a cell style for data with center alignment
+	        CellStyle dataCellStyle = workbook.createCellStyle();
+	        dataCellStyle.setAlignment(HorizontalAlignment.CENTER);
+
+	        // Create a cell style for note with red font color
+	        CellStyle noteCellStyle = workbook.createCellStyle();
+	        Font noteFont = workbook.createFont();
+	        noteFont.setColor(IndexedColors.RED.getIndex());
+	        noteCellStyle.setFont(noteFont);
+	        noteCellStyle.setAlignment(HorizontalAlignment.CENTER);
+
+	        // Create header row and set cell values with header cell style
+	        Row headerRow = sheet.createRow(1); // Shifted header row down by one to accommodate the note
+	        String[] headers = { "Trxn Serno", "  Amount  ", "  Outstanding Amount  ", " Minimum Pay Percentage ",
+	                " Amount Contribution in MAD ", " Over Due Amount ", " Over Limit Amount ", "    MAD    " };
+	        for (int i = 0; i < headers.length; i++) {
+	            Cell cell = headerRow.createCell(i);
+	            cell.setCellValue(headers[i]);
+	            cell.setCellStyle(headerCellStyle);
+	            // Optionally, set column width manually based on data length
+	            sheet.setColumnWidth(i, headers[i].length() * 256); // Adjust 256 based on your preference for column width
+	        }
+
+	        // Create note row above the header and set cell value with note cell style
+	        Row noteRow = sheet.createRow(0);
+	        Cell noteCell = noteRow.createCell(0);
+	        String cycleDate = null;
+	        for (TransactionDetailsDto transactionDetailsDto : transactionDetails) {
+	            cycleDate = transactionDetailsDto.getCycleDate();
+	        }
+	        if (transactionDetails.size() <= 1) {
+	            noteFont.setColor(IndexedColors.RED.getIndex());
+	            noteCell.setCellValue(
+	                    "Note: *Transaction details are not available for the selected statement -" + cycleDate);
+	            noteCell.setCellStyle(noteCellStyle);
+	            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, headers.length - 1)); // Merge cells for the note
+	        } else {
+
+	            noteFont.setColor(IndexedColors.GREEN.getIndex());
+	            noteCell.setCellValue("Note: *Selected statement transaction details -" + cycleDate);
+	            noteCell.setCellStyle(noteCellStyle);
+	            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, headers.length - 1)); // Merge cells for the note
+	        }
+
+	        // Create header row for the secondary table
+	        Row secondaryHeaderRow = sheet.createRow(4); // Shifted secondary header row down
+	        String[] secondaryHeaders = { "Over Due Amount", "Over Limit Amount", "MAD" };
+	        for (int i = 0; i < secondaryHeaders.length; i++) {
+	            Cell cell = secondaryHeaderRow.createCell(i + 5); // Start from the sixth column
+	            cell.setCellValue(secondaryHeaders[i]);
+	            cell.setCellStyle(headerCellStyle);
+	            // Optionally, set column width manually based on data length
+	            sheet.setColumnWidth(i + 5, secondaryHeaders[i].length() * 256); // Adjust 256 based on your preference for column width
+	        }
+
+	        // Populate data rows for the secondary table
+	        int rowNum = 5; // Start from the sixth row after the note, header, and first data row
+	        for (TransactionDetailsDto transaction : transactionDetails) {
+	            Row row = sheet.createRow(rowNum++);
+	            row.createCell(5).setCellValue(transaction.getOverDueAmount() != null ? transaction.getOverDueAmount().toString() : "");
+	            row.createCell(6).setCellValue(transaction.getOverLimitAmount() != null ? transaction.getOverLimitAmount().toString() : "");
+	            row.createCell(7).setCellValue(transaction.getMad() != null ? transaction.getMad().toString() : "");
+	            // Apply data cell style to data rows
+	            for (Cell cell : row) {
+	                cell.setCellStyle(dataCellStyle);
+	            }
+	        }
+
+	        // Populate data rows for the main table
+	        rowNum = 2; // Start from the third row after the note and header
+	        for (TransactionDetailsDto transaction : transactionDetails) {
+	            Row row = sheet.createRow(rowNum++);
+	            if (transaction.getTrxnSerno() == null) {
+	                row.createCell(0).setCellValue("");
+	            } else {
+	                row.createCell(0).setCellValue(transaction.getTrxnSerno());
+	            }
+	            if (transaction.getAmount() == null) {
+	                row.createCell(1).setCellValue("");
+	            } else {
+	                row.createCell(1).setCellValue(transaction.getAmount().toString());
+	            }
+	            if (transaction.getOutstandingamount() == null) {
+	                row.createCell(2).setCellValue("");
+	            } else {
+	                row.createCell(2).setCellValue(transaction.getOutstandingamount().toString());
+	            }
+	            if (transaction.getMinpaypercentage() == null) {
+	                row.createCell(3).setCellValue("");
+	            } else {
+	                row.createCell(3).setCellValue(transaction.getMinpaypercentage().toString());
+	            }
+	            row.createCell(4).setCellValue(transaction.getMadAmount() != null ? transaction.getMadAmount().toString() : "");
+	            // Apply data cell style to data rows
+	            for (Cell cell : row) {
+	                cell.setCellStyle(dataCellStyle);
+	            }
+	        }
+
+	        // Write the workbook content to a byte array
+	        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+	        workbook.write(byteArrayOutputStream);
+	        workbook.close();
+
+	        return byteArrayOutputStream.toByteArray();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
 
 
 }
