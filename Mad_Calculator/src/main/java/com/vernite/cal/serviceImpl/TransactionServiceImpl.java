@@ -233,41 +233,43 @@ public class TransactionServiceImpl {
             // cycledates.get().getClosingbalance();
             tbalances.ifPresent(tbalancesList -> {
                 for (Tbalances t : tbalancesList) {
-                    TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
-                    transactionDetail.setAccountNo(caccounts.getNumberx());
-                    transactionDetail.setCardNo(maskCardNumber(cardNumber));
-                    transactionDetail.setOutstandingamount(t.getOutstandingamount().abs());
-                    transactionDetail.setAmount(t.getAmount().abs());
-                    transactionDetail.setTrxnSerno(t.getTrxnserno());
-                    if (t.getMinpaypercentage() == null) {
-                        Optional<Products> product = productsRepository.findById(caccounts.getProduct());
-                        Optional<Mprofileacct> mprofileacct = mprofileAcctRepository.findByProducts(product);
-                        Optional<Profiles> profiles = profilesRepository
-                                .findById(mprofileacct.get().getProfiles().getSerno());
-                        Optional<Cstmtsettings> csetting = cstatementSettingsRepository.findByProfiles(profiles.get());
-                        transactionDetail.setMinpaypercentage(csetting.get().getMinpaypercentage());
-                    } else if (t.getMinpaypercentage() == 100) {
-                        transactionDetail.setMinpaypercentage(t.getMinpaypercentage());
-                    }
-                    BigDecimal madAmount = (t.getOutstandingamount().multiply(BigDecimal
-                            .valueOf(transactionDetail.getMinpaypercentage()).divide(BigDecimal.valueOf(100))));
-                    transactionDetail.setMadAmount(madAmount.abs());
-                    transactionDetail.setCycleDate(date);
-                    if (cycledates.get().getClosingbalance() < 0) {
-                        double calculateOverLimitAmount = Math.abs(cycledates.get().getCreditlimit())
-                                - Math.abs(cycledates.get().getClosingbalance());
-                        if (calculateOverLimitAmount < 0) {
-                            transactionDetail.setOverLimitAmount(
-                                    Double.parseDouble(decimalFormat.format(Math.abs(calculateOverLimitAmount))));
+                    if (t.getTrxnserno() != null) {
+                        TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
+                        transactionDetail.setAccountNo(caccounts.getNumberx());
+                        transactionDetail.setCardNo(maskCardNumber(cardNumber));
+                        transactionDetail.setOutstandingamount(t.getOutstandingamount().abs());
+                        transactionDetail.setAmount(t.getAmount().abs());
+                        transactionDetail.setTrxnSerno(t.getTrxnserno());
+                        if (t.getMinpaypercentage() == null) {
+                            Optional<Products> product = productsRepository.findById(caccounts.getProduct());
+                            Optional<Mprofileacct> mprofileacct = mprofileAcctRepository.findByProducts(product);
+                            Optional<Profiles> profiles = profilesRepository
+                                    .findById(mprofileacct.get().getProfiles().getSerno());
+                            Optional<Cstmtsettings> csetting = cstatementSettingsRepository.findByProfiles(profiles.get());
+                            transactionDetail.setMinpaypercentage(csetting.get().getMinpaypercentage());
+                        } else if (t.getMinpaypercentage() == 100) {
+                            transactionDetail.setMinpaypercentage(t.getMinpaypercentage());
+                        }
+                        BigDecimal madAmount = (t.getOutstandingamount().multiply(BigDecimal
+                                .valueOf(transactionDetail.getMinpaypercentage()).divide(BigDecimal.valueOf(100))));
+                        transactionDetail.setMadAmount(madAmount.abs());
+                        transactionDetail.setCycleDate(date);
+                        if (cycledates.get().getClosingbalance() < 0) {
+                            double calculateOverLimitAmount = Math.abs(cycledates.get().getCreditlimit())
+                                    - Math.abs(cycledates.get().getClosingbalance());
+                            if (calculateOverLimitAmount < 0) {
+                                transactionDetail.setOverLimitAmount(
+                                        Double.parseDouble(decimalFormat.format(Math.abs(calculateOverLimitAmount))));
+                            } else {
+                                transactionDetail.setOverLimitAmount(0.0);
+                            }
                         } else {
                             transactionDetail.setOverLimitAmount(0.0);
                         }
-                    } else {
-                        transactionDetail.setOverLimitAmount(0.0);
-                    }
-                    transactionDetail.setOverDueAmount(Math.abs(cycledates.get().getOverdueamount()));
-                    transactionDetails.add(transactionDetail);
+                        transactionDetail.setOverDueAmount(Math.abs(cycledates.get().getOverdueamount()));
+                        transactionDetails.add(transactionDetail);
 
+                    }
                 }
             });
             if (transactionDetails.isEmpty()) {
@@ -329,7 +331,7 @@ public class TransactionServiceImpl {
 //            return "";
 //        }
 //    }
-    
+
     public String maskCardNumber(String cardNumber) {
         // Check if the card number is valid and has at least 8 characters
         if (cardNumber != null && cardNumber.length() >= 8) {
@@ -387,17 +389,21 @@ public class TransactionServiceImpl {
             cardTable.setWidths(new float[]{1, 1});
 
             // Add headers
-            String[] secondaryHeader = {"Account No", "Mask Card Number"};
+            String[] secondaryHeader = {"Account No", "Card No"};
             for (String header : secondaryHeader) {
                 PdfPCell cell = new PdfPCell(new Paragraph(header));
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 cardTable.addCell(cell);
             }
             TransactionDetailsDto getAmountData = transactionDetails.get(0);
-            cardTable.addCell(
-                    getAmountData.getAccountNo() != null ? getAmountData.getAccountNo().toString() : "");
-            cardTable.addCell(
-                    getAmountData.getCardNo() != null ? getAmountData.getCardNo().toString() : "");
+            PdfPCell accountNoCell = new PdfPCell(new Paragraph(
+                    getAmountData.getAccountNo() != null ? getAmountData.getAccountNo().toString() : ""));
+            accountNoCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cardTable.addCell(accountNoCell);
+            PdfPCell cardNoCell = new PdfPCell(new Paragraph(
+                    getAmountData.getCardNo() != null ? getAmountData.getCardNo().toString() : ""));
+            cardNoCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cardTable.addCell(cardNoCell);
 
             document.add(cardTable);
 
@@ -421,12 +427,19 @@ public class TransactionServiceImpl {
             // Add data row
             // Assuming the data is available in the first transactionDetailsDto
             TransactionDetailsDto firstTransaction = transactionDetails.get(0);
-            secondaryTable.addCell(
-                    firstTransaction.getOverDueAmount() != null ? firstTransaction.getOverDueAmount().toString() : "");
-            secondaryTable.addCell(
+            PdfPCell overDueAmountCell = new PdfPCell(new Paragraph(
+                    firstTransaction.getOverDueAmount() != null ? firstTransaction.getOverDueAmount().toString() : ""));
+            overDueAmountCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            secondaryTable.addCell(overDueAmountCell);
+            PdfPCell overLimitAmountCell = new PdfPCell(new Paragraph(
                     firstTransaction.getOverLimitAmount() != null ? firstTransaction.getOverLimitAmount().toString()
-                            : "");
-            secondaryTable.addCell(firstTransaction.getMad() != null ? firstTransaction.getMad().toString() : "");
+                            : ""));
+            overLimitAmountCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            secondaryTable.addCell(overLimitAmountCell);
+            PdfPCell madCell = new PdfPCell(new Paragraph(
+                    firstTransaction.getMad() != null ? firstTransaction.getMad().toString() : ""));
+            madCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            secondaryTable.addCell(madCell);
 
             document.add(secondaryTable);
 
@@ -448,18 +461,32 @@ public class TransactionServiceImpl {
 
             // Add data rows
             for (TransactionDetailsDto transaction : transactionDetails) {
-                mainTable.addCell(transaction.getTrxnSerno() != null ? String.valueOf(transaction.getTrxnSerno()) : "");
-                mainTable.addCell(transaction.getAmount() != null ? transaction.getAmount().toString() : "");
-                mainTable.addCell(
-                        transaction.getOutstandingamount() != null ? transaction.getOutstandingamount().toString()
-                                : "");
-                mainTable.addCell(
-                        transaction.getMinpaypercentage() != null ? transaction.getMinpaypercentage().toString() : "");
-                mainTable.addCell(transaction.getMadAmount() != null ? transaction.getMadAmount().toString() : "");
+                PdfPCell trxnSernoCell = new PdfPCell(new Paragraph(
+                        transaction.getTrxnSerno() != null ? String.valueOf(transaction.getTrxnSerno()) : ""));
+                trxnSernoCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                mainTable.addCell(trxnSernoCell);
 
+                PdfPCell amountCell = new PdfPCell(new Paragraph(
+                        transaction.getAmount() != null ? transaction.getAmount().toString() : ""));
+                amountCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                mainTable.addCell(amountCell);
+
+                PdfPCell outstandingAmountCell = new PdfPCell(new Paragraph(
+                        transaction.getOutstandingamount() != null ? transaction.getOutstandingamount().toString()
+                                : ""));
+                outstandingAmountCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                mainTable.addCell(outstandingAmountCell);
+
+                PdfPCell minPayPercentageCell = new PdfPCell(new Paragraph(
+                        transaction.getMinpaypercentage() != null ? transaction.getMinpaypercentage().toString() : ""));
+                minPayPercentageCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                mainTable.addCell(minPayPercentageCell);
+
+                PdfPCell madAmountCell = new PdfPCell(new Paragraph(
+                        transaction.getMadAmount() != null ? transaction.getMadAmount().toString() : ""));
+                madAmountCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                mainTable.addCell(madAmountCell);
             }
-            
-            
 
             document.add(mainTable);
 
@@ -473,6 +500,8 @@ public class TransactionServiceImpl {
 
         return byteArrayOutputStream.toByteArray();
     }
+
+
 
     public byte[] downloadExcel(String cardNumber, Date cycleDate) throws ParseException {
         List<TransactionDetailsDto> transactionInfo = getTransactionByDate(cardNumber, cycleDate);
@@ -614,7 +643,6 @@ public class TransactionServiceImpl {
 //			return null;
 //		}
 //	}
-
 
 
 //    public byte[] generateExcel(List<TransactionDetailsDto> transactionDetails) {
@@ -854,7 +882,7 @@ public class TransactionServiceImpl {
 
             // Create Table 1 (Account No and Mask Card No)
             Row table1HeaderRow = sheet.createRow(1);
-            String[] table1Headers = {"Account No", "Mask Card No"};
+            String[] table1Headers = {"Account No", "Card No"};
             for (int i = 0; i < table1Headers.length; i++) {
                 Cell cell = table1HeaderRow.createCell(i);
                 cell.setCellValue(table1Headers[i]);
@@ -881,7 +909,7 @@ public class TransactionServiceImpl {
             Row table2DataRow = sheet.createRow(5);
             table2DataRow.createCell(0).setCellValue(transactionDetails.get(0).getOverDueAmount());
             table2DataRow.createCell(1).setCellValue(transactionDetails.get(0).getOverLimitAmount());
-            table2DataRow.createCell(2).setCellValue(transactionDetails.get(0).getMad()!= null ? transactionDetails.get(0).getMad().toString() : "");
+            table2DataRow.createCell(2).setCellValue(transactionDetails.get(0).getMad() != null ? transactionDetails.get(0).getMad().toString() : "");
             for (Cell cell : table2DataRow) {
                 cell.setCellStyle(dataCellStyle); // Center-align data in Table 2
             }
