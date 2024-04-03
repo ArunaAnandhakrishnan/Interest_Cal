@@ -310,25 +310,49 @@ public class TransactionServiceImpl {
     }
 
 
+//    public String maskCardNumber(String cardNumber) {
+//        // Check if the card number is valid and has at least 4 characters
+//        if (cardNumber != null && cardNumber.length() >= 4) {
+//            // Get the length of the card number
+//            int length = cardNumber.length();
+//
+//            // Get the last four characters of the card number
+//            String lastFourDigits = cardNumber.substring(length - 4);
+//
+//            // Mask the remaining digits with asterisks
+//            String maskedDigits = "*".repeat(length - 4);
+//
+//            // Combine the masked digits and the last four digits
+//            return maskedDigits + lastFourDigits;
+//        } else {
+//            // Invalid card number, return empty string or handle the error as needed
+//            return "";
+//        }
+//    }
+    
     public String maskCardNumber(String cardNumber) {
-        // Check if the card number is valid and has at least 4 characters
-        if (cardNumber != null && cardNumber.length() >= 4) {
+        // Check if the card number is valid and has at least 8 characters
+        if (cardNumber != null && cardNumber.length() >= 8) {
             // Get the length of the card number
             int length = cardNumber.length();
+
+            // Get the first four characters of the card number
+            String firstFourDigits = cardNumber.substring(0, 4);
 
             // Get the last four characters of the card number
             String lastFourDigits = cardNumber.substring(length - 4);
 
             // Mask the remaining digits with asterisks
-            String maskedDigits = "*".repeat(length - 4);
+            String maskedDigits = "*".repeat(length - 8);
 
-            // Combine the masked digits and the last four digits
-            return maskedDigits + lastFourDigits;
+            // Combine the masked digits, first four digits, and last four digits
+            return firstFourDigits + maskedDigits + lastFourDigits;
         } else {
             // Invalid card number, return empty string or handle the error as needed
             return "";
         }
     }
+
 
     public byte[] generatePDF(List<TransactionDetailsDto> transactionDetails) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -434,6 +458,8 @@ public class TransactionServiceImpl {
                 mainTable.addCell(transaction.getMadAmount() != null ? transaction.getMadAmount().toString() : "");
 
             }
+            
+            
 
             document.add(mainTable);
 
@@ -574,6 +600,9 @@ public class TransactionServiceImpl {
 //				}
 //			}
 //
+//			
+//			
+//			
 //			// Write the workbook content to a byte array
 //			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 //			workbook.write(byteArrayOutputStream);
@@ -585,6 +614,8 @@ public class TransactionServiceImpl {
 //			return null;
 //		}
 //	}
+
+
 
 //    public byte[] generateExcel(List<TransactionDetailsDto> transactionDetails) {
 //        try {
@@ -688,6 +719,100 @@ public class TransactionServiceImpl {
 //        }
 //    }
 
+//    public byte[] generateExcel(List<TransactionDetailsDto> transactionDetails) {
+//        try (Workbook workbook = new XSSFWorkbook()) {
+//            Sheet sheet = workbook.createSheet("statements");
+//
+//            // Create styles and fonts
+//            Font headerFont = workbook.createFont();
+//            headerFont.setBold(true);
+//            headerFont.setColor(IndexedColors.BLUE.getIndex());
+//
+//            CellStyle headerCellStyle = workbook.createCellStyle();
+//            headerCellStyle.setFont(headerFont);
+//            headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
+//
+//
+//            CellStyle dataCellStyle = workbook.createCellStyle();
+//            dataCellStyle.setAlignment(HorizontalAlignment.CENTER);
+//
+//            CellStyle noteCellStyle = workbook.createCellStyle();
+//            Font noteFont = workbook.createFont();
+//            noteCellStyle.setAlignment(HorizontalAlignment.CENTER);
+//            noteCellStyle.setFont(noteFont);
+//
+//            // Create note row
+//            Row noteRow = sheet.createRow(0);
+//            Cell noteCell = noteRow.createCell(0);
+//            String cycleDate = transactionDetails.isEmpty() ? "Default Date" : transactionDetails.get(0).getCycleDate();
+//            noteCell.setCellValue(transactionDetails.size() <= 1 ?
+//                    "Note: *Transaction details are not available for the selected statement - " + cycleDate :
+//                    "Note: *Selected statement transaction details - " + cycleDate);
+//            noteCell.setCellStyle(noteCellStyle);
+//            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 4)); // Merge cells for the note
+//
+//            // Create Table 1 (Account No and Mask Card No)
+//            Row table1HeaderRow = sheet.createRow(1);
+//            String[] table1Headers = {"			Account No			", "		Mask Card No		"};
+//            for (int i = 0; i < table1Headers.length; i++) {
+//                Cell cell = table1HeaderRow.createCell(i);
+//                cell.setCellValue(table1Headers[i]);
+//                cell.setCellStyle(headerCellStyle);
+//            }
+//            Row table1DataRow = sheet.createRow(2);
+//            table1DataRow.createCell(0).setCellValue(transactionDetails.get(0).getAccountNo());
+//            table1DataRow.createCell(1).setCellValue(transactionDetails.get(0).getCardNo());
+//            for (Cell cell : table1DataRow) {
+//                cell.setCellStyle(dataCellStyle); // Center-align data in Table 1
+//            }
+//            // Create Table 2 (Overdue Amount, Overlimit Amount, MAD)
+//            Row table2HeaderRow = sheet.createRow(4);
+//            String[] table2Headers = {"			Overdue Amount			", "	Overlimit Amount	", "		MAD			"};
+//            for (int i = 0; i < table2Headers.length; i++) {
+//                Cell cell = table2HeaderRow.createCell(i);
+//                cell.setCellValue(table2Headers[i]);
+//                cell.setCellStyle(headerCellStyle);
+//            }
+//            Row table2DataRow = sheet.createRow(5);
+//            table2DataRow.createCell(0).setCellValue(transactionDetails.get(0).getOverDueAmount());
+//            table2DataRow.createCell(1).setCellValue(transactionDetails.get(0).getOverLimitAmount());
+//            table2DataRow.createCell(2).setCellValue(transactionDetails.get(0).getMad()!= null ? transactionDetails.get(0).getMad().toString() : "");
+//            for (Cell cell : table2DataRow) {
+//                cell.setCellStyle(dataCellStyle); // Center-align data in Table 1
+//            }
+//
+//            // Create Table 3 (Transaction Details)
+//            Row table3HeaderRow = sheet.createRow(7);
+//            String[] table3Headers = {"		Trxn Serno		", "	Amount	 ", "	Outstanding Amount	", "	Minimum Pay Percentage	", "	Amount Contribution in MAD	"};
+//            for (int i = 0; i < table3Headers.length; i++) {
+//                Cell cell = table3HeaderRow.createCell(i);
+//                cell.setCellValue(table3Headers[i]);
+//                cell.setCellStyle(headerCellStyle);
+//            }
+//            int rowNum = 8; // Start row for Table 3 data
+//            for (TransactionDetailsDto transaction : transactionDetails) {
+//                Row row = sheet.createRow(rowNum++);
+//                row.createCell(0).setCellValue(Objects.toString(transaction.getTrxnSerno(), ""));
+//                row.createCell(1).setCellValue(Objects.toString(transaction.getAmount(), ""));
+//                row.createCell(2).setCellValue(Objects.toString(transaction.getOutstandingamount(), ""));
+//                row.createCell(3).setCellValue(Objects.toString(transaction.getMinpaypercentage(), ""));
+//                row.createCell(4).setCellValue(Objects.toString(transaction.getMadAmount(), ""));
+//                for (Cell cell : row) {
+//                    cell.setCellStyle(dataCellStyle);
+//                }
+//            }
+//
+//
+//            // Write workbook content to byte array
+//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//            workbook.write(byteArrayOutputStream);
+//            return byteArrayOutputStream.toByteArray();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
+
     public byte[] generateExcel(List<TransactionDetailsDto> transactionDetails) {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("statements");
@@ -700,9 +825,17 @@ public class TransactionServiceImpl {
             CellStyle headerCellStyle = workbook.createCellStyle();
             headerCellStyle.setFont(headerFont);
             headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
+            headerCellStyle.setBorderBottom(BorderStyle.THIN);
+            headerCellStyle.setBorderLeft(BorderStyle.THIN);
+            headerCellStyle.setBorderRight(BorderStyle.THIN);
+            headerCellStyle.setBorderTop(BorderStyle.THIN);
 
             CellStyle dataCellStyle = workbook.createCellStyle();
             dataCellStyle.setAlignment(HorizontalAlignment.CENTER);
+            dataCellStyle.setBorderBottom(BorderStyle.THIN);
+            dataCellStyle.setBorderLeft(BorderStyle.THIN);
+            dataCellStyle.setBorderRight(BorderStyle.THIN);
+            dataCellStyle.setBorderTop(BorderStyle.THIN);
 
             CellStyle noteCellStyle = workbook.createCellStyle();
             Font noteFont = workbook.createFont();
@@ -733,6 +866,10 @@ public class TransactionServiceImpl {
             for (Cell cell : table1DataRow) {
                 cell.setCellStyle(dataCellStyle); // Center-align data in Table 1
             }
+            for (int i = 0; i < table1Headers.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
             // Create Table 2 (Overdue Amount, Overlimit Amount, MAD)
             Row table2HeaderRow = sheet.createRow(4);
             String[] table2Headers = {"Overdue Amount", "Overlimit Amount", "MAD"};
@@ -746,7 +883,10 @@ public class TransactionServiceImpl {
             table2DataRow.createCell(1).setCellValue(transactionDetails.get(0).getOverLimitAmount());
             table2DataRow.createCell(2).setCellValue(transactionDetails.get(0).getMad()!= null ? transactionDetails.get(0).getMad().toString() : "");
             for (Cell cell : table2DataRow) {
-                cell.setCellStyle(dataCellStyle); // Center-align data in Table 1
+                cell.setCellStyle(dataCellStyle); // Center-align data in Table 2
+            }
+            for (int i = 0; i < table2Headers.length; i++) {
+                sheet.autoSizeColumn(i);
             }
 
             // Create Table 3 (Transaction Details)
@@ -768,6 +908,9 @@ public class TransactionServiceImpl {
                 for (Cell cell : row) {
                     cell.setCellStyle(dataCellStyle);
                 }
+            }
+            for (int i = 0; i < table3Headers.length; i++) {
+                sheet.autoSizeColumn(i);
             }
 
             // Write workbook content to byte array
