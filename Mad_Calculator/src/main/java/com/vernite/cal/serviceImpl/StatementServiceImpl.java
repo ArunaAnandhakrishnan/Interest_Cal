@@ -66,7 +66,7 @@ public class StatementServiceImpl {
 		}
 		DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
-		if (mad.compareTo(BigDecimal.valueOf(byCycledate.get().getClosingbalance())) == 0) {
+		if (mad.compareTo(BigDecimal.valueOf(byCycledate.get().getClosingbalance())) != 0) {
 			int scale = 0;
 			RoundingMode roundingMode = RoundingMode.UP;
 			mad = mad.setScale(scale, roundingMode);
