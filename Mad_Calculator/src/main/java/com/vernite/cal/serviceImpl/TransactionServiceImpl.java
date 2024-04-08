@@ -255,6 +255,10 @@ public class TransactionServiceImpl {
                         if(madAmount.compareTo(BigDecimal.valueOf(0.0)) == 0){
                             madAmount = BigDecimal.valueOf(0);
                         }
+                        if (madAmount.scale() > 0 && madAmount.stripTrailingZeros().scale() <= 0) {
+                            madAmount = madAmount.setScale(0); // Remove decimal places
+                        }
+
                         transactionDetail.setMadAmount(madAmount.abs());
                         transactionDetail.setCycleDate(date);
                         if (cycledates.get().getClosingbalance() < 0) {
