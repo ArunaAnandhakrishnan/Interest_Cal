@@ -128,8 +128,8 @@ public class StatementServiceImpl {
         Optional<Profiles> profiles = profilesRepository.findById(mprofileacct.get().getProfiles().getSerno());
         Optional<Cstmtsettings> csetting = cstatementSettingsRepository.findByProfiles(profiles.get());
         Long minPayPercentage = csetting.get().getMinpaypercentage();
-        Double minper = (double) (minPayPercentage / 100);
-        if (statements.get().getOverdueamount() < 0) {
+        Double minper = (double) (minPayPercentage / 100.0);
+        if (statements.get().getOverdueamount() < 0 || overLimitAmount < 0) {
             Optional<List<Tbalances>> tbalances = tbalancesRepository.getTbalance(statements.get().getSerno(),
                     caccounts.getSerno());
             for (Tbalances tbalancedata : tbalances.get()) {
