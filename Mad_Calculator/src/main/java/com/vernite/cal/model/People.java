@@ -8,7 +8,7 @@ import jakarta.persistence.Entity;
 public class People {
 
 	private int institution_id;
-	private int serno;
+	private long serno;
 	private String title;
 	private String lastname;
 	private char firstname;
@@ -51,11 +51,11 @@ public class People {
 		this.institution_id = institution_id;
 	}
 
-	public int getSerno() {
+	public long getSerno() {
 		return serno;
 	}
 
-	public void setSerno(int serno) {
+	public void setSerno(long serno) {
 		this.serno = serno;
 	}
 
