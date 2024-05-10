@@ -6,13 +6,9 @@ public class CardxDto {
 
 	private String numberx;
 	private long institution_id;
-	// private Long caccserno;
 	private Long primarycard;
 	private Long peopleserno;
 	private Long riskdomainserno;
-	// private Long product;
-	// private Integer caccserno;
-	// private Integer product;
 	private Long feeprofserno;
 	private Long trxnfeeprofserno;
 	private Long authfeeprofserno;

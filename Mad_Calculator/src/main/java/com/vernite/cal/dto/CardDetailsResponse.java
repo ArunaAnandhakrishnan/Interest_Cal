@@ -19,7 +19,6 @@ public class CardDetailsResponse {
 	private String name;
 	private String description;
 	private Long minpaypercentage;
-
 	private String stgeneralCard;
 	private Long primarycard;
 	private String expirydatestatus;

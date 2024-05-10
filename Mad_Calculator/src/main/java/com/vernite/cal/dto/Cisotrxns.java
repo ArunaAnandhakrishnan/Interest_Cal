@@ -7,7 +7,6 @@ import java.util.Date;
 public class Cisotrxns {
 
 	private Long institution_id;
-	// serno NUMBER(10) not null,
 	private Long partitionkey;
 	private String source;
 	private String i011_trace_num;
