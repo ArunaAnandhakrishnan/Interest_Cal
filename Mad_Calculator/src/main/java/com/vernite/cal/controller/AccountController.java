@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.itextpdf.text.DocumentException;
+import com.vernite.cal.dto.CardDetailsDto;
 import com.vernite.cal.model.Cardx;
 import com.vernite.cal.repository.AccountRepository;
 import com.vernite.cal.repository.CardxRepository;
@@ -20,11 +21,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.vernite.cal.dto.CardDetailsResponse;
 import com.vernite.cal.dto.StatementResponse;
@@ -47,24 +44,34 @@ public class AccountController {
     @Autowired
     private TransactionServiceImpl transactionServiceImpl;
 
-    @GetMapping("/card/{numberx}")
-    public ResponseEntity<?> fetchCardDetails(@PathVariable String numberx) throws ValidationException, ParseException {
+    @GetMapping("/card")
+    public ResponseEntity<?> fetchCardDetails(@RequestBody CardDetailsDto cardDetails) throws ValidationException, ParseException {
         try {
-            Cardx cardDetails = cardxRepository.findByNumberx(numberx);
-            CardDetailsResponse response = new CardDetailsResponse();
-            if (cardDetails == null || cardDetails.equals("")) {
-                throw new Exception();
+            CardDetailsResponse response = null;
+            if (cardDetails.getCardNumber() != null) {
+                Cardx cardDetail = cardxRepository.findByNumberx(cardDetails.getCardNumber());
+                  response  = new CardDetailsResponse();
+                if (cardDetails == null || cardDetails.equals("")) {
+                    throw new Exception();
 
-            } else {
-                response = accountServiceImpl.getCardDeatils(numberx);
+                } else {
+                    response = accountServiceImpl.getCardDeatils(cardDetails.getCardNumber());
+                }
+            }
+            else if(cardDetails.getCardSerno()!=null ){
+
+            }
+            else if(cardDetails.getMobileNo() != null){
+
+            } else if (cardDetails.getCustIdNumber() != null) {
+
             }
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
-            throw new ValidationException("Card details not found for this card number: " + numberx);
+            throw new ValidationException("Card details not found for this card number: " + cardDetails.getCardNumber());
         }
     }
-    
-    
+
 
     @GetMapping("/statement/{numberx}")
     public StatementResponse getState(@PathVariable String numberx,
@@ -90,7 +97,7 @@ public class AccountController {
         //-------------------
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("filename", "Statement_Cycle_Date_"+date+".pdf");
+        headers.setContentDispositionFormData("filename", "Statement_Cycle_Date_" + date + ".pdf");
         headers.setContentLength(downloadPDF.length);
         return new ResponseEntity<>(downloadPDF, headers, HttpStatus.OK);
 
@@ -104,7 +111,7 @@ public class AccountController {
         String date = StatementServiceImpl.convertDateOne(cycleDate);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM); // Setting content type to octet-stream for Excel
-        headers.setContentDispositionFormData("attachment", "Statement_Cycle_Date_"+date+".xlsx"); // Change filename extension to
+        headers.setContentDispositionFormData("attachment", "Statement_Cycle_Date_" + date + ".xlsx"); // Change filename extension to
         // .xlsx
         headers.setContentLength(excelData.length);
 

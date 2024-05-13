@@ -21,23 +21,12 @@ public class Caddresslinks {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long serno;
 	private int institution_id;
-
-	
 	@ManyToOne
 	@JoinColumn(name = "addressserno", nullable = false)
 	@JsonIgnore
 	private CAddresses cAddresses;
-
-
 	private char tabindicator;
-
-//	@ManyToOne
-//	@JoinColumn(name = "rowserno", nullable = false)
-//	@JsonIgnore
-//	private Cardx cardx;
-
-	 private int rowserno;
-	// private int addressserno;
+	private int rowserno;
 	private char addresstype;
 	private Date fromdate;
 	private Date untildate;
@@ -49,6 +38,14 @@ public class Caddresslinks {
 	private char logaction;
 	private int converted;
 
+	public Long getSerno() {
+		return serno;
+	}
+
+	public void setSerno(Long serno) {
+		this.serno = serno;
+	}
+
 	public int getInstitution_id() {
 		return institution_id;
 	}
@@ -57,12 +54,12 @@ public class Caddresslinks {
 		this.institution_id = institution_id;
 	}
 
-	public Long getSerno() {
-		return serno;
+	public CAddresses getcAddresses() {
+		return cAddresses;
 	}
 
-	public void setSerno(Long serno) {
-		this.serno = serno;
+	public void setcAddresses(CAddresses cAddresses) {
+		this.cAddresses = cAddresses;
 	}
 
 	public char getTabindicator() {
@@ -73,13 +70,13 @@ public class Caddresslinks {
 		this.tabindicator = tabindicator;
 	}
 
-//	public int getRowserno() {
-//		return rowserno;
-//	}
-//
-//	public void setRowserno(int rowserno) {
-//		this.rowserno = rowserno;
-//	}
+	public int getRowserno() {
+		return rowserno;
+	}
+
+	public void setRowserno(int rowserno) {
+		this.rowserno = rowserno;
+	}
 
 	public char getAddresstype() {
 		return addresstype;
@@ -160,5 +157,4 @@ public class Caddresslinks {
 	public void setConverted(int converted) {
 		this.converted = converted;
 	}
-
 }
