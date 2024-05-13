@@ -21,7 +21,7 @@ public class PeopleDto {
 	private char sex;
 	private char maritalstatus;
 	private String ssnumber;
-	private char custidnumber;
+	private String custidnumber;
 	private char resident;
 	private int legalentity;
 	private String employeeid;
@@ -162,11 +162,11 @@ public class PeopleDto {
 		this.ssnumber = ssnumber;
 	}
 
-	public char getCustidnumber() {
+	public String getCustidnumber() {
 		return custidnumber;
 	}
 
-	public void setCustidnumber(char custidnumber) {
+	public void setCustidnumber(String custidnumber) {
 		this.custidnumber = custidnumber;
 	}
 

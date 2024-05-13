@@ -3,7 +3,7 @@ package com.vernite.cal.dto;
 public class CardDetailsDto {
 
     private String cardNumber;
-    private Long mobileNo;
+    private String mobileNo;
     private Long cardSerno;
     private String custIdNumber;
 
@@ -15,11 +15,11 @@ public class CardDetailsDto {
         this.cardNumber = cardNumber;
     }
 
-    public Long getMobileNo() {
+    public String getMobileNo() {
         return mobileNo;
     }
 
-    public void setMobileNo(Long mobileNo) {
+    public void setMobileNo(String mobileNo) {
         this.mobileNo = mobileNo;
     }
 

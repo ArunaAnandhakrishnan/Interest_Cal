@@ -21,10 +21,12 @@ public class Caddresslinks {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long serno;
 	private int institution_id;
-	@ManyToOne
-	@JoinColumn(name = "addressserno", nullable = false)
-	@JsonIgnore
-	private CAddresses cAddresses;
+//	@ManyToOne
+//	@JoinColumn(name = "addressserno", nullable = false)
+//	@JsonIgnore
+//	private CAddresses cAddresses;
+
+	private Long addressserno;
 	private char tabindicator;
 	private int rowserno;
 	private char addresstype;
@@ -54,12 +56,12 @@ public class Caddresslinks {
 		this.institution_id = institution_id;
 	}
 
-	public CAddresses getcAddresses() {
-		return cAddresses;
+	public Long getAddressserno() {
+		return addressserno;
 	}
 
-	public void setcAddresses(CAddresses cAddresses) {
-		this.cAddresses = cAddresses;
+	public void setAddressserno(Long addressserno) {
+		this.addressserno = addressserno;
 	}
 
 	public char getTabindicator() {

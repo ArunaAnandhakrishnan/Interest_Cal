@@ -12,9 +12,13 @@ import java.util.stream.Collectors;
 
 import com.itextpdf.text.DocumentException;
 import com.vernite.cal.dto.CardDetailsDto;
+import com.vernite.cal.model.CAddresses;
 import com.vernite.cal.model.Cardx;
+import com.vernite.cal.model.People;
 import com.vernite.cal.repository.AccountRepository;
+import com.vernite.cal.repository.AddressRepository;
 import com.vernite.cal.repository.CardxRepository;
+import com.vernite.cal.repository.PeopleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -36,13 +40,16 @@ public class AccountController {
 
     @Autowired
     private AccountServiceImpl accountServiceImpl;
-
+    @Autowired
+    PeopleRepository peopleRepository;
     @Autowired
     private StatementServiceImpl statementServiceImpl;
     @Autowired
     CardxRepository cardxRepository;
     @Autowired
     private TransactionServiceImpl transactionServiceImpl;
+    @Autowired
+    AddressRepository addressRepository;
 
     @GetMapping("/card")
     public ResponseEntity<?> fetchCardDetails(@RequestBody CardDetailsDto cardDetails) throws ValidationException, ParseException {
@@ -50,21 +57,34 @@ public class AccountController {
             CardDetailsResponse response = null;
             if (cardDetails.getCardNumber() != null) {
                 Cardx cardDetail = cardxRepository.findByNumberx(cardDetails.getCardNumber());
-                  response  = new CardDetailsResponse();
+                response = new CardDetailsResponse();
                 if (cardDetails == null || cardDetails.equals("")) {
                     throw new Exception();
 
                 } else {
                     response = accountServiceImpl.getCardDeatils(cardDetails.getCardNumber());
                 }
-            }
-            else if(cardDetails.getCardSerno()!=null ){
+            } else if (cardDetails.getCardSerno() != null) {
+                Cardx cardDetail = cardxRepository.findBySerno(cardDetails.getCardSerno());
+                if (cardDetails == null || cardDetails.equals("")) {
+                    throw new Exception();
 
-            }
-            else if(cardDetails.getMobileNo() != null){
-
+                } else {
+                    response = accountServiceImpl.getCardSernoDetails(cardDetails.getCardSerno());
+                }
+            } else if (cardDetails.getMobileNo() != null) {
+                List<CAddresses> cAddresses = addressRepository.findByMobile(cardDetails.getMobileNo());
+               if(!cAddresses.isEmpty()){
+                   response = accountServiceImpl.getCardDetailsByMobile(cardDetails.getMobileNo());
+               }
             } else if (cardDetails.getCustIdNumber() != null) {
+                People cardDetail = peopleRepository.findByCustidnumber(cardDetails.getCustIdNumber());
+                if (cardDetails == null || cardDetails.equals("")) {
+                    throw new Exception();
 
+                } else {
+                    response = accountServiceImpl.getCardSernoDetails(cardDetails.getCardSerno());
+                }
             }
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
