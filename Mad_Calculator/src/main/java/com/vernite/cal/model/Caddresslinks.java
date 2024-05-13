@@ -3,12 +3,16 @@ package com.vernite.cal.model;
 import java.sql.Date;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
 public class Caddresslinks {
-
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long serno;
 	private int institution_id;
-	private int serno;
 	private char tabindicator;
 	private int rowserno;
 	private int addressserno;
@@ -31,11 +35,11 @@ public class Caddresslinks {
 		this.institution_id = institution_id;
 	}
 
-	public int getSerno() {
+	public Long getSerno() {
 		return serno;
 	}
 
-	public void setSerno(int serno) {
+	public void setSerno(Long serno) {
 		this.serno = serno;
 	}
 

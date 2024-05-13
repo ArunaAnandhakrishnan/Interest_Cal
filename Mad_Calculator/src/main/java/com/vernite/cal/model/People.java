@@ -3,15 +3,19 @@ package com.vernite.cal.model;
 import java.sql.Date;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
 public class People {
-
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long serno;
 	private int institution_id;
-	private long serno;
 	private String title;
 	private String lastname;
-	private char firstname;
+	private String firstname;
 	private String midname;
 	private String mothername;
 	private String organization;
@@ -75,11 +79,15 @@ public class People {
 		this.lastname = lastname;
 	}
 
-	public char getFirstname() {
+	public void setSerno(Long serno) {
+		this.serno = serno;
+	}
+
+	public String getFirstname() {
 		return firstname;
 	}
 
-	public void setFirstname(char firstname) {
+	public void setFirstname(String firstname) {
 		this.firstname = firstname;
 	}
 
