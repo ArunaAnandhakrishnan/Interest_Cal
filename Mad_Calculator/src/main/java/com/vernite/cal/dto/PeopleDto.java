@@ -1,25 +1,16 @@
-package com.vernite.cal.model;
+package com.vernite.cal.dto;
 
 import java.sql.Date;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-import jakarta.persistence.Table;
+public class PeopleDto {
 
-@Entity
-@Table(name = "PEOPLE")
-public class People {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long serno;
 	private int institution_id;
-
+	private long serno;
 	private String title;
 	private String lastname;
-	private String firstname;
+	private char firstname;
 	private String midname;
 	private String mothername;
 	private String organization;
@@ -83,15 +74,11 @@ public class People {
 		this.lastname = lastname;
 	}
 
-	public void setSerno(Long serno) {
-		this.serno = serno;
-	}
-
-	public String getFirstname() {
+	public char getFirstname() {
 		return firstname;
 	}
 
-	public void setFirstname(String firstname) {
+	public void setFirstname(char firstname) {
 		this.firstname = firstname;
 	}
 

@@ -1,43 +1,16 @@
-package com.vernite.cal.model;
+package com.vernite.cal.dto;
 
 import java.sql.Date;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+public class CaddresslinksDto {
 
-
-@Entity
-@Table(name = "CADDRESSLINKS")
-public class Caddresslinks {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long serno;
 	private int institution_id;
-
-	
-	@ManyToOne
-	@JoinColumn(name = "addressserno", nullable = false)
-	@JsonIgnore
-	private CAddresses cAddresses;
-
-
+	private int serno;
 	private char tabindicator;
-
-//	@ManyToOne
-//	@JoinColumn(name = "rowserno", nullable = false)
-//	@JsonIgnore
-//	private Cardx cardx;
-
-	 private int rowserno;
-	// private int addressserno;
+	private int rowserno;
+	private int addressserno;
 	private char addresstype;
 	private Date fromdate;
 	private Date untildate;
@@ -57,11 +30,11 @@ public class Caddresslinks {
 		this.institution_id = institution_id;
 	}
 
-	public Long getSerno() {
+	public int getSerno() {
 		return serno;
 	}
 
-	public void setSerno(Long serno) {
+	public void setSerno(int serno) {
 		this.serno = serno;
 	}
 
@@ -73,13 +46,21 @@ public class Caddresslinks {
 		this.tabindicator = tabindicator;
 	}
 
-//	public int getRowserno() {
-//		return rowserno;
-//	}
-//
-//	public void setRowserno(int rowserno) {
-//		this.rowserno = rowserno;
-//	}
+	public int getRowserno() {
+		return rowserno;
+	}
+
+	public void setRowserno(int rowserno) {
+		this.rowserno = rowserno;
+	}
+
+	public int getAddressserno() {
+		return addressserno;
+	}
+
+	public void setAddressserno(int addressserno) {
+		this.addressserno = addressserno;
+	}
 
 	public char getAddresstype() {
 		return addresstype;

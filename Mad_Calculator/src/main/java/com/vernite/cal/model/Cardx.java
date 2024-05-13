@@ -29,6 +29,11 @@ public class Cardx {
 	@JsonIgnore
 	private Products products;
 
+	@ManyToOne
+	@JoinColumn(name = "peopleserno", nullable = false)
+	@JsonIgnore
+	private People people;
+
 	// cardx -> mprofileacct
 //	@Id
 //	@OneToMany(mappedBy = "cardx", cascade = CascadeType.ALL)
@@ -39,7 +44,7 @@ public class Cardx {
 	private long institution_id;
 	// private Long caccserno;
 	private Long primarycard;
-	private Long peopleserno;
+	//private Long peopleserno;
 	private Long riskdomainserno;
 	// private Long product;
 	// private Integer caccserno;
