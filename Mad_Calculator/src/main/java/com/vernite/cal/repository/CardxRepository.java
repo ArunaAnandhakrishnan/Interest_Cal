@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface CardxRepository extends JpaRepository<Cardx, Long> {
 
-    public Cardx findByNumberx(String numberx);
+	public Cardx findByNumberx(String numberx);
 
-    public Cardx findBySerno(Long serno);
+	public Cardx findBySerno(Long serno);
 
-    Cardx findByPeopleserno(Long serno);
+	Cardx findByPeopleserno(Long serno);
 }

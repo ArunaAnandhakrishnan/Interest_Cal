@@ -48,7 +48,7 @@ public class AccountController {
 	@GetMapping("/card")
 	public ResponseEntity<?> fetchCardDetails(@RequestParam(name = "cardNumber", required = false) String cardNumber,
 											  @RequestParam(name = "cardSerno", required = false) Long cardSerno,
-											  @RequestParam(name = "cusIdNumber", required = false) String cusIdNumber,
+											  @RequestParam(name = "CUSTIDNUMBER", required = false) String cusIdNumber,
 											  @RequestParam(name = "mobileNo", required = false) String mobileNo)
 
 			throws ValidationException, ParseException {
