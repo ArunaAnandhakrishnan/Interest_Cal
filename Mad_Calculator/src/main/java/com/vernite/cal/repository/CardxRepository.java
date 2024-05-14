@@ -12,5 +12,5 @@ public interface CardxRepository extends JpaRepository<Cardx, Long> {
 
     public Cardx findBySerno(Long serno);
 
-    Cardx findBypeopleserno(int serno);
+    Cardx findByPeopleserno(Long serno);
 }

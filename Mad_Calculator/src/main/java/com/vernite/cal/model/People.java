@@ -11,7 +11,7 @@ public class People {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long serno;
 
-	private int institution_id;
+	private Integer institution_id;
 
 	private String title;
 	private String lastname;
@@ -22,22 +22,22 @@ public class People {
 	private String department;
 	private String position;
 	private Date dob;
-	private int persontype;
-	private char sex;
-	private char maritalstatus;
+	private Integer persontype;
+	private Character sex;
+	private Character maritalstatus;
 	private String ssnumber;
 	@Column(name ="CUSTIDNUMBER")
 	private String custidnumber;
-	private char resident;
-	private int legalentity;
+	private Character resident;
+	private Integer legalentity;
 	private String employeeid;
 	private String nationalid;
-	private char stgeneral;
+	private Character stgeneral;
 	private String languagecode;
-	private char logaction;
-	private char ll_title;
-	private char ll_firstname;
-	private char ll_midname;
+	private Character logaction;
+	private Character ll_title;
+	private Character ll_firstname;
+	private Character ll_midname;
 	private String ll_lastname;
 	private String ll_mothername;
 	private String ll_organization;
@@ -45,8 +45,8 @@ public class People {
 	private String ll_position;
 	private String externalreference;
 	private Date createdate;
-	private int entityversionno;
-	private int converted;
+	private Integer entityversionno;
+	private Integer converted;
 
 	public int getInstitution_id() {
 		return institution_id;
