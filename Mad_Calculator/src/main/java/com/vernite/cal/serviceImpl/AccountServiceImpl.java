@@ -59,12 +59,15 @@ public class AccountServiceImpl implements AccountService {
 
 		Cardx byCardSerno = cardxRepository.findBySerno(cardSerno);
 		CardDetailsResponse cardDetails = getCardDeatils(byCardSerno.getNumberx());
+		cardDetails.setCardNumber(byCardSerno.getNumberx());
 		return cardDetails;
 	}
 	public CardDetailsResponse getByPeopleSernoDetails(Long cardSerno) throws ParseException {
 
 		Cardx byCardSerno = cardxRepository.findByPeopleserno(cardSerno);
 		CardDetailsResponse cardDetails = getCardDeatils(byCardSerno.getNumberx());
+		cardDetails.setCardNumber(byCardSerno.getNumberx());
+
 		return cardDetails;
 	}
 
@@ -80,6 +83,8 @@ public class AccountServiceImpl implements AccountService {
 		Caddresslinks caddresslinks = caddresslinksRepository.findByAddressserno(addressInfo.getSerno());
 		Cardx cardx = cardxRepository.findByPeopleserno((long)caddresslinks.getRowserno());
 		CardDetailsResponse cardDetails = getCardDeatils(cardx.getNumberx());
+		cardDetails.setCardNumber(cardx.getNumberx());
+
 		return cardDetails;
 	}
 

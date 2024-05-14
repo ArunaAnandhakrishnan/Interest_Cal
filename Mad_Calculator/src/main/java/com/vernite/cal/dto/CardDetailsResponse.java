@@ -22,8 +22,10 @@ public class CardDetailsResponse {
 	private String stgeneralCard;
 	private Long primarycard;
 	private String expirydatestatus;
-
+	private String cardNumber;
 	private List<String> cycleDate;
+
+
 
     public String getNumberx() {
 		return numberx;
@@ -106,5 +108,11 @@ public class CardDetailsResponse {
 	}
 
 
+	public String getCardNumber() {
+		return cardNumber;
+	}
 
+	public void setCardNumber(String cardNumber) {
+		this.cardNumber = cardNumber;
+	}
 }
