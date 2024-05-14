@@ -52,43 +52,51 @@ public class AccountController {
     AddressRepository addressRepository;
 
     @GetMapping("/card")
-    public ResponseEntity<?> fetchCardDetails(@RequestBody CardDetailsDto cardDetails) throws ValidationException, ParseException {
+    public ResponseEntity<CardDetailsResponse> fetchCardDetails(@RequestBody CardDetailsDto cardDetails) throws ValidationException, ParseException {
+        String data = null;
         try {
             CardDetailsResponse response = null;
+
             if (cardDetails.getCardNumber() != null) {
+
                 Cardx cardDetail = cardxRepository.findByNumberx(cardDetails.getCardNumber());
                 response = new CardDetailsResponse();
                 if (cardDetails == null || cardDetails.equals("")) {
                     throw new Exception();
 
                 } else {
+                    data = "Card Number: "+cardDetails.getCardNumber();
                     response = accountServiceImpl.getCardDeatils(cardDetails.getCardNumber());
                 }
             } else if (cardDetails.getCardSerno() != null) {
+
                 Cardx cardDetail = cardxRepository.findBySerno(cardDetails.getCardSerno());
                 if (cardDetails == null || cardDetails.equals("")) {
                     throw new Exception();
 
                 } else {
+                    data = "Card Serno: "+ cardDetails.getCardSerno();
                     response = accountServiceImpl.getCardSernoDetails(cardDetails.getCardSerno());
                 }
             } else if (cardDetails.getMobileNo() != null) {
                 List<CAddresses> cAddresses = addressRepository.findByMobile(cardDetails.getMobileNo());
-               if(!cAddresses.isEmpty()){
-                   response = accountServiceImpl.getCardDetailsByMobile(cardDetails.getMobileNo());
-               }
+                if (!cAddresses.isEmpty()) {
+                    data = "Mobile Number: "+ cardDetails.getMobileNo();
+                    response = accountServiceImpl.getCardDetailsByMobile(cardDetails.getMobileNo());
+                }
             } else if (cardDetails.getCustIdNumber() != null) {
                 People cardDetail = peopleRepository.findByCustidnumber(cardDetails.getCustIdNumber());
                 if (cardDetails == null || cardDetails.equals("")) {
                     throw new Exception();
 
                 } else {
+                    data = "Customer Id: "+ cardDetails.getCustIdNumber();
                     response = accountServiceImpl.getCardSernoDetails(cardDetails.getCardSerno());
                 }
             }
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
-            throw new ValidationException("Card details not found for this card number: " + cardDetails.getCardNumber());
+            throw new ValidationException("Card details not found for this" + data);
         }
     }
 
