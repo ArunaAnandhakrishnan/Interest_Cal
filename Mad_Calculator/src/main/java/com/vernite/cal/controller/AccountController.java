@@ -3,19 +3,13 @@ package com.vernite.cal.controller;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.itextpdf.text.DocumentException;
-import com.vernite.cal.dto.CardDetailsDto;
 import com.vernite.cal.model.CAddresses;
 import com.vernite.cal.model.Cardx;
 import com.vernite.cal.model.People;
-import com.vernite.cal.repository.AccountRepository;
 import com.vernite.cal.repository.AddressRepository;
 import com.vernite.cal.repository.CardxRepository;
 import com.vernite.cal.repository.PeopleRepository;
@@ -41,8 +35,6 @@ public class AccountController {
 	@Autowired
 	private AccountServiceImpl accountServiceImpl;
 	@Autowired
-	PeopleRepository peopleRepository;
-	@Autowired
 	private StatementServiceImpl statementServiceImpl;
 	@Autowired
 	CardxRepository cardxRepository;
@@ -50,6 +42,8 @@ public class AccountController {
 	private TransactionServiceImpl transactionServiceImpl;
 	@Autowired
 	AddressRepository addressRepository;
+	@Autowired
+	PeopleRepository peopleRepository;
 
 	@GetMapping("/card")
 	public ResponseEntity<?> fetchCardDetails(@RequestParam(name = "cardNumber", required = false) String cardNumber,
@@ -93,14 +87,14 @@ public class AccountController {
 			}
 
 			else if (cusIdNumber != null) {
-				People cardDetail = peopleRepository.findValue(cusIdNumber);
+			People cardDetail = peopleRepository.findByCustIdNumber(cusIdNumber);
 				if (cardDetail == null || cardDetail.equals("")) {
 					data = " Customer Id: " + cusIdNumber;
 					throw new Exception();
 
 				} else {
 
-					response = accountServiceImpl.getCardSernoDetails(cardDetail.getSerno());
+					response = accountServiceImpl.getByPeopleSernoDetails(cardDetail.getSerno());
 
 				}
 			}

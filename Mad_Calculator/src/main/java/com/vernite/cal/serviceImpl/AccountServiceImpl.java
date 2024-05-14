@@ -57,10 +57,17 @@ public class AccountServiceImpl implements AccountService {
 
 	public CardDetailsResponse getCardSernoDetails(Long cardSerno) throws ParseException {
 
+		Cardx byCardSerno = cardxRepository.findBySerno(cardSerno);
+		CardDetailsResponse cardDetails = getCardDeatils(byCardSerno.getNumberx());
+		return cardDetails;
+	}
+	public CardDetailsResponse getByPeopleSernoDetails(Long cardSerno) throws ParseException {
+
 		Cardx byCardSerno = cardxRepository.findByPeopleserno(cardSerno);
 		CardDetailsResponse cardDetails = getCardDeatils(byCardSerno.getNumberx());
 		return cardDetails;
 	}
+
 
 	public CardDetailsResponse getCardDetailsByMobile(String mobileNo) throws ParseException {
 		CAddresses addressInfo = new CAddresses();

@@ -10,9 +10,7 @@ public class People {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long serno;
-
 	private Integer institution_id;
-
 	private String title;
 	private String lastname;
 	private String firstname;
@@ -27,7 +25,7 @@ public class People {
 	private Character maritalstatus;
 	private String ssnumber;
 	@Column(name ="CUSTIDNUMBER")
-	private String custidnumber;
+	private String custIdNumber;
 	private Character resident;
 	private Integer legalentity;
 	private String employeeid;
@@ -48,20 +46,20 @@ public class People {
 	private Integer entityversionno;
 	private Integer converted;
 
-	public int getInstitution_id() {
-		return institution_id;
-	}
-
-	public void setInstitution_id(int institution_id) {
-		this.institution_id = institution_id;
-	}
-
-	public long getSerno() {
+	public Long getSerno() {
 		return serno;
 	}
 
-	public void setSerno(long serno) {
+	public void setSerno(Long serno) {
 		this.serno = serno;
+	}
+
+	public Integer getInstitution_id() {
+		return institution_id;
+	}
+
+	public void setInstitution_id(Integer institution_id) {
+		this.institution_id = institution_id;
 	}
 
 	public String getTitle() {
@@ -78,10 +76,6 @@ public class People {
 
 	public void setLastname(String lastname) {
 		this.lastname = lastname;
-	}
-
-	public void setSerno(Long serno) {
-		this.serno = serno;
 	}
 
 	public String getFirstname() {
@@ -140,27 +134,27 @@ public class People {
 		this.dob = dob;
 	}
 
-	public int getPersontype() {
+	public Integer getPersontype() {
 		return persontype;
 	}
 
-	public void setPersontype(int persontype) {
+	public void setPersontype(Integer persontype) {
 		this.persontype = persontype;
 	}
 
-	public char getSex() {
+	public Character getSex() {
 		return sex;
 	}
 
-	public void setSex(char sex) {
+	public void setSex(Character sex) {
 		this.sex = sex;
 	}
 
-	public char getMaritalstatus() {
+	public Character getMaritalstatus() {
 		return maritalstatus;
 	}
 
-	public void setMaritalstatus(char maritalstatus) {
+	public void setMaritalstatus(Character maritalstatus) {
 		this.maritalstatus = maritalstatus;
 	}
 
@@ -172,27 +166,27 @@ public class People {
 		this.ssnumber = ssnumber;
 	}
 
-	public String getCustidnumber() {
-		return custidnumber;
+	public String getCustIdNumber() {
+		return custIdNumber;
 	}
 
-	public void setCustidnumber(String custidnumber) {
-		this.custidnumber = custidnumber;
+	public void setCustIdNumber(String custIdNumber) {
+		this.custIdNumber = custIdNumber;
 	}
 
-	public char getResident() {
+	public Character getResident() {
 		return resident;
 	}
 
-	public void setResident(char resident) {
+	public void setResident(Character resident) {
 		this.resident = resident;
 	}
 
-	public int getLegalentity() {
+	public Integer getLegalentity() {
 		return legalentity;
 	}
 
-	public void setLegalentity(int legalentity) {
+	public void setLegalentity(Integer legalentity) {
 		this.legalentity = legalentity;
 	}
 
@@ -212,11 +206,11 @@ public class People {
 		this.nationalid = nationalid;
 	}
 
-	public char getStgeneral() {
+	public Character getStgeneral() {
 		return stgeneral;
 	}
 
-	public void setStgeneral(char stgeneral) {
+	public void setStgeneral(Character stgeneral) {
 		this.stgeneral = stgeneral;
 	}
 
@@ -228,35 +222,35 @@ public class People {
 		this.languagecode = languagecode;
 	}
 
-	public char getLogaction() {
+	public Character getLogaction() {
 		return logaction;
 	}
 
-	public void setLogaction(char logaction) {
+	public void setLogaction(Character logaction) {
 		this.logaction = logaction;
 	}
 
-	public char getLl_title() {
+	public Character getLl_title() {
 		return ll_title;
 	}
 
-	public void setLl_title(char ll_title) {
+	public void setLl_title(Character ll_title) {
 		this.ll_title = ll_title;
 	}
 
-	public char getLl_firstname() {
+	public Character getLl_firstname() {
 		return ll_firstname;
 	}
 
-	public void setLl_firstname(char ll_firstname) {
+	public void setLl_firstname(Character ll_firstname) {
 		this.ll_firstname = ll_firstname;
 	}
 
-	public char getLl_midname() {
+	public Character getLl_midname() {
 		return ll_midname;
 	}
 
-	public void setLl_midname(char ll_midname) {
+	public void setLl_midname(Character ll_midname) {
 		this.ll_midname = ll_midname;
 	}
 
@@ -316,20 +310,19 @@ public class People {
 		this.createdate = createdate;
 	}
 
-	public int getEntityversionno() {
+	public Integer getEntityversionno() {
 		return entityversionno;
 	}
 
-	public void setEntityversionno(int entityversionno) {
+	public void setEntityversionno(Integer entityversionno) {
 		this.entityversionno = entityversionno;
 	}
 
-	public int getConverted() {
+	public Integer getConverted() {
 		return converted;
 	}
 
-	public void setConverted(int converted) {
+	public void setConverted(Integer converted) {
 		this.converted = converted;
 	}
-
 }
