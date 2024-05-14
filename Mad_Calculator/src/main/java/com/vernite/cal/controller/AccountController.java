@@ -52,45 +52,54 @@ public class AccountController {
 	AddressRepository addressRepository;
 
 	@GetMapping("/card")
-	public ResponseEntity<?> fetchCardDetails(@RequestBody CardDetailsDto cardDetails)
+	public ResponseEntity<?> fetchCardDetails(@RequestParam(name = "cardNumber", required = false) String cardNumber,
+											  @RequestParam(name = "cardSerno", required = false) Long cardSerno,
+											  @RequestParam(name = "cusIdNumber", required = false) String cusIdNumber,
+											  @RequestParam(name = "mobileNo", required = false) String mobileNo)
+
 			throws ValidationException, ParseException {
 		String data = null;
 		try {
 			CardDetailsResponse response = null;
-			if (cardDetails.getCardNumber() != null) {
-				Cardx cardDetail = cardxRepository.findByNumberx(cardDetails.getCardNumber());
+			if (cardNumber != null) {
+				Cardx cardDetail = cardxRepository.findByNumberx(cardNumber);
 				response = new CardDetailsResponse();
-				if (cardDetails == null || cardDetails.equals("")) {
+				if (cardDetail == null || cardDetail.equals("")) {
+					data = "Card Number: " + cardNumber;
 					throw new Exception();
 
 				} else {
-					data = "Card Number: " + cardDetails.getCardNumber();
-					response = accountServiceImpl.getCardDeatils(cardDetails.getCardNumber());
+
+					response = accountServiceImpl.getCardDeatils(cardNumber);
 				}
-			} else if (cardDetails.getCardSerno() != null) {
-				Cardx cardDetail = cardxRepository.findBySerno(cardDetails.getCardSerno());
-				if (cardDetails == null || cardDetails.equals("")) {
+			} else if (cardSerno != null) {
+				Cardx cardDetail = cardxRepository.findBySerno(cardSerno);
+				if (cardDetail == null || cardDetail.equals("")) {
+					data = "Card Serno: " +cardSerno;
 					throw new Exception();
 
 				} else {
-					data = "Card Serno: " + cardDetails.getCardSerno();
-					response = accountServiceImpl.getCardSernoDetails(cardDetails.getCardSerno());
+					response = accountServiceImpl.getCardSernoDetails(cardSerno);
 				}
-			} else if (cardDetails.getMobileNo() != null) {
-				List<CAddresses> cAddresses = addressRepository.findByMobile(cardDetails.getMobileNo());
+			} else if (mobileNo != null) {
+				List<CAddresses> cAddresses = addressRepository.findByMobile(mobileNo);
 				if (!cAddresses.isEmpty()) {
-					data = "Mobile Number: " + cardDetails.getMobileNo();
-					response = accountServiceImpl.getCardDetailsByMobile(cardDetails.getMobileNo());
+					response = accountServiceImpl.getCardDetailsByMobile(mobileNo);
+				}
+				else {
+					data = "Mobile Number: " + mobileNo;
+					throw new Exception();
 				}
 			}
 
-			else if (cardDetails.getCustIdNumber() != null) {
-				People cardDetail = peopleRepository.findByCustidnumber(cardDetails.getCustIdNumber());
-				if (cardDetails == null || cardDetails.equals("")) {
+			else if (cusIdNumber != null) {
+				People cardDetail = peopleRepository.findValue(cusIdNumber);
+				if (cardDetail == null || cardDetail.equals("")) {
+					data = " Customer Id: " + cusIdNumber;
 					throw new Exception();
 
 				} else {
-					data = "Customer Id: " + cardDetails.getCustIdNumber();
+
 					response = accountServiceImpl.getCardSernoDetails(cardDetail.getSerno());
 
 				}
