@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.comparator.Comparators;
 
+import com.vernite.cal.controller.ValidationException;
 import com.vernite.cal.dto.CardDetailsResponse;
 import com.vernite.cal.service.AccountService;
 
@@ -62,6 +63,7 @@ public class AccountServiceImpl implements AccountService {
 		cardDetails.setCardNumber(byCardSerno.getNumberx());
 		return cardDetails;
 	}
+
 	public CardDetailsResponse getByPeopleSernoDetails(Long cardSerno) throws ParseException {
 
 		Cardx byCardSerno = cardxRepository.findByPeopleserno(cardSerno);
@@ -71,8 +73,14 @@ public class AccountServiceImpl implements AccountService {
 		return cardDetails;
 	}
 
+	public CardDetailsResponse getCardDetailsByMobile(String mobileNo) throws ParseException, ValidationException {
 
-	public CardDetailsResponse getCardDetailsByMobile(String mobileNo) throws ParseException {
+//		// Extract the last 10 digits of the mobile number
+		if (mobileNo.length() > 10) {
+			mobileNo = mobileNo.substring(mobileNo.length() - 10);
+		}
+		
+
 		CAddresses addressInfo = new CAddresses();
 		List<CAddresses> addressDetails = addressRepository.findByMobile(mobileNo);
 		if (addressDetails.size() >= 1) {
@@ -81,7 +89,7 @@ public class AccountServiceImpl implements AccountService {
 			addressInfo = addressRepository.findByMobileNo(mobileNo);
 		}
 		Caddresslinks caddresslinks = caddresslinksRepository.findByAddressserno(addressInfo.getSerno());
-		Cardx cardx = cardxRepository.findByPeopleserno((long)caddresslinks.getRowserno());
+		Cardx cardx = cardxRepository.findByPeopleserno((long) caddresslinks.getRowserno());
 		CardDetailsResponse cardDetails = getCardDeatils(cardx.getNumberx());
 		cardDetails.setCardNumber(cardx.getNumberx());
 

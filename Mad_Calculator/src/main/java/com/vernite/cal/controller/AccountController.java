@@ -47,9 +47,9 @@ public class AccountController {
 
 	@GetMapping("/card")
 	public ResponseEntity<?> fetchCardDetails(@RequestParam(name = "cardNumber", required = false) String cardNumber,
-											  @RequestParam(name = "cardSerno", required = false) Long cardSerno,
-											  @RequestParam(name = "custIdNumber", required = false) String cusIdNumber,
-											  @RequestParam(name = "mobileNo", required = false) String mobileNo)
+			@RequestParam(name = "cardSerno", required = false) Long cardSerno,
+			@RequestParam(name = "custIdNumber", required = false) String cusIdNumber,
+			@RequestParam(name = "mobileNo", required = false) String mobileNo)
 
 			throws ValidationException, ParseException {
 		String data = null;
@@ -60,7 +60,7 @@ public class AccountController {
 				response = new CardDetailsResponse();
 				if (cardDetail == null || cardDetail.equals("")) {
 					data = "Card Number: " + cardNumber;
-					throw new Exception();
+					throw new ValidationException("Please enter a valid card number.");
 
 				} else {
 
@@ -69,39 +69,52 @@ public class AccountController {
 			} else if (cardSerno != null) {
 				Cardx cardDetail = cardxRepository.findBySerno(cardSerno);
 				if (cardDetail == null || cardDetail.equals("")) {
-					data = "Card Serno: " +cardSerno;
-					throw new Exception();
+					data = "Card Serno: " + cardSerno;
+					throw new ValidationException("Please enter a valid card serno.");
 
 				} else {
 					response = accountServiceImpl.getCardSernoDetails(cardSerno);
 				}
 			} else if (mobileNo != null) {
+
+				// Validate mobile number length
+				if (mobileNo.length() != 10) {
+					throw new ValidationException("Mobile number must be exactly 10 digits long.");
+				}
+
 				List<CAddresses> cAddresses = addressRepository.findByMobile(mobileNo);
 				if (!cAddresses.isEmpty()) {
+					// Extract the last 10 digits of the mobile number after skipping the first two
+					// digits
+					String processedMobileNo = mobileNo;
+					if (mobileNo.length() > 10) {
+						processedMobileNo = mobileNo.substring(2); // Skip first two digits
+						processedMobileNo = processedMobileNo.substring(processedMobileNo.length() - 10); // Take last																					// 10 digits
+					}
+					// ----------
 					response = accountServiceImpl.getCardDetailsByMobile(mobileNo);
-				}
-				else {
+				} else {
 					data = "Mobile Number: " + mobileNo;
 					throw new Exception();
 				}
 			}
 
 			else if (cusIdNumber != null) {
-			People cardDetail = peopleRepository.findByCustIdNumber(cusIdNumber);
+				People cardDetail = peopleRepository.findByCustIdNumber(cusIdNumber);
 				if (cardDetail == null || cardDetail.equals("")) {
 					data = " Customer Id: " + cusIdNumber;
-					throw new Exception();
-
+					throw new ValidationException("Please enter a valid custmer ID number.");
 				} else {
-
 					response = accountServiceImpl.getByPeopleSernoDetails(cardDetail.getSerno());
-
 				}
 			}
 
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch (Exception ex) {
 
+			if (ex.getMessage() != null) {
+				throw new ValidationException(ex.getMessage());
+			}
 			throw new ValidationException("Card details not found for this" + data);
 		}
 	}
