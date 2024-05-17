@@ -73,28 +73,53 @@ public class AccountServiceImpl implements AccountService {
 		return cardDetails;
 	}
 
+//	public CardDetailsResponse getCardDetailsByMobile(String mobileNo) throws ParseException, ValidationException {
+//
+////		// Extract the last 10 digits of the mobile number
+//		if (mobileNo.length() > 10) {
+//			mobileNo = mobileNo.substring(mobileNo.length() - 10);
+//		}
+//		
+//
+//		CAddresses addressInfo = new CAddresses();
+//		List<CAddresses> addressDetails = addressRepository.findByMobile(mobileNo);
+//		if (addressDetails.size() >= 1) {
+//			addressInfo = addressRepository.findTop1ByMobileOrderByMobile(mobileNo);
+//		} else if (addressDetails.size() <= 1) {
+//			addressInfo = addressRepository.findByMobileNo(mobileNo);
+//		}
+//		Caddresslinks caddresslinks = caddresslinksRepository.findByAddressserno(addressInfo.getSerno());
+//		Cardx cardx = cardxRepository.findByPeopleserno((long) caddresslinks.getRowserno());
+//		CardDetailsResponse cardDetails = getCardDeatils(cardx.getNumberx());
+//		cardDetails.setCardNumber(cardx.getNumberx());
+//
+//		return cardDetails;
+//	}
+	
 	public CardDetailsResponse getCardDetailsByMobile(String mobileNo) throws ParseException, ValidationException {
+	    // Extract the last 10 digits of the mobile number if it is more than 10 digits
+	    if (mobileNo.length() > 10) {
+	        mobileNo = mobileNo.substring(mobileNo.length() - 10);
+	    }
 
-//		// Extract the last 10 digits of the mobile number
-		if (mobileNo.length() > 10) {
-			mobileNo = mobileNo.substring(mobileNo.length() - 10);
-		}
-		
+	    CAddresses addressInfo = new CAddresses();
+	    List<CAddresses> addressDetails = addressRepository.findByMobile(mobileNo);
+	    
+	    if (addressDetails.size() >= 1) {
+	        addressInfo = addressRepository.findTop1ByMobileOrderByMobile(mobileNo);
+	    } else {
+	        // If no address found with the last 10 digits, handle the scenario appropriately
+	        throw new ValidationException("No address found for the provided mobile number.");
+	    }
+	    
+	    Caddresslinks caddresslinks = caddresslinksRepository.findByAddressserno(addressInfo.getSerno());
+	    Cardx cardx = cardxRepository.findByPeopleserno((long) caddresslinks.getRowserno());
+	    CardDetailsResponse cardDetails = getCardDeatils(cardx.getNumberx());
+	    cardDetails.setCardNumber(cardx.getNumberx());
 
-		CAddresses addressInfo = new CAddresses();
-		List<CAddresses> addressDetails = addressRepository.findByMobile(mobileNo);
-		if (addressDetails.size() >= 1) {
-			addressInfo = addressRepository.findTop1ByMobileOrderByMobile(mobileNo);
-		} else if (addressDetails.size() <= 1) {
-			addressInfo = addressRepository.findByMobileNo(mobileNo);
-		}
-		Caddresslinks caddresslinks = caddresslinksRepository.findByAddressserno(addressInfo.getSerno());
-		Cardx cardx = cardxRepository.findByPeopleserno((long) caddresslinks.getRowserno());
-		CardDetailsResponse cardDetails = getCardDeatils(cardx.getNumberx());
-		cardDetails.setCardNumber(cardx.getNumberx());
-
-		return cardDetails;
+	    return cardDetails;
 	}
+
 
 	public CardDetailsResponse getCardDeatils(String numberx) throws ParseException {
 
