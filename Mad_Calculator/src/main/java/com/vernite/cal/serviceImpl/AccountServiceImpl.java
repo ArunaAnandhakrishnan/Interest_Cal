@@ -103,10 +103,10 @@ public class AccountServiceImpl implements AccountService {
 	    }
 
 	    CAddresses addressInfo = new CAddresses();
-	    List<CAddresses> addressDetails = addressRepository.findByMobile(mobileNo);
+	    List<CAddresses> addressDetails = addressRepository.findByMobileNo(mobileNo);
 	    
 	    if (addressDetails.size() >= 1) {
-	        addressInfo = addressRepository.findTop1ByMobileOrderByMobile(mobileNo);
+	        addressInfo = addressRepository.findTop1ByMobileLikeOrderByMobile(mobileNo);
 	    } else {
 	        // If no address found with the last 10 digits, handle the scenario appropriately
 	        throw new ValidationException("No address found for the provided mobile number.");

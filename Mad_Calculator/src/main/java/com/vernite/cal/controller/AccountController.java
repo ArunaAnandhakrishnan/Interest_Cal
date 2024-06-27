@@ -154,7 +154,7 @@ public class AccountController {
 					throw new ValidationException("Please enter a valid mobile number.");
 				}
 
-				List<CAddresses> cAddresses = addressRepository.findByMobile(mobileNo);
+				List<CAddresses> cAddresses = addressRepository.findByMobileNo(mobileNo);
 				if (!cAddresses.isEmpty()) {
 					String processedMobileNo = mobileNo;
 					if (mobileNo.length() > 10) {

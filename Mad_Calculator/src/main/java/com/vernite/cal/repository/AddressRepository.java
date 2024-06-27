@@ -14,9 +14,12 @@ public interface AddressRepository extends JpaRepository<CAddresses, Long> {
 
 	
 	List<CAddresses> findByMobile(String mobile);
-    @Query(value = "Select * from CADDRESSES where mobile =:mobile", nativeQuery = true)
-    CAddresses findByMobileNo(@Param("mobile") String mobile);
    // CAddresses findByMobileOrderByLimit1(String mobile);
+   @Query(value = "SELECT * FROM CADDRESSES WHERE mobile LIKE %:mobile%", nativeQuery = true)
+   List<CAddresses> findByMobileNo(@Param("mobile") String mobile);
+    // CAddresses findByMobileOrderByLimit1(String mobile);
+    @Query(value = "SELECT * FROM (SELECT * FROM CADDRESSES WHERE mobile LIKE %:mobile% ORDER BY mobile) WHERE ROWNUM = 1", nativeQuery = true)
+    CAddresses findTop1ByMobileLikeOrderByMobile(@Param("mobile") String mobile);
    CAddresses findTop1ByMobileOrderByMobile(String mobile);
 
 }
