@@ -115,9 +115,12 @@ public class AccountServiceImpl implements AccountService {
 	    }
 	    
 	    Caddresslinks caddresslinks = caddresslinksRepository.findByAddressserno(addressInfo.getSerno());
-	    Cardx cardx = cardxRepository.findByPeopleserno((long) caddresslinks.getRowserno());
-	    CardDetailsResponse cardDetails = getCardDeatils(cardx.getNumberx());
-	    cardDetails.setCardNumber(cardx.getNumberx());
+		// Cardx cardx = cardxRepository.findByPeopleserno((long) caddresslinks.getRowserno());
+		List<String> card = cardxRepository.findByPeople((long) caddresslinks.getRowserno());
+
+		CardDetailsResponse cardDetails = new CardDetailsResponse();
+		// cardDetails.setCardNumber(cardx.getNumberx());
+		cardDetails.setAccountNo(card);
 
 	    return cardDetails;
 	}
