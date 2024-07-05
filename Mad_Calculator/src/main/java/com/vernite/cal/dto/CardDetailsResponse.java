@@ -25,7 +25,7 @@ public class CardDetailsResponse {
 	private String cardNumber;
 	private List<String> cycleDate;
 
-
+	private List<String> accountNo;
 
     public String getNumberx() {
 		return numberx;
@@ -114,5 +114,13 @@ public class CardDetailsResponse {
 
 	public void setCardNumber(String cardNumber) {
 		this.cardNumber = cardNumber;
+	}
+
+	public List<String> getAccountNo() {
+		return accountNo;
+	}
+
+	public void setAccountNo(List<String> accountNo) {
+		this.accountNo = accountNo;
 	}
 }

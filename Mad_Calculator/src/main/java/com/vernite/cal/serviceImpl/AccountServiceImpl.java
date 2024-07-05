@@ -66,9 +66,10 @@ public class AccountServiceImpl implements AccountService {
 
 	public CardDetailsResponse getByPeopleSernoDetails(Long cardSerno) throws ParseException {
 
-		Cardx byCardSerno = cardxRepository.findByPeopleserno(cardSerno);
-		CardDetailsResponse cardDetails = getCardDeatils(byCardSerno.getNumberx());
-		cardDetails.setCardNumber(byCardSerno.getNumberx());
+		//Cardx byCardSerno = cardxRepository.findByPeopleserno(cardSerno);
+		List<String> card = cardxRepository.findByPeople(cardSerno);
+		CardDetailsResponse cardDetails = new CardDetailsResponse();
+		cardDetails.setAccountNo(card);
 
 		return cardDetails;
 	}
@@ -101,6 +102,7 @@ public class AccountServiceImpl implements AccountService {
 	    if (mobileNo.length() > 10) {
 	        mobileNo = mobileNo.substring(mobileNo.length() - 10);
 	    }
+
 
 	    CAddresses addressInfo = new CAddresses();
 	    List<CAddresses> addressDetails = addressRepository.findByMobileNo(mobileNo);
