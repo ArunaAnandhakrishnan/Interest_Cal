@@ -5,12 +5,15 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.vernite.cal.model.Caccounts;
 import com.vernite.cal.model.Cstatements;
 import com.vernite.cal.model.Cstmtsettings;
 import com.vernite.cal.model.Products;
 import com.vernite.cal.model.Profiles;
 
+@JsonInclude(Include.NON_EMPTY)
 public class CardDetailsResponse {
 
 	private String numberx;
@@ -27,7 +30,7 @@ public class CardDetailsResponse {
 
 	private List<String> accountNo;
 
-    public String getNumberx() {
+	public String getNumberx() {
 		return numberx;
 	}
 
@@ -106,7 +109,6 @@ public class CardDetailsResponse {
 	public void setCycleDate(List<String> cycleDate) {
 		this.cycleDate = cycleDate;
 	}
-
 
 	public String getCardNumber() {
 		return cardNumber;

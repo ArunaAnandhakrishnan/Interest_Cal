@@ -6,24 +6,28 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import com.itextpdf.text.DocumentException;
-import com.vernite.cal.model.CAddresses;
-import com.vernite.cal.model.Cardx;
-import com.vernite.cal.model.People;
-import com.vernite.cal.repository.AddressRepository;
-import com.vernite.cal.repository.CardxRepository;
-import com.vernite.cal.repository.PeopleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.itextpdf.text.DocumentException;
 import com.vernite.cal.dto.CardDetailsResponse;
 import com.vernite.cal.dto.StatementResponse;
 import com.vernite.cal.dto.TransactionDetailsDto;
+import com.vernite.cal.model.CAddresses;
+import com.vernite.cal.model.Cardx;
+import com.vernite.cal.model.People;
+import com.vernite.cal.repository.AddressRepository;
+import com.vernite.cal.repository.CardxRepository;
+import com.vernite.cal.repository.PeopleRepository;
 import com.vernite.cal.serviceImpl.AccountServiceImpl;
 import com.vernite.cal.serviceImpl.StatementServiceImpl;
 import com.vernite.cal.serviceImpl.TransactionServiceImpl;
@@ -117,6 +121,16 @@ public class AccountController {
 //		}
 //	}
 
+	@GetMapping("card/{accountNo}")
+	public ResponseEntity<CardDetailsResponse> getCardDetailsByAccount(@PathVariable String accountNo) {
+		try {
+			CardDetailsResponse response = accountServiceImpl.getCardDetailsByAccount(accountNo);
+			return ResponseEntity.ok(response);
+		} catch (ParseException e) {
+			return ResponseEntity.status(500).body(null);
+		}
+	}
+	
 	@GetMapping("/card")
 	public ResponseEntity<?> fetchCardDetails(@RequestParam(name = "cardNumber", required = false) String cardNumber,
 			@RequestParam(name = "cardSerno", required = false) Long cardSerno,

@@ -1,7 +1,6 @@
 package com.vernite.cal.serviceImpl;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -10,21 +9,34 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import com.vernite.cal.model.*;
-import com.vernite.cal.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.comparator.Comparators;
 
 import com.vernite.cal.controller.ValidationException;
 import com.vernite.cal.dto.CardDetailsResponse;
+import com.vernite.cal.model.CAddresses;
+import com.vernite.cal.model.Caccounts;
+import com.vernite.cal.model.Caddresslinks;
+import com.vernite.cal.model.Cardx;
+import com.vernite.cal.model.Cstatements;
+import com.vernite.cal.model.Cstmtsettings;
+import com.vernite.cal.model.Mprofileacct;
+import com.vernite.cal.model.Products;
+import com.vernite.cal.model.Profiles;
+import com.vernite.cal.repository.AccountRepository;
+import com.vernite.cal.repository.AddressRepository;
+import com.vernite.cal.repository.CaddresslinksRepository;
+import com.vernite.cal.repository.CardxRepository;
+import com.vernite.cal.repository.CstatementSettingsRepository;
+import com.vernite.cal.repository.CstatementsRepositoty;
+import com.vernite.cal.repository.MprofileAcctRepository;
+import com.vernite.cal.repository.PeopleRepository;
+import com.vernite.cal.repository.ProductsRepository;
+import com.vernite.cal.repository.ProfilesRepository;
 import com.vernite.cal.service.AccountService;
-
-import oracle.net.aso.m;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -66,12 +78,27 @@ public class AccountServiceImpl implements AccountService {
 
 	public CardDetailsResponse getByPeopleSernoDetails(Long cardSerno) throws ParseException {
 
-		//Cardx byCardSerno = cardxRepository.findByPeopleserno(cardSerno);
+		// Cardx byCardSerno = cardxRepository.findByPeopleserno(cardSerno);
 		List<String> card = cardxRepository.findByPeople(cardSerno);
 		CardDetailsResponse cardDetails = new CardDetailsResponse();
 		cardDetails.setAccountNo(card);
 
 		return cardDetails;
+	}
+
+	public CardDetailsResponse getCardDetailsByAccount(String accountNo) throws ParseException {
+		List<String> list = Arrays.asList(accountNo.split(","));
+
+		Caccounts byAccount = accountRepository.findByNumberx(accountNo);
+
+		Cardx byCard = cardxRepository.findByCaccounts(byAccount);
+		if (byCard == null) {
+			throw new RuntimeException("Card not found for account: " + accountNo);
+		}
+
+		CardDetailsResponse cardDeatils = getCardDeatils(byCard.getNumberx());
+		cardDeatils.setAccountNo(list);
+		return cardDeatils;
 	}
 
 //	public CardDetailsResponse getCardDetailsByMobile(String mobileNo) throws ParseException, ValidationException {
@@ -96,35 +123,35 @@ public class AccountServiceImpl implements AccountService {
 //
 //		return cardDetails;
 //	}
-	
+
 	public CardDetailsResponse getCardDetailsByMobile(String mobileNo) throws ParseException, ValidationException {
-	    // Extract the last 10 digits of the mobile number if it is more than 10 digits
-	    if (mobileNo.length() > 10) {
-	        mobileNo = mobileNo.substring(mobileNo.length() - 10);
-	    }
+		// Extract the last 10 digits of the mobile number if it is more than 10 digits
+		if (mobileNo.length() > 10) {
+			mobileNo = mobileNo.substring(mobileNo.length() - 10);
+		}
 
+		CAddresses addressInfo = new CAddresses();
+		List<CAddresses> addressDetails = addressRepository.findByMobileNo(mobileNo);
 
-	    CAddresses addressInfo = new CAddresses();
-	    List<CAddresses> addressDetails = addressRepository.findByMobileNo(mobileNo);
-	    
-	    if (addressDetails.size() >= 1) {
-	        addressInfo = addressRepository.findTop1ByMobileLikeOrderByMobile(mobileNo);
-	    } else {
-	        // If no address found with the last 10 digits, handle the scenario appropriately
-	        throw new ValidationException("No address found for the provided mobile number.");
-	    }
-	    
-	    Caddresslinks caddresslinks = caddresslinksRepository.findByAddressserno(addressInfo.getSerno());
-		// Cardx cardx = cardxRepository.findByPeopleserno((long) caddresslinks.getRowserno());
+		if (addressDetails.size() >= 1) {
+			addressInfo = addressRepository.findTop1ByMobileLikeOrderByMobile(mobileNo);
+		} else {
+			// If no address found with the last 10 digits, handle the scenario
+			// appropriately
+			throw new ValidationException("No address found for the provided mobile number.");
+		}
+
+		Caddresslinks caddresslinks = caddresslinksRepository.findByAddressserno(addressInfo.getSerno());
+		// Cardx cardx = cardxRepository.findByPeopleserno((long)
+		// caddresslinks.getRowserno());
 		List<String> card = cardxRepository.findByPeople((long) caddresslinks.getRowserno());
 
 		CardDetailsResponse cardDetails = new CardDetailsResponse();
 		// cardDetails.setCardNumber(cardx.getNumberx());
 		cardDetails.setAccountNo(card);
 
-	    return cardDetails;
+		return cardDetails;
 	}
-
 
 	public CardDetailsResponse getCardDeatils(String numberx) throws ParseException {
 
