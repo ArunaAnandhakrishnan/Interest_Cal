@@ -35,11 +35,13 @@ public class StatementServiceImpl {
     CstatementSettingsRepository cstatementSettingsRepository;
     @Autowired
     private CardxRepository cardxRepository;
-
+    @Autowired
+    AccountRepository accountRepository;
     public StatementResponse getStatementDetails(String cardNumber, Date cycleDate) throws ParseException {
 
-        Cardx byCard = cardxRepository.findByNumberx(cardNumber);
-        Caccounts caccounts = byCard.getCaccounts();
+
+        Caccounts caccounts =accountRepository.findByNumberx(cardNumber);
+        Cardx byCard = cardxRepository.findByCaccounts(caccounts);
         Optional<Cstatements> byCycledate = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate,
                 byCard.getCaccounts());
 
@@ -58,7 +60,7 @@ public class StatementServiceImpl {
             dueDates = convertDateTwo(duedate);
         }
 
-        BigDecimal mad = madCalculation(cardNumber, cycleDate);
+        BigDecimal mad = madCalculation(byCard.getNumberx(), cycleDate);
         if (mad.compareTo(BigDecimal.ZERO) == 0) {
             mad = mad;
         } else if (mad.compareTo(BigDecimal.valueOf(100)) < 0) {
