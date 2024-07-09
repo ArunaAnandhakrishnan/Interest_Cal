@@ -58,12 +58,23 @@ public class TransactionServiceImpl {
         try {
             String date = convertDateOne(cycleDate);
             Caccounts caccounts = accountRepository.findByNumberx(cardNumber);
-            Cardx byCard = cardxRepository.findByCaccounts(caccounts);
+            Caccounts caccounts1;
+            Cardx byCard = null;
+            if(caccounts != null) {
+                 byCard = cardxRepository.findByCaccounts(caccounts);
+                caccounts1 = caccounts;
+            }
+            else if(caccounts == null){
+                byCard = cardxRepository.findByNumberx(cardNumber);
+                caccounts1 = byCard.getCaccounts();
+            } else {
+                caccounts1 = new Caccounts();
+            }
             Optional<Cstatements> cycledates = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate,
                     byCard.getCaccounts());
             List<TransactionDetailsDto> transactionDetails = new ArrayList<>();
             Optional<List<Tbalances>> tbalances = tbalancesRepository.getTbalanceData(cycledates.get().getSerno(),
-                    caccounts.getSerno());
+                    caccounts1.getSerno());
             DecimalFormat decimalFormat = new DecimalFormat("#.##");
             // double overlimit = cycledates.get().getCreditlimit() -
             // cycledates.get().getClosingbalance();
@@ -71,13 +82,13 @@ public class TransactionServiceImpl {
                 for (Tbalances t : tbalancesList) {
                     if (t.getTrxnserno() != null) {
                         TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
-                        transactionDetail.setAccountNo(caccounts.getNumberx());
+                        transactionDetail.setAccountNo(caccounts1.getNumberx());
                         transactionDetail.setCardNo(maskCardNumber(cardNumber));
                         transactionDetail.setOutstandingamount(t.getOutstandingamount().abs());
                         transactionDetail.setAmount(t.getAmount().abs());
                         transactionDetail.setTrxnSerno(t.getTrxnserno());
                         if (t.getMinpaypercentage() == null) {
-                            Optional<Products> product = productsRepository.findById(caccounts.getProduct());
+                            Optional<Products> product = productsRepository.findById(caccounts1.getProduct());
                             Optional<Mprofileacct> mprofileacct = mprofileAcctRepository.findByProducts(product);
                             Optional<Profiles> profiles = profilesRepository
                                     .findById(mprofileacct.get().getProfiles().getSerno());
@@ -118,7 +129,7 @@ public class TransactionServiceImpl {
             if (transactionDetails.isEmpty()) {
                 TransactionDetailsDto dt = new TransactionDetailsDto();
                 dt.setCardNo(maskCardNumber(cardNumber));
-                dt.setAccountNo(caccounts.getNumberx());
+                dt.setAccountNo(caccounts1.getNumberx());
                 dt.setOverDueAmount(Math.abs(cycledates.get().getOverdueamount()));
                 if (cycledates.get().getClosingbalance() < 0) {
                     double calculateOverLimitAmount = Math.abs(cycledates.get().getCreditlimit())
