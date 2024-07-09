@@ -41,12 +41,23 @@ public class StatementServiceImpl {
 
 
         Caccounts caccounts =accountRepository.findByNumberx(cardNumber);
-        Cardx byCard = cardxRepository.findByCaccounts(caccounts);
+        Cardx byCard = null;
+        String accountNumber = null;
+        if(caccounts != null) {
+             byCard = cardxRepository.findByCaccounts(caccounts);
+             accountNumber = caccounts.getNumberx();
+        }
+         else if(caccounts == null){
+            byCard = cardxRepository.findByNumberx(cardNumber);
+            accountNumber = byCard.getCaccounts().getNumberx();
+
+        }
         Optional<Cstatements> byCycledate = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate,
                 byCard.getCaccounts());
 
         String cardNumberx = byCard.getNumberx();
-        String accountNumber = caccounts.getNumberx();
+
+
 
         Date printduedate = byCycledate.get().getPrintduedate();
         String printDueDates = null;
@@ -82,7 +93,7 @@ public class StatementServiceImpl {
         st.setTotaldebits(byCycledate.get().getTotaldebits());
         st.setOverdueamount(Math.abs(byCycledate.get().getOverdueamount()));
         st.setCardNo(cardNumber);
-        st.setAccountNo(caccounts.getNumberx());
+        st.setAccountNo(accountNumber);
         st.setPrintduedate(printDueDates);
         st.setDuedate(dueDates);
 
