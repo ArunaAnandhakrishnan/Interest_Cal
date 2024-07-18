@@ -140,15 +140,12 @@ public class AccountServiceImpl implements AccountService {
 			// appropriately
 			throw new ValidationException("No address found for the provided mobile number.");
 		}
-
-		Caddresslinks caddresslinks = caddresslinksRepository.findByAddressserno(addressInfo.getSerno());
-		// Cardx cardx = cardxRepository.findByPeopleserno((long)
-		// caddresslinks.getRowserno());
-		List<String> card = cardxRepository.findByPeople((long) caddresslinks.getRowserno());
-
+//	todo	Caddresslinks caddresslinks = caddresslinksRepository.findByAddressserno(addressInfo.getSerno());
+//		List<String> card = cardxRepository.findByPeople((long) caddresslinks.getRowserno());
+		List<String> cards = cardxRepository.findByPeoplesSerno(mobileNo);
 		CardDetailsResponse cardDetails = new CardDetailsResponse();
 		// cardDetails.setCardNumber(cardx.getNumberx());
-		cardDetails.setAccountNo(card);
+		cardDetails.setAccountNo(cards);
 
 		return cardDetails;
 	}
