@@ -19,7 +19,8 @@ public interface CardxRepository extends JpaRepository<Cardx, Long> {
 
 	@Query(value = "SELECT c.numberx FROM cardx cx JOIN caccounts c ON cx.caccserno = c.serno WHERE cx.peopleserno = :serno", nativeQuery = true)
 	List<String> findByPeople(@Param("serno") Long serno);
-
+    @Query(value = "select numberx from caccounts where serno in (select caccserno from cardx where peopleserno in (select serno from people pl where pl.custidnumber =:custId))", nativeQuery = true)
+	List<String> findByCustId(@Param("custId") String custId);
 	public Cardx findByCaccounts(Caccounts caccounts);
 	@Query(value = "select numberx from caccounts where serno in (select caccserno from cardx where peopleserno in (select rowserno from caddresslinks cl where cl.addressserno in (select serno from caddresses where mobile =:mobileNo )))", nativeQuery = true)
 	List<String> findByPeoplesSerno(@Param("mobileNo") String mobileNo);

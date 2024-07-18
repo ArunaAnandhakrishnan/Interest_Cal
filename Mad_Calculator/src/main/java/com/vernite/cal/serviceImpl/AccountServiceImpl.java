@@ -76,10 +76,11 @@ public class AccountServiceImpl implements AccountService {
 		return cardDetails;
 	}
 
-	public CardDetailsResponse getByPeopleSernoDetails(Long cardSerno) throws ParseException {
+	public CardDetailsResponse getByPeopleSernoDetails(String cardSerno) throws ParseException {
 
 		// Cardx byCardSerno = cardxRepository.findByPeopleserno(cardSerno);
-		List<String> card = cardxRepository.findByPeople(cardSerno);
+		List<String> card = cardxRepository.findByCustId(cardSerno);
+
 		CardDetailsResponse cardDetails = new CardDetailsResponse();
 		cardDetails.setAccountNo(card);
 

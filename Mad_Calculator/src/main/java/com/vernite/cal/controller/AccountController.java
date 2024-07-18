@@ -191,7 +191,7 @@ public class AccountController {
 					data = " Customer Id: " + cusIdNumber;
 					throw new ValidationException("Customer ID number is not present.");
 				} else {
-					response = accountServiceImpl.getByPeopleSernoDetails(cardDetail.getSerno());
+					response = accountServiceImpl.getByPeopleSernoDetails(cusIdNumber);
 				}
 			}
 
