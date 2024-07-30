@@ -29,7 +29,6 @@ public class Cardx {
 	@JsonIgnore
 	private Products products;
 
-
 	private String numberx;
 	private long institution_id;
 	// private Long caccserno;

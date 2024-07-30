@@ -164,7 +164,7 @@ public class AccountController {
 					response = accountServiceImpl.getCardSernoDetails(cardSerno);
 				}
 			} else if (mobileNo != null) {
-				if (mobileNo.length() != 10 && mobileNo.length() != 12) {
+				if (mobileNo.length() != 10) {
 					throw new ValidationException("Please enter a valid mobile number.");
 				}
 
