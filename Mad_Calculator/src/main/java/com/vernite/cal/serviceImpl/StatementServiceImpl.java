@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import com.vernite.cal.model.*;
 import com.vernite.cal.repository.*;
+import org.hibernate.boot.model.internal.DelayedParameterizedTypeBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,7 @@ public class StatementServiceImpl {
 
 
         Caccounts caccounts =accountRepository.findByNumberx(cardNumber);
+
         Cardx byCard = null;
         String accountNumber = null;
         if(caccounts != null) {
@@ -54,11 +56,12 @@ public class StatementServiceImpl {
         }
         Optional<Cstatements> byCycledate = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate,
                 byCard.getCaccounts());
-
-        String cardNumberx = byCard.getNumberx();
-
-
-
+        Double totalDebits = tbalancesRepository.getTotalDebit(byCycledate.get().getSerno(),
+                byCard.getCaccounts().getSerno());
+        Double totalCredits = tbalancesRepository.getTotalCredit(byCycledate.get().getSerno(),
+                byCard.getCaccounts().getSerno());
+        Double tad = tbalancesRepository.getTadAmount(byCycledate.get().getSerno(),
+                byCard.getCaccounts().getSerno());
         Date printduedate = byCycledate.get().getPrintduedate();
         String printDueDates = null;
         if (printduedate != null) {
@@ -89,8 +92,8 @@ public class StatementServiceImpl {
         }
         StatementResponse st = new StatementResponse();
         st.setStGeneral(byCycledate.get().getStgeneral());
-        st.setTotalcredits(byCycledate.get().getTotalcredits());
-        st.setTotaldebits(byCycledate.get().getTotaldebits());
+        st.setTotalcredits(totalCredits);
+        st.setTotaldebits(Math.abs(totalDebits));
         st.setOverdueamount(Math.abs(byCycledate.get().getOverdueamount()));
         st.setCardNo(cardNumber);
         st.setAccountNo(accountNumber);
@@ -98,7 +101,7 @@ public class StatementServiceImpl {
         st.setDuedate(dueDates);
 
         st.setMindueamount(Math.abs(byCycledate.get().getMindueamount()));
-        st.setTad(Math.abs(byCycledate.get().getClosingbalance()));
+        st.setTad(Math.abs(tad));
         st.setOpeningbalance(Math.abs(byCycledate.get().getOpeningbalance()));
         st.setOverduecycles(byCycledate.get().getOverduecycles());
         st.setMad(mad);
@@ -124,8 +127,9 @@ public class StatementServiceImpl {
         Cardx byCard = cardxRepository.findByNumberx(cardNumber);
         Caccounts caccounts = byCard.getCaccounts();
         Optional<Cstatements> statements = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate, caccounts);
-
-        Double overLimitAmount = statements.get().getCreditlimit() - Math.abs(statements.get().getClosingbalance());
+        Double overlimit = tbalancesRepository.getTbalanceData(caccounts.getSerno());
+       //todo Double overLimitAmount = statements.get().getCreditlimit() - Math.abs(statements.get().getClosingbalance());
+         Double overLimitAmount = statements.get().getCreditlimit() - Math.abs(overlimit);
         BigDecimal outStandingAmount = BigDecimal.ZERO;
         BigDecimal madAmount = BigDecimal.ZERO;
         BigDecimal overDueAmount = BigDecimal.valueOf(statements.get().getOverdueamount());

@@ -50,6 +50,7 @@ public class TransactionServiceImpl {
     private final ObjectMapper objectMapper;
     @Autowired
     AccountRepository accountRepository;
+
     public TransactionServiceImpl(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
@@ -60,11 +61,10 @@ public class TransactionServiceImpl {
             Caccounts caccounts = accountRepository.findByNumberx(cardNumber);
             Caccounts caccounts1;
             Cardx byCard = null;
-            if(caccounts != null) {
-                 byCard = cardxRepository.findByCaccounts(caccounts);
+            if (caccounts != null) {
+                byCard = cardxRepository.findByCaccounts(caccounts);
                 caccounts1 = caccounts;
-            }
-            else if(caccounts == null){
+            } else if (caccounts == null) {
                 byCard = cardxRepository.findByNumberx(cardNumber);
                 caccounts1 = byCard.getCaccounts();
             } else {
@@ -73,33 +73,39 @@ public class TransactionServiceImpl {
             Optional<Cstatements> cycledates = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate,
                     byCard.getCaccounts());
             List<TransactionDetailsDto> transactionDetails = new ArrayList<>();
-            Optional<List<Tbalances>> tbalances = tbalancesRepository.getTbalanceData(cycledates.get().getSerno(),
+//            Optional<List<Tbalances>> tbalancess = tbalancesRepository.getTbalanceData(cycledates.get().getSerno(),
+//                    caccounts1.getSerno());
+            Optional<List<Object[]>> tbalances = tbalancesRepository.getTbalanceDatas(cycledates.get().getSerno(),
                     caccounts1.getSerno());
             DecimalFormat decimalFormat = new DecimalFormat("#.##");
-            // double overlimit = cycledates.get().getCreditlimit() -
-            // cycledates.get().getClosingbalance();
             tbalances.ifPresent(tbalancesList -> {
-                for (Tbalances t : tbalancesList) {
-                    if (t.getTrxnserno() != null) {
+                for (Object[] t : tbalancesList) {
+                    Long trxnserno = ((BigDecimal) t[0]) != null ? ((BigDecimal) t[0]).longValueExact() : null;
+                    String recType = (String) t[1];
+                    BigDecimal amount = (BigDecimal) t[2];
+                    BigDecimal outstandingamount = (BigDecimal) t[3];
+                    Long minPayPercentage = ((BigDecimal) t[4]) != null ? ((BigDecimal) t[4]).longValueExact() : null;
+                    if (trxnserno != null) {
                         TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
                         transactionDetail.setAccountNo(caccounts1.getNumberx());
                         transactionDetail.setCardNo(maskCardNumber(cardNumber));
-                        transactionDetail.setOutstandingamount(t.getOutstandingamount().abs());
-                        transactionDetail.setAmount(t.getAmount().abs());
-                        transactionDetail.setTrxnSerno(t.getTrxnserno());
-                        if (t.getMinpaypercentage() == null) {
+                        transactionDetail.setOutstandingamount(outstandingamount.abs());
+                        transactionDetail.setAmount(amount.abs());
+                        transactionDetail.setTrxnSerno(trxnserno);
+                        transactionDetail.setRecType(recType);
+                        if (minPayPercentage == null) {
                             Optional<Products> product = productsRepository.findById(caccounts1.getProduct());
                             Optional<Mprofileacct> mprofileacct = mprofileAcctRepository.findByProducts(product);
                             Optional<Profiles> profiles = profilesRepository
                                     .findById(mprofileacct.get().getProfiles().getSerno());
                             Optional<Cstmtsettings> csetting = cstatementSettingsRepository.findByProfiles(profiles.get());
                             transactionDetail.setMinpaypercentage(csetting.get().getMinpaypercentage());
-                        } else if (t.getMinpaypercentage() == 100) {
-                            transactionDetail.setMinpaypercentage(t.getMinpaypercentage());
+                        } else if (minPayPercentage == 100) {
+                            transactionDetail.setMinpaypercentage(minPayPercentage);
                         }
-                        BigDecimal madAmount = (t.getOutstandingamount().multiply(BigDecimal
+                        BigDecimal madAmount = (outstandingamount.multiply(BigDecimal
                                 .valueOf(transactionDetail.getMinpaypercentage()).divide(BigDecimal.valueOf(100))));
-                        if(madAmount.compareTo(BigDecimal.valueOf(0.0)) == 0){
+                        if (madAmount.compareTo(BigDecimal.valueOf(0.0)) == 0) {
                             madAmount = BigDecimal.valueOf(0);
                         }
                         if (madAmount.scale() > 0 && madAmount.stripTrailingZeros().scale() <= 0) {
@@ -363,7 +369,6 @@ public class TransactionServiceImpl {
 
         return byteArrayOutputStream.toByteArray();
     }
-
 
 
     public byte[] downloadExcel(String cardNumber, Date cycleDate) throws ParseException {

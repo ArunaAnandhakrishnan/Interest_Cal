@@ -15,6 +15,7 @@ public class TransactionDetailsDto {
 	private String cycleDate;
 	private String accountNo;
 	private String cardNo;
+	private String recType;
 
 	public BigDecimal getOutstandingamount() {
 		return outstandingamount;
@@ -104,4 +105,11 @@ public class TransactionDetailsDto {
 		this.cycleDate = cycleDate;
 	}
 
+	public String getRecType() {
+		return recType;
+	}
+
+	public void setRecType(String recType) {
+		this.recType = recType;
+	}
 }
