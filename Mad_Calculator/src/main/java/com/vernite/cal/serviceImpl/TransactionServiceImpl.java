@@ -17,6 +17,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.vernite.cal.dto.StatementResponse;
 import com.vernite.cal.model.*;
 import com.vernite.cal.repository.*;
+import com.vernite.cal.service.ConfigurationService;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -50,6 +51,8 @@ public class TransactionServiceImpl {
     private final ObjectMapper objectMapper;
     @Autowired
     AccountRepository accountRepository;
+    @Autowired
+    ConfigurationService configurationService;
 
     public TransactionServiceImpl(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -75,8 +78,11 @@ public class TransactionServiceImpl {
             List<TransactionDetailsDto> transactionDetails = new ArrayList<>();
 //            Optional<List<Tbalances>> tbalancess = tbalancesRepository.getTbalanceData(cycledates.get().getSerno(),
 //                    caccounts1.getSerno());
+            MadConfigurationDetails config = configurationService.getConfiguration();
             Optional<List<Object[]>> tbalances = tbalancesRepository.getTbalanceDatas(cycledates.get().getSerno(),
                     caccounts1.getSerno());
+            List<Long> trxnSernos = tbalancesRepository.getTrxnSerno(caccounts.getSerno(),config.getSerno());
+
             DecimalFormat decimalFormat = new DecimalFormat("#.##");
             tbalances.ifPresent(tbalancesList -> {
                 for (Object[] t : tbalancesList) {
@@ -93,6 +99,12 @@ public class TransactionServiceImpl {
                         transactionDetail.setAmount(amount.abs());
                         transactionDetail.setTrxnSerno(trxnserno);
                         transactionDetail.setRecType(recType);
+                        if (trxnSernos.contains(trxnserno)) {
+                            transactionDetail.setIsOverlimitTrxnserno("YES");
+                        }
+                        else{
+                            transactionDetail.setIsOverlimitTrxnserno("NO");
+                        }
                         if (minPayPercentage == null) {
                             Optional<Products> product = productsRepository.findById(caccounts1.getProduct());
                             Optional<Mprofileacct> mprofileacct = mprofileAcctRepository.findByProducts(product);

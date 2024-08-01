@@ -38,6 +38,8 @@ public class StatementServiceImpl {
     private CardxRepository cardxRepository;
     @Autowired
     AccountRepository accountRepository;
+    @Autowired
+    ConfigurationServiceImpl configurationService;
     public StatementResponse getStatementDetails(String cardNumber, Date cycleDate) throws ParseException {
 
 
@@ -127,8 +129,10 @@ public class StatementServiceImpl {
         Cardx byCard = cardxRepository.findByNumberx(cardNumber);
         Caccounts caccounts = byCard.getCaccounts();
         Optional<Cstatements> statements = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate, caccounts);
-        Double overlimit = tbalancesRepository.getTbalanceData(caccounts.getSerno());
-       //todo Double overLimitAmount = statements.get().getCreditlimit() - Math.abs(statements.get().getClosingbalance());
+       MadConfigurationDetails config = configurationService.getConfiguration();
+
+        Double overlimit = tbalancesRepository.getTbalanceData(caccounts.getSerno(),config.getSerno());
+        //todo Double overLimitAmount = statements.get().getCreditlimit() - Math.abs(statements.get().getClosingbalance());
          Double overLimitAmount = statements.get().getCreditlimit() - Math.abs(overlimit);
         BigDecimal outStandingAmount = BigDecimal.ZERO;
         BigDecimal madAmount = BigDecimal.ZERO;

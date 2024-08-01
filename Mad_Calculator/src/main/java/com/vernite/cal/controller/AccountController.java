@@ -49,78 +49,6 @@ public class AccountController {
 	@Autowired
 	PeopleRepository peopleRepository;
 
-//	@GetMapping("/card")
-//	public ResponseEntity<?> fetchCardDetails(@RequestParam(name = "cardNumber", required = false) String cardNumber,
-//			@RequestParam(name = "cardSerno", required = false) Long cardSerno,
-//			@RequestParam(name = "custIdNumber", required = false) String cusIdNumber,
-//			@RequestParam(name = "mobileNo", required = false) String mobileNo)
-//
-//			throws ValidationException, ParseException {
-//		String data = null;
-//		try {
-//			CardDetailsResponse response = null;
-//			if (cardNumber != null) {
-//				Cardx cardDetail = cardxRepository.findByNumberx(cardNumber);
-//				response = new CardDetailsResponse();
-//				if (cardDetail == null || cardDetail.equals("")) {
-//					data = "Card Number: " + cardNumber;
-//					throw new ValidationException("Please enter a valid card number.");
-//
-//				} else {
-//
-//					response = accountServiceImpl.getCardDeatils(cardNumber);
-//				}
-//			} else if (cardSerno != null) {
-//				Cardx cardDetail = cardxRepository.findBySerno(cardSerno);
-//				if (cardDetail == null || cardDetail.equals("")) {
-//					data = "Card Serno: " + cardSerno;
-//					throw new ValidationException("Card serno is not present.");
-//
-//				} else {
-//					response = accountServiceImpl.getCardSernoDetails(cardSerno);
-//				}
-//			} else if (mobileNo != null) {
-//
-//				// Validate mobile number length
-//				if (mobileNo.length() != 10) {
-//					throw new ValidationException("Please enter a valid mobile number.");
-//				}
-//
-//				List<CAddresses> cAddresses = addressRepository.findByMobile(mobileNo);
-//				if (!cAddresses.isEmpty()) {
-//					// Extract the last 10 digits of the mobile number after skipping the first two digits
-//					String processedMobileNo = mobileNo;
-//					if (mobileNo.length() > 10) {
-//						processedMobileNo = mobileNo.substring(2); // Skip first two digits
-//						processedMobileNo = processedMobileNo.substring(processedMobileNo.length() - 10); // Take last																					// 10 digits
-//					}
-//					response = accountServiceImpl.getCardDetailsByMobile(mobileNo);
-//				} else {
-//					data = " Mobile Number: " + mobileNo;
-//					throw new Exception();
-//				}
-//			}
-//
-//			else if (cusIdNumber != null) {
-//				People cardDetail = peopleRepository.findByCustIdNumber(cusIdNumber);
-//				if (cardDetail == null || cardDetail.equals("")) {
-//					data = " Customer Id: " + cusIdNumber;
-//					throw new ValidationException("Please enter a valid custmer ID number.");
-//				} else {
-//					response = accountServiceImpl.getByPeopleSernoDetails(cardDetail.getSerno());
-//				}
-//			}
-//
-//			return new ResponseEntity<>(response, HttpStatus.OK);
-//		} catch (Exception ex) {
-//
-//			if (ex.getMessage() != null) {
-//				throw new ValidationException(ex.getMessage());
-//			}
-//			throw new ValidationException("Card details not found for this" + data);
-//		}
-//	}
-
 	@GetMapping("card/{accountNo}")
 	public ResponseEntity<CardDetailsResponse> getCardDetailsByAccount(@PathVariable String accountNo) {
 		try {
@@ -185,7 +113,6 @@ public class AccountController {
 				if (cusIdNumber.length() != 10) {
 					throw new ValidationException("Please enter a valid customer ID number.");
 				}
-
 				People cardDetail = peopleRepository.findByCustIdNumber(cusIdNumber);
 				if (cardDetail == null) {
 					data = " Customer Id: " + cusIdNumber;
@@ -239,14 +166,10 @@ public class AccountController {
 	public ResponseEntity<byte[]> downloadExcel(@PathVariable String cardNumber,
 			@RequestParam("cycleDate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date cycleDate) throws ParseException {
 		byte[] excelData = transactionServiceImpl.downloadExcel(cardNumber, cycleDate);
-
 		String date = StatementServiceImpl.convertDateOne(cycleDate);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM); // Setting content type to octet-stream for Excel
 		headers.setContentDispositionFormData("attachment", "Statement_Cycle_Date_" + date + ".xlsx"); // Change
-																										// filename
-																										// extension to
-		// .xlsx
 		headers.setContentLength(excelData.length);
 
 		return new ResponseEntity<>(excelData, headers, HttpStatus.OK);
