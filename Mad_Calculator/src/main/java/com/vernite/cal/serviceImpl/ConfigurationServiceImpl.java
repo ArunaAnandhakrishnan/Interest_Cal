@@ -33,7 +33,8 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         MadConfigurationDetails config = configurationRepository.findById(1L).orElse(new MadConfigurationDetails());
         config.setId(1L);
         config.setSerno(configDto.getSerno());
-        config.setOverLimit(configDto.getOverLimit());
+        config.setOverLimitAmount(configDto.getOverLimitAmount());
+        config.setOverDueAmount(configDto.getOverDueAmount());
         configurationRepository.save(config);
     }
 }

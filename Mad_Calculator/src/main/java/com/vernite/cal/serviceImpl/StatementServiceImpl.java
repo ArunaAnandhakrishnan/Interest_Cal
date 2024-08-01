@@ -133,15 +133,23 @@ public class StatementServiceImpl {
 
         Double overlimit = tbalancesRepository.getTbalanceData(caccounts.getSerno(),config.getSerno());
         //todo Double overLimitAmount = statements.get().getCreditlimit() - Math.abs(statements.get().getClosingbalance());
+
          Double overLimitAmount = statements.get().getCreditlimit() - Math.abs(overlimit);
         BigDecimal outStandingAmount = BigDecimal.ZERO;
         BigDecimal madAmount = BigDecimal.ZERO;
         BigDecimal overDueAmount = BigDecimal.valueOf(statements.get().getOverdueamount());
         BigDecimal overLimit = BigDecimal.ZERO;
-        if (overLimitAmount < 0) {
+        if (overLimitAmount < 0 && config.getOverLimitAmount().equals("YES")) {
             overLimit = BigDecimal.valueOf(overLimitAmount);
-        } else {
+        } else if(config.getOverLimitAmount().equals("NO")) {
             overLimit = BigDecimal.ZERO;
+        }
+        Double overDue = 0.0;
+        if(statements.get().getOverdueamount() < 0 && config.getOverDueAmount().equals("YES")){
+            overDue = statements.get().getOverdueamount();
+        }
+        else if(statements.get().getOverdueamount() == 0 && config.getOverDueAmount().equals("NO")) {
+            overDue = 0.0;
         }
         BigDecimal closingBalance = BigDecimal.valueOf(statements.get().getClosingbalance());
         Optional<Products> product = productsRepository.findById(caccounts.getProduct());
@@ -150,7 +158,7 @@ public class StatementServiceImpl {
         Optional<Cstmtsettings> csetting = cstatementSettingsRepository.findByProfiles(profiles.get());
         Long minPayPercentage = csetting.get().getMinpaypercentage();
         Double minper = (double) (minPayPercentage / 100.0);
-        if (statements.get().getOverdueamount() < 0 || overLimitAmount < 0) {
+        if (overDue < 0 || overLimitAmount < 0) {
             Optional<List<Tbalances>> tbalances = tbalancesRepository.getTbalance(statements.get().getSerno(),
                     caccounts.getSerno());
             for (Tbalances tbalancedata : tbalances.get()) {
@@ -160,9 +168,6 @@ public class StatementServiceImpl {
                     }
                 }
             }
-
-//			BigDecimal v = (closingBalance.subtract((overDueAmount.add(overLimit).add(outStandingAmount)).multiply(BigDecimal.valueOf(minPayPercentage)).divide(BigDecimal.valueOf(100))))
-//					.add((overDueAmount.add(overLimit).add(outStandingAmount)));
             BigDecimal v = (closingBalance.abs()
                     .subtract(overDueAmount.abs().add(overLimit.abs()).add(outStandingAmount.abs())))
                     .multiply(BigDecimal.valueOf(minper))

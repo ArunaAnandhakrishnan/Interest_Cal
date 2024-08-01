@@ -5,7 +5,8 @@ import java.util.List;
 
 public class ConfigurationDto {
     private List<Long> serno;
-    private Boolean overLimit;
+    private Boolean overLimitAmount;
+    private Boolean overDueAmount;
 
     public List<Long> getSerno() {
         return serno;
@@ -15,11 +16,19 @@ public class ConfigurationDto {
         this.serno = serno;
     }
 
-    public Boolean getOverLimit() {
-        return overLimit;
+    public Boolean getOverLimitAmount() {
+        return overLimitAmount;
     }
 
-    public void setOverLimit(Boolean overLimit) {
-        this.overLimit = overLimit;
+    public void setOverLimitAmount(Boolean overLimitAmount) {
+        this.overLimitAmount = overLimitAmount;
+    }
+
+    public Boolean getOverDueAmount() {
+        return overDueAmount;
+    }
+
+    public void setOverDueAmount(Boolean overDueAmount) {
+        this.overDueAmount = overDueAmount;
     }
 }
