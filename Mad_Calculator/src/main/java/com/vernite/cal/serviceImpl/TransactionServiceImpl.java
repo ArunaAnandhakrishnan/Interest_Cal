@@ -328,12 +328,12 @@ public class TransactionServiceImpl {
             document.add(new Paragraph("\n")); // Empty paragraph or
 
             // Create main table
-            PdfPTable mainTable = new PdfPTable(5); // 8 columns
+            PdfPTable mainTable = new PdfPTable(7); // 8 columns
             mainTable.setWidthPercentage(100);
 
             // Add headers
-            String[] headers = {"Trxn Serno", "Amount", "Outstanding Amount", "Minimum Pay Percentage",
-                    "Amount Contribution in MAD"};
+            String[] headers = {"Trxn Serno","Rec Type", "Amount", "Outstanding Amount", "Minimum Pay Percentage",
+                    "Amount Contribution in MAD","Eligible For OverLimit"};
             for (String header : headers) {
                 PdfPCell cell = new PdfPCell(new Paragraph(header));
                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -346,6 +346,11 @@ public class TransactionServiceImpl {
                         transaction.getTrxnSerno() != null ? String.valueOf(transaction.getTrxnSerno()) : ""));
                 trxnSernoCell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 mainTable.addCell(trxnSernoCell);
+                
+                PdfPCell rectType = new PdfPCell(new Paragraph(
+                        transaction.getRecType() != null ? String.valueOf(transaction.getRecType()) : ""));
+                trxnSernoCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                mainTable.addCell(rectType);
 
                 PdfPCell amountCell = new PdfPCell(new Paragraph(
                         transaction.getAmount() != null ? transaction.getAmount().toString() : ""));
@@ -367,7 +372,15 @@ public class TransactionServiceImpl {
                         String.valueOf(transaction.getMadAmount() != null ? transaction.getMadAmount().toString() : 0)));
                 madAmountCell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 mainTable.addCell(madAmountCell);
+                
+                PdfPCell eligibleForOverlimit = new PdfPCell(new Paragraph(
+                        String.valueOf(transaction.getIsOverlimitTrxnserno() != null ? transaction.getIsOverlimitTrxnserno().toString() : 0)));
+                madAmountCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                mainTable.addCell(eligibleForOverlimit);
+                
             }
+            
+//            isOverlimitTrxnserno
 
             document.add(mainTable);
 
@@ -470,21 +483,23 @@ public class TransactionServiceImpl {
             }
 
             // Create Table 3 (Transaction Details)
-            Row table3HeaderRow = sheet.createRow(7);
-            String[] table3Headers = {"Trxn Serno", "Amount", "Outstanding Amount", "Minimum Pay Percentage", "Amount Contribution in MAD"};
+            Row table3HeaderRow = sheet.createRow(9);
+            String[] table3Headers = {"Trxn Serno","Rec Type", "Amount", "Outstanding Amount", "Minimum Pay Percentage", "Amount Contribution in MAD","Eligible For OverLimit"};
             for (int i = 0; i < table3Headers.length; i++) {
                 Cell cell = table3HeaderRow.createCell(i);
                 cell.setCellValue(table3Headers[i]);
                 cell.setCellStyle(headerCellStyle);
             }
-            int rowNum = 8; // Start row for Table 3 data
+            int rowNum = 10; // Start row for Table 3 data
             for (TransactionDetailsDto transaction : transactionDetails) {
                 Row row = sheet.createRow(rowNum++);
                 row.createCell(0).setCellValue(Objects.toString(transaction.getTrxnSerno(), ""));
-                row.createCell(1).setCellValue(Objects.toString(transaction.getAmount(), ""));
-                row.createCell(2).setCellValue(Objects.toString(transaction.getOutstandingamount(), ""));
-                row.createCell(3).setCellValue(Objects.toString(transaction.getMinpaypercentage(), ""));
-                row.createCell(4).setCellValue(Objects.toString(transaction.getMadAmount(), ""));
+                row.createCell(1).setCellValue(Objects.toString(transaction.getRecType(), ""));
+                row.createCell(2).setCellValue(Objects.toString(transaction.getAmount(), ""));
+                row.createCell(3).setCellValue(Objects.toString(transaction.getOutstandingamount(), ""));
+                row.createCell(4).setCellValue(Objects.toString(transaction.getMinpaypercentage(), ""));
+                row.createCell(5).setCellValue(Objects.toString(transaction.getMadAmount(), ""));
+                row.createCell(6).setCellValue(Objects.toString(transaction.getIsOverlimitTrxnserno(), ""));
                 for (Cell cell : row) {
                     cell.setCellStyle(dataCellStyle);
                 }

@@ -11,6 +11,7 @@ public class MadCalculatorApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MadCalculatorApplication.class, args);
 	}
+
 	@Bean
 	public ModelMapper modelMapper() {
 		return new ModelMapper();
