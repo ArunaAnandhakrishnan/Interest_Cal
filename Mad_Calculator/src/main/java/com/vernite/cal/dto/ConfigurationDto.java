@@ -7,7 +7,7 @@ public class ConfigurationDto {
     private List<Long> serno;
     private Boolean overLimitAmount;
     private Boolean overDueAmount;
-    private Double minAmountCapping;
+    private Long minAmountCapping;
 
     public List<Long> getSerno() {
         return serno;
@@ -33,11 +33,11 @@ public class ConfigurationDto {
         this.overDueAmount = overDueAmount;
     }
 
-    public Double getMinAmountCapping() {
+    public Long getMinAmountCapping() {
         return minAmountCapping;
     }
 
-    public void setMinAmountCapping(Double minAmountCapping) {
+    public void setMinAmountCapping(Long minAmountCapping) {
         this.minAmountCapping = minAmountCapping;
     }
 }

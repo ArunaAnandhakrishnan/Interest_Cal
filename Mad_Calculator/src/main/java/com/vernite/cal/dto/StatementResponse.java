@@ -19,8 +19,7 @@ public class StatementResponse {
     private String stGeneral;
     private String cardNo;
     private String accountNo;
-
-    private Double minAmountCapping;
+    private Long minAmountCapping;
     public Double getTotaldebits() {
         return totaldebits;
     }
@@ -133,11 +132,11 @@ public class StatementResponse {
 		this.accountNo = accountNo;
 	}
 
-    public Double getMinAmountCapping() {
+    public Long getMinAmountCapping() {
         return minAmountCapping;
     }
 
-    public void setMinAmountCapping(Double minAmountCapping) {
+    public void setMinAmountCapping(Long minAmountCapping) {
         this.minAmountCapping = minAmountCapping;
     }
 }

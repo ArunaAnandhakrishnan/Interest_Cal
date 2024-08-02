@@ -1,8 +1,9 @@
 package com.vernite.cal.model;
 
 import jakarta.persistence.*;
-
 import java.util.List;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Entity
 @Table(name = "MAD_CONFIGURATION_DETAILS")
@@ -11,18 +12,13 @@ public class MadConfigurationDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ElementCollection
-    @Column(name = "serno")
+
+    @Convert(converter = LongListConverter.class)
     private List<Long> serno;
 
-    @Column(name = "over_limit_amount")
     private Boolean overLimitAmount;
-
-    @Column(name = "over_due_amount")
     private Boolean overDueAmount;
-
-    @Column(name = "min_amount_capping")
-    private Double minAmountCapping;
+    private Long minAmountCapping;
 
     public Long getId() {
         return id;
@@ -56,12 +52,36 @@ public class MadConfigurationDetails {
         this.overDueAmount = overDueAmount;
     }
 
-    public Double getMinAmountCapping() {
+    public Long getMinAmountCapping() {
         return minAmountCapping;
     }
 
-    public void setMinAmountCapping(Double minAmountCapping) {
+    public void setMinAmountCapping(Long minAmountCapping) {
         this.minAmountCapping = minAmountCapping;
     }
-}
 
+    // Custom converter class
+    @Converter
+    public static class LongListConverter implements AttributeConverter<List<Long>, String> {
+
+        private final ObjectMapper objectMapper = new ObjectMapper();
+
+        @Override
+        public String convertToDatabaseColumn(List<Long> attribute) {
+            try {
+                return objectMapper.writeValueAsString(attribute);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Error converting list to JSON string", e);
+            }
+        }
+
+        @Override
+        public List<Long> convertToEntityAttribute(String dbData) {
+            try {
+                return objectMapper.readValue(dbData, List.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Error converting JSON string to list", e);
+            }
+        }
+    }
+}
