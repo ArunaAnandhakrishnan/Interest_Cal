@@ -12,9 +12,9 @@ import java.util.Optional;
 public interface TbalancesRepository extends JpaRepository<Tbalances, Long> {
     @Query(value = "select * from tbalances where stmtserno  = :serno and caccserno = :cserno",nativeQuery = true)
     Optional<List<Tbalances>> getTbalanceData(@Param("serno")Long serno, @Param("cserno") Long cserno);
-    @Query(value = "select sum(tb.amount) from tbalances tb where tb.caccserno=:cserno and tb.stmtserno =:serno and tb.amount<=0",nativeQuery = true)
+    @Query(value = "select sum(tb.amount) from tbalances tb where tb.caccserno=:cserno and tb.stmtserno =:serno and tb.amount<0 and tb.trxnserno is not null",nativeQuery = true)
     Double getTotalDebit(@Param("serno")Long serno, @Param("cserno") Long cserno);
-    @Query(value = "select sum(tb.amount) from tbalances tb where tb.caccserno=:cserno and tb.stmtserno =:serno and tb.amount>0",nativeQuery = true)
+    @Query(value = "select sum(tb.amount) from tbalances tb where tb.caccserno=:cserno and tb.stmtserno =:serno and tb.amount>0 and tb.trxnserno is not null",nativeQuery = true)
     Double getTotalCredit(@Param("serno")Long serno, @Param("cserno") Long cserno);
     @Query(value = "select sum(tb.outstandingamount) from tbalances tb where tb.caccserno=:cserno and tb.stmtserno =:serno",nativeQuery = true)
     Double getTadAmount(@Param("serno")Long serno, @Param("cserno") Long cserno);

@@ -30,6 +30,8 @@ public class CardDetailsResponse {
 
 	private List<String> accountNo;
 
+
+
 	public String getNumberx() {
 		return numberx;
 	}
@@ -125,4 +127,5 @@ public class CardDetailsResponse {
 	public void setAccountNo(List<String> accountNo) {
 		this.accountNo = accountNo;
 	}
+
 }

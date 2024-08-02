@@ -11,9 +11,18 @@ public class MadConfigurationDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ElementCollection
+    @Column(name = "serno")
     private List<Long> serno;
+
+    @Column(name = "over_limit_amount")
     private Boolean overLimitAmount;
+
+    @Column(name = "over_due_amount")
     private Boolean overDueAmount;
+
+    @Column(name = "min_amount_capping")
+    private Double minAmountCapping;
 
     public Long getId() {
         return id;
@@ -45,6 +54,14 @@ public class MadConfigurationDetails {
 
     public void setOverDueAmount(Boolean overDueAmount) {
         this.overDueAmount = overDueAmount;
+    }
+
+    public Double getMinAmountCapping() {
+        return minAmountCapping;
+    }
+
+    public void setMinAmountCapping(Double minAmountCapping) {
+        this.minAmountCapping = minAmountCapping;
     }
 }
 

@@ -56,6 +56,7 @@ public class StatementServiceImpl {
             accountNumber = byCard.getCaccounts().getNumberx();
 
         }
+        MadConfigurationDetails config = configurationService.getConfiguration();
         Optional<Cstatements> byCycledate = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate,
                 byCard.getCaccounts());
         Double totalDebits = tbalancesRepository.getTotalDebit(byCycledate.get().getSerno(),
@@ -94,14 +95,14 @@ public class StatementServiceImpl {
         }
         StatementResponse st = new StatementResponse();
         st.setStGeneral(byCycledate.get().getStgeneral());
-        st.setTotalcredits(totalCredits);
-        st.setTotaldebits(Math.abs(totalDebits));
+        st.setTotalcredits((totalCredits == null) ? 0 : totalCredits);
+        st.setTotaldebits((totalDebits == null)?0: Math.abs(totalDebits));
         st.setOverdueamount(Math.abs(byCycledate.get().getOverdueamount()));
         st.setCardNo(cardNumber);
         st.setAccountNo(accountNumber);
         st.setPrintduedate(printDueDates);
         st.setDuedate(dueDates);
-
+        st.setMinAmountCapping(config.getMinAmountCapping());
         st.setMindueamount(Math.abs(byCycledate.get().getMindueamount()));
         st.setTad(Math.abs(tad));
         st.setOpeningbalance(Math.abs(byCycledate.get().getOpeningbalance()));
@@ -139,16 +140,16 @@ public class StatementServiceImpl {
         BigDecimal madAmount = BigDecimal.ZERO;
         BigDecimal overDueAmount = BigDecimal.valueOf(statements.get().getOverdueamount());
         BigDecimal overLimit = BigDecimal.ZERO;
-        if (overLimitAmount < 0 && config.getOverLimitAmount().equals("YES")) {
+        if (overLimitAmount < 0 && config.getOverLimitAmount()) {
             overLimit = BigDecimal.valueOf(overLimitAmount);
-        } else if(config.getOverLimitAmount().equals("NO")) {
+        } else if(!config.getOverLimitAmount()) {
             overLimit = BigDecimal.ZERO;
         }
         Double overDue = 0.0;
-        if(statements.get().getOverdueamount() < 0 && config.getOverDueAmount().equals("YES")){
+        if(statements.get().getOverdueamount() < 0 && config.getOverDueAmount()){
             overDue = statements.get().getOverdueamount();
         }
-        else if(statements.get().getOverdueamount() == 0 && config.getOverDueAmount().equals("NO")) {
+        else if(statements.get().getOverdueamount() == 0 && !config.getOverDueAmount()) {
             overDue = 0.0;
         }
         BigDecimal closingBalance = BigDecimal.valueOf(statements.get().getClosingbalance());

@@ -20,7 +20,7 @@ public class StatementResponse {
     private String cardNo;
     private String accountNo;
 
-
+    private Double minAmountCapping;
     public Double getTotaldebits() {
         return totaldebits;
     }
@@ -133,7 +133,11 @@ public class StatementResponse {
 		this.accountNo = accountNo;
 	}
 
-    
- 
+    public Double getMinAmountCapping() {
+        return minAmountCapping;
+    }
 
+    public void setMinAmountCapping(Double minAmountCapping) {
+        this.minAmountCapping = minAmountCapping;
+    }
 }

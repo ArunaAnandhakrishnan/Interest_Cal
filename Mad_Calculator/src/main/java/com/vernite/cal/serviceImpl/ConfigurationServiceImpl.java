@@ -35,6 +35,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
         config.setSerno(configDto.getSerno());
         config.setOverLimitAmount(configDto.getOverLimitAmount());
         config.setOverDueAmount(configDto.getOverDueAmount());
+        config.setMinAmountCapping(configDto.getMinAmountCapping());
         configurationRepository.save(config);
     }
 }
