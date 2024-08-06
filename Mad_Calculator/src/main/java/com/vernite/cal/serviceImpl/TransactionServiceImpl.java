@@ -278,10 +278,16 @@ public class TransactionServiceImpl {
                 cardTable.addCell(cell);
             }
             TransactionDetailsDto getAmountData = transactionDetails.get(0);
+            
+         // Debug
+//            System.out.println("Account No from DTO:------------------------- " + getAmountData.getAccountNo());
+//            System.out.println("Card No from DTO:-----------------------------" + getAmountData.getCardNo());
+            
             PdfPCell accountNoCell = new PdfPCell(new Paragraph(
                     getAmountData.getAccountNo() != null ? getAmountData.getAccountNo().toString() : ""));
             accountNoCell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cardTable.addCell(accountNoCell);
+            
             PdfPCell cardNoCell = new PdfPCell(new Paragraph(
                     getAmountData.getCardNo() != null ? getAmountData.getCardNo().toString() : ""));
             cardNoCell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -350,7 +356,7 @@ public class TransactionServiceImpl {
                 
                 PdfPCell rectType = new PdfPCell(new Paragraph(
                         transaction.getRecType() != null ? String.valueOf(transaction.getRecType()) : ""));
-                trxnSernoCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                rectType.setHorizontalAlignment(Element.ALIGN_CENTER);
                 mainTable.addCell(rectType);
 
                 PdfPCell amountCell = new PdfPCell(new Paragraph(
@@ -376,7 +382,7 @@ public class TransactionServiceImpl {
                 
                 PdfPCell eligibleForOverlimit = new PdfPCell(new Paragraph(
                         String.valueOf(transaction.getIsOverlimitTrxnserno() != null ? transaction.getIsOverlimitTrxnserno().toString() : 0)));
-                madAmountCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                eligibleForOverlimit.setHorizontalAlignment(Element.ALIGN_CENTER);
                 mainTable.addCell(eligibleForOverlimit);
                 
             }
