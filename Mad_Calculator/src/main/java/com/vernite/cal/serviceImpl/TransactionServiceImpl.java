@@ -73,6 +73,7 @@ public class TransactionServiceImpl {
             } else {
                 caccounts1 = new Caccounts();
             }
+            String cardNo = byCard.getNumberx();
             Optional<Cstatements> cycledates = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate,
                     byCard.getCaccounts());
             List<TransactionDetailsDto> transactionDetails = new ArrayList<>();
@@ -94,7 +95,7 @@ public class TransactionServiceImpl {
                     if (trxnserno != null) {
                         TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
                         transactionDetail.setAccountNo(caccounts1.getNumberx());
-                        transactionDetail.setCardNo(maskCardNumber(cardNumber));
+                        transactionDetail.setCardNo(maskCardNumber(cardNo));
                         transactionDetail.setOutstandingamount(outstandingamount.abs());
                         transactionDetail.setAmount(amount.abs());
                         transactionDetail.setTrxnSerno(trxnserno);

@@ -98,7 +98,7 @@ public class StatementServiceImpl {
         st.setTotalcredits((totalCredits == null) ? 0 : totalCredits);
         st.setTotaldebits((totalDebits == null)?0: Math.abs(totalDebits));
         st.setOverdueamount(Math.abs(byCycledate.get().getOverdueamount()));
-        st.setCardNo(cardNumber);
+        st.setCardNo(byCard.getNumberx());
         st.setAccountNo(accountNumber);
         st.setPrintduedate(printDueDates);
         st.setDuedate(dueDates);
