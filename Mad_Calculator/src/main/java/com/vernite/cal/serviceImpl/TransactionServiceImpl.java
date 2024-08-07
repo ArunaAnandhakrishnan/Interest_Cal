@@ -130,7 +130,7 @@ public class TransactionServiceImpl {
                         if (cycledates.get().getClosingbalance() < 0) {
                             MadConfigurationDetails configs = configurationService.getConfiguration();
                             Double overlimit = tbalancesRepository.getTbalanceData(caccounts.getSerno(),cycledates.get().getSerno(),configs.getSerno());
-                            Double overLimitAmount = cycledates.get().getCreditlimit() - Math.abs(overlimit);
+                            Double overLimitAmount = overlimit == null ? 0.0 : cycledates.get().getCreditlimit() - Math.abs(overlimit);
 
                             if (overLimitAmount < 0) {
                                 transactionDetail.setOverLimitAmount(

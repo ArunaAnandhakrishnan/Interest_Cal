@@ -112,7 +112,7 @@ public class StatementServiceImpl {
         if (byCycledate.get().getClosingbalance() < 0) {
             MadConfigurationDetails configs = configurationService.getConfiguration();
             Double overlimit = tbalancesRepository.getTbalanceData(caccounts.getSerno(),byCycledate.get().getSerno(),configs.getSerno());
-            Double overLimitAmount = byCycledate.get().getCreditlimit() - Math.abs(overlimit);
+            Double overLimitAmount = overlimit == null? 0.0 : byCycledate.get().getCreditlimit() - Math.abs(overlimit);
 
             if (overLimitAmount < 0) {
                 st.setOverLimitAmount(Double.parseDouble(decimalFormat.format(Math.abs(overLimitAmount))));
@@ -134,8 +134,8 @@ public class StatementServiceImpl {
 
         Double overlimit = tbalancesRepository.getTbalanceData(caccounts.getSerno(),statements.get().getSerno(),config.getSerno());
         //todo Double overLimitAmount = statements.get().getCreditlimit() - Math.abs(statements.get().getClosingbalance());
+        Double overLimitAmount = overlimit == null ? 0.0 : statements.get().getCreditlimit() - Math.abs(overlimit);
 
-         Double overLimitAmount = statements.get().getCreditlimit() - Math.abs(overlimit);
         BigDecimal outStandingAmount = BigDecimal.ZERO;
         BigDecimal madAmount = BigDecimal.ZERO;
         BigDecimal overDueAmount = BigDecimal.valueOf(statements.get().getOverdueamount());
