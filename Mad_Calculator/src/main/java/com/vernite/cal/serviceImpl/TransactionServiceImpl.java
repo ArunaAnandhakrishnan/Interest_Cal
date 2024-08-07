@@ -96,8 +96,8 @@ public class TransactionServiceImpl {
                         TransactionDetailsDto transactionDetail = new TransactionDetailsDto();
                         transactionDetail.setAccountNo(caccounts1.getNumberx());
                         transactionDetail.setCardNo(maskCardNumber(cardNo));
-                        transactionDetail.setOutstandingamount(outstandingamount.abs());
-                        transactionDetail.setAmount(amount.abs());
+                        transactionDetail.setOutstandingamount(outstandingamount);
+                        transactionDetail.setAmount(amount);
                         transactionDetail.setTrxnSerno(trxnserno);
                         transactionDetail.setRecType(recType);
                         if (trxnSernos.contains(trxnserno)) {
@@ -128,11 +128,13 @@ public class TransactionServiceImpl {
                         transactionDetail.setMadAmount(madAmount.abs());
                         transactionDetail.setCycleDate(date);
                         if (cycledates.get().getClosingbalance() < 0) {
-                            double calculateOverLimitAmount = Math.abs(cycledates.get().getCreditlimit())
-                                    - Math.abs(cycledates.get().getClosingbalance());
-                            if (calculateOverLimitAmount < 0) {
+                            MadConfigurationDetails configs = configurationService.getConfiguration();
+                            Double overlimit = tbalancesRepository.getTbalanceData(caccounts.getSerno(),cycledates.get().getSerno(),configs.getSerno());
+                            Double overLimitAmount = cycledates.get().getCreditlimit() - Math.abs(overlimit);
+
+                            if (overLimitAmount < 0) {
                                 transactionDetail.setOverLimitAmount(
-                                        Double.parseDouble(decimalFormat.format(Math.abs(calculateOverLimitAmount))));
+                                        Double.parseDouble(decimalFormat.format(Math.abs(overLimitAmount))));
                             } else {
                                 transactionDetail.setOverLimitAmount(0.0);
                             }

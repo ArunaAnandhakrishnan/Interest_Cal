@@ -108,14 +108,14 @@ public class StatementServiceImpl {
         st.setOpeningbalance(Math.abs(byCycledate.get().getOpeningbalance()));
         st.setOverduecycles(byCycledate.get().getOverduecycles());
         st.setMad(mad);
+        st.setCreditLimit(Math.abs(byCycledate.get().getCreditlimit()));
         if (byCycledate.get().getClosingbalance() < 0) {
-            double calculateOverLimitAmount = Math.abs(byCycledate.get().getCreditlimit())
-                    - Math.abs(byCycledate.get().getClosingbalance());
-            // String formattedNumber = String.format("%.2f", number);
-            // String calculateOverLimitAmt = String.format("%.2f",
-            // calculateOverLimitAmount);
-            if (calculateOverLimitAmount < 0) {
-                st.setOverLimitAmount(Double.parseDouble(decimalFormat.format(Math.abs(calculateOverLimitAmount))));
+            MadConfigurationDetails configs = configurationService.getConfiguration();
+            Double overlimit = tbalancesRepository.getTbalanceData(caccounts.getSerno(),byCycledate.get().getSerno(),configs.getSerno());
+            Double overLimitAmount = byCycledate.get().getCreditlimit() - Math.abs(overlimit);
+
+            if (overLimitAmount < 0) {
+                st.setOverLimitAmount(Double.parseDouble(decimalFormat.format(Math.abs(overLimitAmount))));
             } else {
                 st.setOverLimitAmount(0.0);
             }
@@ -132,7 +132,7 @@ public class StatementServiceImpl {
         Optional<Cstatements> statements = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate, caccounts);
        MadConfigurationDetails config = configurationService.getConfiguration();
 
-        Double overlimit = tbalancesRepository.getTbalanceData(caccounts.getSerno(),config.getSerno());
+        Double overlimit = tbalancesRepository.getTbalanceData(caccounts.getSerno(),statements.get().getSerno(),config.getSerno());
         //todo Double overLimitAmount = statements.get().getCreditlimit() - Math.abs(statements.get().getClosingbalance());
 
          Double overLimitAmount = statements.get().getCreditlimit() - Math.abs(overlimit);
