@@ -5,9 +5,8 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.vernite.cal.model.*;
 import com.vernite.cal.repository.*;
@@ -40,18 +39,18 @@ public class StatementServiceImpl {
     AccountRepository accountRepository;
     @Autowired
     ConfigurationServiceImpl configurationService;
+
     public StatementResponse getStatementDetails(String cardNumber, Date cycleDate) throws ParseException {
 
 
-        Caccounts caccounts =accountRepository.findByNumberx(cardNumber);
+        Caccounts caccounts = accountRepository.findByNumberx(cardNumber);
 
         Cardx byCard = null;
         String accountNumber = null;
-        if(caccounts != null) {
-             byCard = cardxRepository.findByCaccounts(caccounts);
-             accountNumber = caccounts.getNumberx();
-        }
-         else if(caccounts == null){
+        if (caccounts != null) {
+            byCard = cardxRepository.findByCaccounts(caccounts);
+            accountNumber = caccounts.getNumberx();
+        } else if (caccounts == null) {
             byCard = cardxRepository.findByNumberx(cardNumber);
             accountNumber = byCard.getCaccounts().getNumberx();
 
@@ -96,7 +95,7 @@ public class StatementServiceImpl {
         StatementResponse st = new StatementResponse();
         st.setStGeneral(byCycledate.get().getStgeneral());
         st.setTotalcredits((totalCredits == null) ? 0 : totalCredits);
-        st.setTotaldebits((totalDebits == null)?0: Math.abs(totalDebits));
+        st.setTotaldebits((totalDebits == null) ? 0 : Math.abs(totalDebits));
         st.setOverdueamount(Math.abs(byCycledate.get().getOverdueamount()));
         st.setCardNo(byCard.getNumberx());
         st.setAccountNo(accountNumber);
@@ -111,8 +110,8 @@ public class StatementServiceImpl {
         st.setCreditLimit(Math.abs(byCycledate.get().getCreditlimit()));
         if (byCycledate.get().getClosingbalance() < 0) {
             MadConfigurationDetails configs = configurationService.getConfiguration();
-            Double overlimit = tbalancesRepository.getTbalanceData(caccounts.getSerno(),byCycledate.get().getSerno(),configs.getSerno());
-            Double overLimitAmount = overlimit == null? 0.0 : byCycledate.get().getCreditlimit() - Math.abs(overlimit);
+            Double overlimit = tbalancesRepository.getTbalanceData(caccounts.getSerno(), byCycledate.get().getSerno(), configs.getSerno());
+            Double overLimitAmount = overlimit == null ? 0.0 : byCycledate.get().getCreditlimit() - Math.abs(overlimit);
 
             if (overLimitAmount < 0) {
                 st.setOverLimitAmount(Double.parseDouble(decimalFormat.format(Math.abs(overLimitAmount))));
@@ -130,35 +129,38 @@ public class StatementServiceImpl {
         Cardx byCard = cardxRepository.findByNumberx(cardNumber);
         Caccounts caccounts = byCard.getCaccounts();
         Optional<Cstatements> statements = cstatementsRepositoty.findByCycledateAndCaccounts(cycleDate, caccounts);
-       MadConfigurationDetails config = configurationService.getConfiguration();
+        MadConfigurationDetails config = configurationService.getConfiguration();
 
-        Double overlimit = tbalancesRepository.getTbalanceData(caccounts.getSerno(),statements.get().getSerno(),config.getSerno());
+        Double overlimit = tbalancesRepository.getTbalanceData(caccounts.getSerno(), statements.get().getSerno(), config.getSerno());
+        Optional<List<Tbalances>> overlimits = tbalancesRepository.getTbalanceDatas(caccounts.getSerno(), statements.get().getSerno(), config.getSerno());
+
         //todo Double overLimitAmount = statements.get().getCreditlimit() - Math.abs(statements.get().getClosingbalance());
         Double overLimitAmount = overlimit == null ? 0.0 : statements.get().getCreditlimit() - Math.abs(overlimit);
-
+        Double tad = tbalancesRepository.getTadAmount(statements.get().getSerno(),
+                byCard.getCaccounts().getSerno());
         BigDecimal outStandingAmount = BigDecimal.ZERO;
         BigDecimal madAmount = BigDecimal.ZERO;
         BigDecimal overDueAmount = BigDecimal.valueOf(statements.get().getOverdueamount());
         BigDecimal overLimit = BigDecimal.ZERO;
         if (overLimitAmount < 0 && config.getOverLimitAmount()) {
             overLimit = BigDecimal.valueOf(overLimitAmount);
-        } else if(!config.getOverLimitAmount()) {
+        } else if (!config.getOverLimitAmount()) {
             overLimit = BigDecimal.ZERO;
         }
         Double overDue = 0.0;
-        if(statements.get().getOverdueamount() < 0 && config.getOverDueAmount()){
+        if (statements.get().getOverdueamount() < 0 && config.getOverDueAmount()) {
             overDue = statements.get().getOverdueamount();
-        }
-        else if(statements.get().getOverdueamount() == 0 && !config.getOverDueAmount()) {
+        } else if (statements.get().getOverdueamount() == 0 && !config.getOverDueAmount()) {
             overDue = 0.0;
         }
-        BigDecimal closingBalance = BigDecimal.valueOf(statements.get().getClosingbalance());
+        BigDecimal closingBalance = BigDecimal.valueOf(tad);
         Optional<Products> product = productsRepository.findById(caccounts.getProduct());
         Optional<Mprofileacct> mprofileacct = mprofileAcctRepository.findByProducts(product);
         Optional<Profiles> profiles = profilesRepository.findById(mprofileacct.get().getProfiles().getSerno());
         Optional<Cstmtsettings> csetting = cstatementSettingsRepository.findByProfiles(profiles.get());
         Long minPayPercentage = csetting.get().getMinpaypercentage();
         Double minper = (double) (minPayPercentage / 100.0);
+        List<Long> trxnSernos = new ArrayList<>();
         if (overDue < 0 || overLimitAmount < 0) {
             Optional<List<Tbalances>> tbalances = tbalancesRepository.getTbalance(statements.get().getSerno(),
                     caccounts.getSerno());

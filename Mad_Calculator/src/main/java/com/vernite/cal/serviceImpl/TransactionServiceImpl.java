@@ -106,7 +106,7 @@ public class TransactionServiceImpl {
                         else{
                             transactionDetail.setIsOverlimitTrxnserno("NO");
                         }
-                        if (minPayPercentage == null) {
+                        if (minPayPercentage == null || minPayPercentage < 100) {
                             Optional<Products> product = productsRepository.findById(caccounts1.getProduct());
                             Optional<Mprofileacct> mprofileacct = mprofileAcctRepository.findByProducts(product);
                             Optional<Profiles> profiles = profilesRepository
@@ -140,6 +140,12 @@ public class TransactionServiceImpl {
                             }
                         } else {
                             transactionDetail.setOverLimitAmount(0.0);
+                        }
+                        if(transactionDetail.getOverLimitAmount() == 0.0){
+                            transactionDetail.setMadAmount(transactionDetail.getMadAmount());
+                        }
+                        else{
+                            transactionDetail.setMadAmount(BigDecimal.ZERO);
                         }
                         transactionDetail.setOverDueAmount(Math.abs(cycledates.get().getOverdueamount()));
                         transactionDetails.add(transactionDetail);
@@ -376,12 +382,12 @@ public class TransactionServiceImpl {
                         transaction.getMinpaypercentage() != null ? transaction.getMinpaypercentage().toString() : ""));
                 minPayPercentageCell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 mainTable.addCell(minPayPercentageCell);
-
-                PdfPCell madAmountCell = new PdfPCell(new Paragraph(
-                        String.valueOf(transaction.getMadAmount() != null ? transaction.getMadAmount().toString() : 0)));
-                madAmountCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                mainTable.addCell(madAmountCell);
-                
+             if(transaction.getOverLimitAmount() == 0) {
+                 PdfPCell madAmountCell = new PdfPCell(new Paragraph(
+                         String.valueOf(transaction.getMadAmount() != null ? transaction.getMadAmount().toString() : 0)));
+                 madAmountCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                 mainTable.addCell(madAmountCell);
+             }
                 PdfPCell eligibleForOverlimit = new PdfPCell(new Paragraph(
                         String.valueOf(transaction.getIsOverlimitTrxnserno() != null ? transaction.getIsOverlimitTrxnserno().toString() : 0)));
                 eligibleForOverlimit.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -507,7 +513,9 @@ public class TransactionServiceImpl {
                 row.createCell(2).setCellValue(Objects.toString(transaction.getAmount(), ""));
                 row.createCell(3).setCellValue(Objects.toString(transaction.getOutstandingamount(), ""));
                 row.createCell(4).setCellValue(Objects.toString(transaction.getMinpaypercentage(), ""));
+                if(transaction.getOverLimitAmount() == 0.0){
                 row.createCell(5).setCellValue(Objects.toString(transaction.getMadAmount(), ""));
+                }
                 row.createCell(6).setCellValue(Objects.toString(transaction.getIsOverlimitTrxnserno(), ""));
                 for (Cell cell : row) {
                     cell.setCellStyle(dataCellStyle);
