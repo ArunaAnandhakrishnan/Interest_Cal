@@ -7,13 +7,13 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.2</version>
-        <relativePath /> <!-- lookup parent from repository -->
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.verinite.cal</groupId>
     <artifactId>Mad_Calculator</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Mad_Calculator</name>
-    <description>in this application we calculate the minimun ammount due.</description>
+    <description>In this application we calculate the minimum amount due.</description>
     <properties>
         <java.version>17</java.version>
     </properties>
@@ -36,12 +36,6 @@
             <artifactId>pdfbox</artifactId>
             <version>3.0.0</version>
         </dependency>
-        <!--<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>-->
         <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
@@ -50,6 +44,7 @@
         <dependency>
             <groupId>com.oracle.database.jdbc</groupId>
             <artifactId>ojdbc8</artifactId>
+            <version>19.8.0.0</version> <!-- Please specify the correct version here -->
         </dependency>
         <dependency>
             <groupId>com.mysql</groupId>
@@ -76,18 +71,6 @@
             <artifactId>poi-ooxml</artifactId>
             <version>5.2.4</version> <!-- or the latest version available -->
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>5.2.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>5.2.3</version>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
