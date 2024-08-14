@@ -20,6 +20,10 @@ public interface TbalancesRepository extends JpaRepository<Tbalances, Long> {
     Double getTadAmount(@Param("serno")Long serno, @Param("cserno") Long cserno);
     @Query(value = "SELECT sum(tb.outstandingamount) FROM tbalances tb where tb.caccserno=:cserno and tb.stmtserno =:serno and tb.trxnserno is not null and tb.transactiontype not in (:listSerno)",nativeQuery = true)
     Double getTbalanceData(@Param("cserno") Long cserno, @Param("listSerno") List<Long> listSerno, @Param("serno")Long serno);
+
+    @Query(value = "SELECT * FROM tbalances tb where tb.caccserno=:cserno and tb.stmtserno =:serno and tb.trxnserno is not null and tb.transactiontype not in (:listSerno)",nativeQuery = true)
+    Optional<List<Tbalances>> getTbalanceDatas(@Param("cserno") Long cserno,@Param("serno")Long serno,@Param("listSerno") List<Long> listSerno);
+
     @Query(value = "SELECT tb.trxnserno FROM tbalances tb where tb.caccserno=:cserno and tb.trxnserno is not null and tb.transactiontype not in (:listSerno) order by tb.serno",nativeQuery = true)
     List<Long> getTrxnSerno(@Param("cserno") Long cserno, @Param("listSerno") List<Long> listSerno);
 
